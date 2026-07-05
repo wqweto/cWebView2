@@ -1,0 +1,810 @@
+// VBWebView2Impl.odl
+//
+// Fully self-contained companion type library: every WebView2 interface our
+// VB6 code touches - whether we Implements it (completed-handlers, event
+// handlers, environment options) or merely consume it (ICoreWebView2 and
+// friends, controller, environment, settings, event args) - is redeclared
+// here under an "IVB..." name with the exact same IID as its real
+// WebView2 SDK counterpart, so QueryInterface/vtable calls to and from
+// native code still resolve correctly, but with VB6-safe types:
+//   - BOOL            replaced by long   (0 = False, nonzero = True)
+//   - LPWSTR/LPCWSTR   replaced by long  (a raw pointer; converted to/from
+//                                         a VB6 String by hand via StrPtr
+//                                         and SysReAllocString helpers)
+//   - UINT32/UINT64/enum/HRESULT-as-param replaced by long
+//   - any other interface pointer we don't otherwise need replaced by
+//     VB6IUnknown (a locally-declared marker interface with the same
+//     binary shape as IUnknown - VB6 accepts it as an Implements/consume
+//     parameter type, unlike the imported stdole IUnknown)
+// Interface version chains (ICoreWebView2_2.._11, Settings2..6) are
+// flattened onto their base vtable and published under the newest IID
+// actually needed. Members preceding a needed one that our code never
+// calls are still declared (typed generically) purely to keep later
+// members at their correct, real vtable slot.
+//
+// Every interface is also forward-declared once, right after VB6IUnknown,
+// so any interface can reference any other regardless of which one is
+// fully defined first later in this file (mktyplib supports bare
+// "interface IFoo;" forward declarations).
+//
+// Compiled with: MKTYPLIB.EXE VBWebView2Impl.odl
+
+[
+    uuid(8d813eb1-f1f3-46f7-91d3-6520b445682c),
+    version(1.0),
+    helpstring("VB6-safe companion interfaces for WebView2")
+]
+library VBWebView2Impl
+{
+    importlib("stdole2.tlb");
+
+    typedef struct
+    {
+        long Left;
+        long Top;
+        long Right;
+        long Bottom;
+    } APIRECT;
+
+    typedef struct
+    {
+        long X;
+        long Y;
+    } APIPOINT;
+
+    [uuid(dabe1de6-9e58-43f6-a884-c9f05e0beca2), odl, version(1.0)]
+    interface VB6IUnknown : IUnknown
+    {
+    };
+
+    // Forward declarations so every Invoke/property can be typed with its
+    // real, specific interface regardless of declaration order below
+    interface IVBStream;
+    interface IVBWebView2EnvironmentOptions;
+    interface IVBWebView2EnvironmentOptions2;
+    interface IVBWebView2EnvironmentOptions3;
+    interface IVBWebView2EnvironmentOptions4;
+    interface IVBWebView2EnvironmentOptions5;
+    interface IVBWebView2CreateEnvironmentCompletedHandler;
+    interface IVBWebView2CreateControllerCompletedHandler;
+    interface IVBWebView2NavigationStartingEventHandler;
+    interface IVBWebView2NavigationCompletedEventHandler;
+    interface IVBWebView2SourceChangedEventHandler;
+    interface IVBWebView2ProcessFailedEventHandler;
+    interface IVBWebView2ExecuteScriptCompletedHandler;
+    interface IVBWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler;
+    interface IVBWebView2CapturePreviewCompletedHandler;
+    interface IVBWebView2CallDevToolsProtocolMethodCompletedHandler;
+    interface IVBWebView2WebMessageReceivedEventHandler;
+    interface IVBWebView2NewWindowRequestedEventHandler;
+    interface IVBWebView2DocumentTitleChangedEventHandler;
+    interface IVBCoreWebView2ContentLoadingEventArgs;
+    interface IVBWebView2ContentLoadingEventHandler;
+    interface IVBWebView2HistoryChangedEventHandler;
+    interface IVBWebView2WindowCloseRequestedEventHandler;
+    interface IVBWebView2ZoomFactorChangedEventHandler;
+    interface IVBCoreWebView2MoveFocusRequestedEventArgs;
+    interface IVBCoreWebView2ContextMenuTarget;
+    interface IVBCoreWebView2ContextMenuRequestedEventArgs;
+    interface IVBWebView2ContextMenuRequestedEventHandler;
+    interface IVBWebView2PermissionRequestedEventHandler;
+    interface IVBWebView2ScriptDialogOpeningEventHandler;
+    interface IVBWebView2WebResourceResponseReceivedEventHandler;
+    interface IVBWebView2FrameCreatedEventHandler;
+    interface IVBWebView2DownloadStartingEventHandler;
+    interface IVBWebView2WebResourceRequestedEventHandler;
+    interface IVBWebView2MoveFocusRequestedEventHandler;
+    interface IVBWebView2AcceleratorKeyPressedEventHandler;
+    interface IVBWebView2FocusChangedEventHandler;
+    interface IVBCoreWebView2Settings;
+    interface IVBCoreWebView2Settings6;
+    interface IVBCoreWebView2ScriptDialogOpeningEventArgs;
+    interface IVBCoreWebView2PermissionRequestedEventArgs;
+    interface IVBCoreWebView2WindowFeatures;
+    interface IVBCoreWebView2NewWindowRequestedEventArgs;
+    interface IVBCoreWebView2AcceleratorKeyPressedEventArgs;
+    interface IVBCoreWebView2WebResourceRequest;
+    interface IVBCoreWebView2WebResourceResponse;
+    interface IVBCoreWebView2WebResourceRequestedEventArgs;
+    interface IVBCoreWebView2HttpHeadersCollectionIterator;
+    interface IVBCoreWebView2HttpResponseHeaders;
+    interface IVBCoreWebView2WebResourceResponseView;
+    interface IVBCoreWebView2WebResourceResponseReceivedEventArgs;
+    interface IVBCoreWebView2Frame;
+    interface IVBCoreWebView2FrameCreatedEventArgs;
+    interface IVBCoreWebView2DownloadOperation;
+    interface IVBCoreWebView2DownloadStartingEventArgs;
+    interface IVBCoreWebView2;
+    interface IVBCoreWebView2_4;
+    interface IVBCoreWebView2_11;
+    interface IVBCoreWebView2Controller;
+    interface IVBCoreWebView2Environment;
+    interface IVBCoreWebView2Environment2;
+    interface IVBCoreWebView2NavigationStartingEventArgs;
+    interface IVBCoreWebView2NavigationCompletedEventArgs;
+    interface IVBCoreWebView2WebMessageReceivedEventArgs;
+
+    // Minimal OLE IStream facade (real IID) - only the first three vtable
+    // slots are declared/used; CURRENCY stands in for the 8-byte
+    // LARGE_INTEGER params so positions read back scaled by 1/10000
+    [uuid(0000000C-0000-0000-C000-000000000046), odl, version(1.0)]
+    interface IVBStream : IUnknown
+    {
+        HRESULT Read([in] long pv, [in] long cb, [in, out] long* pcbRead);
+        HRESULT Write([in] long pv, [in] long cb, [in, out] long* pcbWritten);
+        HRESULT Seek([in] CURRENCY dlibMove, [in] long dwOrigin, [in, out] CURRENCY* plibNewPosition);
+    };
+
+    [uuid(2fde08a8-1e9a-4766-8c05-95a9ceb9d1c5), odl, version(1.0)]
+    interface IVBWebView2EnvironmentOptions : IUnknown
+    {
+        [propget] HRESULT AdditionalBrowserArguments([out, retval] long* value);
+        [propput] HRESULT AdditionalBrowserArguments([in] long value);
+        [propget] HRESULT Language([out, retval] long* value);
+        [propput] HRESULT Language([in] long value);
+        [propget] HRESULT TargetCompatibleBrowserVersion([out, retval] long* value);
+        [propput] HRESULT TargetCompatibleBrowserVersion([in] long value);
+        [propget] HRESULT AllowSingleSignOnUsingOSPrimaryAccount([out, retval] long* allow);
+        [propput] HRESULT AllowSingleSignOnUsingOSPrimaryAccount([in] long allow);
+    };
+
+    // CreateCoreWebView2EnvironmentWithOptions QueryInterface's the options object for these
+    // newer versions too; without them implemented the call fails with E_INVALIDARG
+    [uuid(FF85C98A-1BA7-4A6B-90C8-2B752C89E9E2), odl, version(1.0)]
+    interface IVBWebView2EnvironmentOptions2 : IUnknown
+    {
+        [propget] HRESULT ExclusiveUserDataFolderAccess([out, retval] long* value);
+        [propput] HRESULT ExclusiveUserDataFolderAccess([in] long value);
+    };
+
+    [uuid(4A5C436E-A9E3-4A2E-89C3-910D3513F5CC), odl, version(1.0)]
+    interface IVBWebView2EnvironmentOptions3 : IUnknown
+    {
+        [propget] HRESULT IsCustomCrashReportingEnabled([out, retval] long* value);
+        [propput] HRESULT IsCustomCrashReportingEnabled([in] long value);
+    };
+
+    [uuid(ac52d13f-0d38-475a-9dca-876580d6793e), odl, version(1.0)]
+    interface IVBWebView2EnvironmentOptions4 : IUnknown
+    {
+        HRESULT GetCustomSchemeRegistrations([in, out] long* count, [in, out] long* schemeRegistrations);
+        HRESULT SetCustomSchemeRegistrations([in] long count, [in] long schemeRegistrations);
+    };
+
+    [uuid(0AE35D64-C47F-4464-814E-259C345D1501), odl, version(1.0)]
+    interface IVBWebView2EnvironmentOptions5 : IUnknown
+    {
+        [propget] HRESULT EnableTrackingPrevention([out, retval] long* value);
+        [propput] HRESULT EnableTrackingPrevention([in] long value);
+    };
+
+    [uuid(4e8a3389-c9d8-4bd2-b6b5-124fee6cc14d), odl, version(1.0)]
+    interface IVBWebView2CreateEnvironmentCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] IVBCoreWebView2Environment* createdEnvironment);
+    };
+
+    [uuid(6c4819f3-c9b7-4260-8127-c9f5bde7f68c), odl, version(1.0)]
+    interface IVBWebView2CreateControllerCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] IVBCoreWebView2Controller* createdController);
+    };
+
+    [uuid(9adbe429-f36d-432b-9ddc-f8881fbd76e3), odl, version(1.0)]
+    interface IVBWebView2NavigationStartingEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2NavigationStartingEventArgs* args);
+    };
+
+    [uuid(d33a35bf-1c49-4f98-93ab-006e0533fe1c), odl, version(1.0)]
+    interface IVBWebView2NavigationCompletedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2NavigationCompletedEventArgs* args);
+    };
+
+    [uuid(3c067f9f-5388-4772-8b48-79f7ef1ab37c), odl, version(1.0)]
+    interface IVBWebView2SourceChangedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    [uuid(79e0aea4-990b-42d9-aa1d-0fcc2e5bc7f1), odl, version(1.0)]
+    interface IVBWebView2ProcessFailedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    [uuid(49511172-cc67-4bca-9923-137112f4c4cc), odl, version(1.0)]
+    interface IVBWebView2ExecuteScriptCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] long resultObjectAsJson);
+    };
+
+    [uuid(b99369f3-9b11-47b5-bc6f-8e7895fcea17), odl, version(1.0)]
+    interface IVBWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] long id);
+    };
+
+    [uuid(697e05e9-3d8f-45fa-96f4-8ffe1ededaf5), odl, version(1.0)]
+    interface IVBWebView2CapturePreviewCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode);
+    };
+
+    [uuid(5c4889f0-5ef6-4c5a-952c-d8f1b92d0574), odl, version(1.0)]
+    interface IVBWebView2CallDevToolsProtocolMethodCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] long returnObjectAsJson);
+    };
+
+    [uuid(57213f19-00e6-49fa-8e07-898ea01ecbd2), odl, version(1.0)]
+    interface IVBWebView2WebMessageReceivedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2WebMessageReceivedEventArgs* args);
+    };
+
+    [uuid(d4c185fe-c81c-4989-97af-2d3fa7ab5651), odl, version(1.0)]
+    interface IVBWebView2NewWindowRequestedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2NewWindowRequestedEventArgs* args);
+    };
+
+    [uuid(f5f2b923-953e-4042-9f95-f3a118e1afd4), odl, version(1.0)]
+    interface IVBWebView2DocumentTitleChangedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    [uuid(0c8a1275-9b6b-4901-87ad-70df25bafa6e), odl, version(1.0)]
+    interface IVBCoreWebView2ContentLoadingEventArgs : IUnknown
+    {
+        [propget] HRESULT IsErrorPage([out, retval] long* isErrorPage);
+        [propget] HRESULT NavigationId([out, retval] long* navigationId);
+    };
+
+    [uuid(364471e7-f2be-4910-bdba-d72077d51c4b), odl, version(1.0)]
+    interface IVBWebView2ContentLoadingEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2ContentLoadingEventArgs* args);
+    };
+
+    [uuid(c79a420c-efd9-4058-9295-3e8b4bcab645), odl, version(1.0)]
+    interface IVBWebView2HistoryChangedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    [uuid(5c19e9e0-092f-486b-affa-ca8231913039), odl, version(1.0)]
+    interface IVBWebView2WindowCloseRequestedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    [uuid(b52d71d6-c4df-4543-a90c-64a3e60f38cb), odl, version(1.0)]
+    interface IVBWebView2ZoomFactorChangedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    [uuid(2d6aa13b-3839-4a15-92fc-d88b3c0d9c9d), odl, version(1.0)]
+    interface IVBCoreWebView2MoveFocusRequestedEventArgs : IUnknown
+    {
+        [propget] HRESULT Reason([out, retval] long* reason);
+        [propget] HRESULT Handled([out, retval] long* value);
+        [propput] HRESULT Handled([in] long value);
+    };
+
+    [uuid(b8611d99-eed6-4f3f-902c-a198502ad472), odl, version(1.0)]
+    interface IVBCoreWebView2ContextMenuTarget : IUnknown
+    {
+        [propget] HRESULT Kind([out, retval] long* value);
+        [propget] HRESULT IsEditable([out, retval] long* value);
+        [propget] HRESULT IsRequestedForMainFrame([out, retval] long* value);
+        [propget] HRESULT PageUri([out, retval] long* value);
+        [propget] HRESULT FrameUri([out, retval] long* value);
+        [propget] HRESULT HasLinkUri([out, retval] long* value);
+        [propget] HRESULT LinkUri([out, retval] long* value);
+        [propget] HRESULT HasLinkText([out, retval] long* value);
+        [propget] HRESULT LinkText([out, retval] long* value);
+        [propget] HRESULT HasSourceUri([out, retval] long* value);
+        [propget] HRESULT SourceUri([out, retval] long* value);
+        [propget] HRESULT HasSelection([out, retval] long* value);
+        [propget] HRESULT SelectionText([out, retval] long* value);
+    };
+
+    [uuid(a1d309ee-c03f-11eb-8529-0242ac130003), odl, version(1.0)]
+    interface IVBCoreWebView2ContextMenuRequestedEventArgs : IUnknown
+    {
+        [propget] HRESULT MenuItems([out, retval] VB6IUnknown** value);
+        [propget] HRESULT ContextMenuTarget([out, retval] IVBCoreWebView2ContextMenuTarget** value);
+        [propget] HRESULT Location([out, retval] APIPOINT* value);
+        [propput] HRESULT SelectedCommandId([in] long value);
+        [propget] HRESULT SelectedCommandId([out, retval] long* value);
+        [propput] HRESULT Handled([in] long value);
+        [propget] HRESULT Handled([out, retval] long* value);
+        HRESULT GetDeferral([out, retval] VB6IUnknown** deferral);
+    };
+
+    [uuid(04d3fe1d-ab87-42fb-a898-da241d35b63c), odl, version(1.0)]
+    interface IVBWebView2ContextMenuRequestedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2ContextMenuRequestedEventArgs* args);
+    };
+
+    [uuid(15e1c6a3-c72a-4df3-91d7-d097fbec6bfd), odl, version(1.0)]
+    interface IVBWebView2PermissionRequestedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2PermissionRequestedEventArgs* args);
+    };
+
+    [uuid(ef381bf9-afa8-4e37-91c4-8ac48524bdfb), odl, version(1.0)]
+    interface IVBWebView2ScriptDialogOpeningEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2ScriptDialogOpeningEventArgs* args);
+    };
+
+    [uuid(7DE9898A-24F5-40C3-A2DE-D4F458E69828), odl, version(1.0)]
+    interface IVBWebView2WebResourceResponseReceivedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2WebResourceResponseReceivedEventArgs* args);
+    };
+
+    [uuid(38059770-9baa-11eb-a8b3-0242ac130003), odl, version(1.0)]
+    interface IVBWebView2FrameCreatedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2FrameCreatedEventArgs* args);
+    };
+
+    [uuid(efedc989-c396-41ca-83f7-07f845a55724), odl, version(1.0)]
+    interface IVBWebView2DownloadStartingEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2DownloadStartingEventArgs* args);
+    };
+
+    [uuid(ab00b74c-15f1-4646-80e8-e76341d25d71), odl, version(1.0)]
+    interface IVBWebView2WebResourceRequestedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2WebResourceRequestedEventArgs* args);
+    };
+
+    [uuid(69035451-6dc7-4cb8-9bce-b2bd70ad289f), odl, version(1.0)]
+    interface IVBWebView2MoveFocusRequestedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2MoveFocusRequestedEventArgs* args);
+    };
+
+    [uuid(b29c7e28-fa79-41a8-8e44-65811c76dcb2), odl, version(1.0)]
+    interface IVBWebView2AcceleratorKeyPressedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2AcceleratorKeyPressedEventArgs* args);
+    };
+
+    [uuid(05ea24bd-6452-4926-9014-4b82b498135d), odl, version(1.0)]
+    interface IVBWebView2FocusChangedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    //=====================================================================
+    // Internalized "real object" interfaces (consumed, not Implemented).
+    // Declared in dependency order (no forward-declaration reliance).
+    //=====================================================================
+
+    [uuid(e562e4f0-d7fa-43ac-8d71-c05150499f00), odl, version(1.0)]
+    interface IVBCoreWebView2Settings : IUnknown
+    {
+        [propget] HRESULT IsScriptEnabled([out, retval] long* isScriptEnabled);
+        [propput] HRESULT IsScriptEnabled([in] long isScriptEnabled);
+        [propget] HRESULT IsWebMessageEnabled([out, retval] long* isWebMessageEnabled);
+        [propput] HRESULT IsWebMessageEnabled([in] long isWebMessageEnabled);
+        [propget] HRESULT AreDefaultScriptDialogsEnabled([out, retval] long* areDefaultScriptDialogsEnabled);
+        [propput] HRESULT AreDefaultScriptDialogsEnabled([in] long areDefaultScriptDialogsEnabled);
+        [propget] HRESULT IsStatusBarEnabled([out, retval] long* isStatusBarEnabled);
+        [propput] HRESULT IsStatusBarEnabled([in] long isStatusBarEnabled);
+        [propget] HRESULT AreDevToolsEnabled([out, retval] long* areDevToolsEnabled);
+        [propput] HRESULT AreDevToolsEnabled([in] long areDevToolsEnabled);
+        [propget] HRESULT AreDefaultContextMenusEnabled([out, retval] long* enabled);
+        [propput] HRESULT AreDefaultContextMenusEnabled([in] long enabled);
+        [propget] HRESULT AreHostObjectsAllowed([out, retval] long* allowed);
+        [propput] HRESULT AreHostObjectsAllowed([in] long allowed);
+        [propget] HRESULT IsZoomControlEnabled([out, retval] long* enabled);
+        [propput] HRESULT IsZoomControlEnabled([in] long enabled);
+        [propget] HRESULT IsBuiltInErrorPageEnabled([out, retval] long* enabled);
+        [propput] HRESULT IsBuiltInErrorPageEnabled([in] long enabled);
+    };
+
+    // Combined Settings2..Settings6 chain flattened onto the base vtable and
+    // published under Settings6's IID - QI once, reach all newer properties
+    [uuid(11cb3acd-9bc8-43b8-83bf-f40753714f87), odl, version(1.0)]
+    interface IVBCoreWebView2Settings6 : IVBCoreWebView2Settings
+    {
+        [propget] HRESULT UserAgent([out, retval] long* userAgent);
+        [propput] HRESULT UserAgent([in] long userAgent);
+        [propget] HRESULT AreBrowserAcceleratorKeysEnabled([out, retval] long* enabled);
+        [propput] HRESULT AreBrowserAcceleratorKeysEnabled([in] long enabled);
+        [propget] HRESULT IsPasswordAutosaveEnabled([out, retval] long* value);
+        [propput] HRESULT IsPasswordAutosaveEnabled([in] long value);
+        [propget] HRESULT IsGeneralAutofillEnabled([out, retval] long* value);
+        [propput] HRESULT IsGeneralAutofillEnabled([in] long value);
+        [propget] HRESULT IsPinchZoomEnabled([out, retval] long* enabled);
+        [propput] HRESULT IsPinchZoomEnabled([in] long enabled);
+        [propget] HRESULT IsSwipeNavigationEnabled([out, retval] long* enabled);
+        [propput] HRESULT IsSwipeNavigationEnabled([in] long enabled);
+    };
+
+    [uuid(7390bb70-abe0-4843-9529-f143b31b03d6), odl, version(1.0)]
+    interface IVBCoreWebView2ScriptDialogOpeningEventArgs : IUnknown
+    {
+        [propget] HRESULT Uri([out, retval] long* uri);
+        [propget] HRESULT Kind([out, retval] long* kind);
+        [propget] HRESULT Message([out, retval] long* message);
+        HRESULT Accept();
+        [propget] HRESULT DefaultText([out, retval] long* defaultText);
+        [propget] HRESULT ResultText([out, retval] long* resultText);
+        [propput] HRESULT ResultText([in] long resultText);
+        HRESULT GetDeferral([out, retval] VB6IUnknown** deferral);
+    };
+
+    [uuid(973ae2ef-ff18-4894-8fb2-3c758f046810), odl, version(1.0)]
+    interface IVBCoreWebView2PermissionRequestedEventArgs : IUnknown
+    {
+        [propget] HRESULT Uri([out, retval] long* uri);
+        [propget] HRESULT PermissionKind([out, retval] long* permissionKind);
+        [propget] HRESULT IsUserInitiated([out, retval] long* isUserInitiated);
+        [propget] HRESULT State([out, retval] long* state);
+        [propput] HRESULT State([in] long state);
+        HRESULT GetDeferral([out, retval] VB6IUnknown** deferral);
+    };
+
+    [uuid(5eaf559f-b46e-4397-8860-e422f287ff1e), odl, version(1.0)]
+    interface IVBCoreWebView2WindowFeatures : IUnknown
+    {
+        [propget] HRESULT HasPosition([out, retval] long* value);
+        [propget] HRESULT HasSize([out, retval] long* value);
+        [propget] HRESULT Left([out, retval] long* value);
+        [propget] HRESULT Top([out, retval] long* value);
+        [propget] HRESULT Height([out, retval] long* value);
+        [propget] HRESULT Width([out, retval] long* value);
+        [propget] HRESULT ShouldDisplayMenuBar([out, retval] long* value);
+        [propget] HRESULT ShouldDisplayStatus([out, retval] long* value);
+        [propget] HRESULT ShouldDisplayToolbar([out, retval] long* value);
+        [propget] HRESULT ShouldDisplayScrollBars([out, retval] long* value);
+    };
+
+    [uuid(34acb11c-fc37-4418-9132-f9c21d1eafb9), odl, version(1.0)]
+    interface IVBCoreWebView2NewWindowRequestedEventArgs : IUnknown
+    {
+        [propget] HRESULT Uri([out, retval] long* uri);
+        [propput] HRESULT NewWindow([in] VB6IUnknown* newWindow);
+        [propget] HRESULT NewWindow([out, retval] VB6IUnknown** newWindow);
+        [propput] HRESULT Handled([in] long handled);
+        [propget] HRESULT Handled([out, retval] long* handled);
+        [propget] HRESULT IsUserInitiated([out, retval] long* isUserInitiated);
+        HRESULT GetDeferral([out, retval] VB6IUnknown** deferral);
+        [propget] HRESULT WindowFeatures([out, retval] IVBCoreWebView2WindowFeatures** value);
+    };
+
+    [uuid(9f760f8a-fb79-42be-9990-7b56900fa9c7), odl, version(1.0)]
+    interface IVBCoreWebView2AcceleratorKeyPressedEventArgs : IUnknown
+    {
+        [propget] HRESULT KeyEventKind([out, retval] long* keyEventKind);
+        [propget] HRESULT VirtualKey([out, retval] long* virtualKey);
+        [propget] HRESULT KeyEventLParam([out, retval] long* lParam);
+        [propget] HRESULT PhysicalKeyStatus([out, retval] long* status);
+        [propget] HRESULT Handled([out, retval] long* handled);
+        [propput] HRESULT Handled([in] long handled);
+    };
+
+    [uuid(97055cd4-512c-4264-8b5f-e3f446cea6a5), odl, version(1.0)]
+    interface IVBCoreWebView2WebResourceRequest : IUnknown
+    {
+        [propget] HRESULT Uri([out, retval] long* uri);
+        [propput] HRESULT Uri([in] long uri);
+        [propget] HRESULT Method([out, retval] long* method);
+        [propput] HRESULT Method([in] long method);
+        [propget] HRESULT Content([out, retval] VB6IUnknown** content);
+        [propput] HRESULT Content([in] VB6IUnknown* content);
+        [propget] HRESULT Headers([out, retval] VB6IUnknown** headers);
+    };
+
+    [uuid(aafcc94f-fa27-48fd-97df-830ef75aaec9), odl, version(1.0)]
+    interface IVBCoreWebView2WebResourceResponse : IUnknown
+    {
+        [propget] HRESULT Content([out, retval] VB6IUnknown** content);
+        [propput] HRESULT Content([in] VB6IUnknown* content);
+        [propget] HRESULT Headers([out, retval] VB6IUnknown** headers);
+        [propget] HRESULT StatusCode([out, retval] long* statusCode);
+        [propput] HRESULT StatusCode([in] long statusCode);
+        [propget] HRESULT ReasonPhrase([out, retval] long* reasonPhrase);
+        [propput] HRESULT ReasonPhrase([in] long reasonPhrase);
+    };
+
+    [uuid(453e667f-12c7-49d4-be6d-ddbe7956f57a), odl, version(1.0)]
+    interface IVBCoreWebView2WebResourceRequestedEventArgs : IUnknown
+    {
+        [propget] HRESULT Request([out, retval] IVBCoreWebView2WebResourceRequest** request);
+        [propget] HRESULT Response([out, retval] IVBCoreWebView2WebResourceResponse** response);
+        [propput] HRESULT Response([in] IVBCoreWebView2WebResourceResponse* response);
+        HRESULT GetDeferral([out, retval] VB6IUnknown** deferral);
+        [propget] HRESULT ResourceContext([out, retval] long* context);
+    };
+
+    [uuid(0702fc30-f43b-47bb-ab52-a42cb552ad9f), odl, version(1.0)]
+    interface IVBCoreWebView2HttpHeadersCollectionIterator : IUnknown
+    {
+        HRESULT GetCurrentHeader([in, out] long* name, [in, out] long* value);
+        [propget] HRESULT HasCurrentHeader([out, retval] long* hasCurrent);
+        HRESULT MoveNext([out, retval] long* hasNext);
+    };
+
+    [uuid(03c5ff5a-9b45-4a88-881c-89a9f328619c), odl, version(1.0)]
+    interface IVBCoreWebView2HttpResponseHeaders : IUnknown
+    {
+        HRESULT AppendHeader([in] long name, [in] long value);
+        HRESULT Contains([in] long name, [out, retval] long* contains);
+        HRESULT GetHeader([in] long name, [out, retval] long* value);
+        HRESULT GetHeaders([in] long name, [out, retval] IVBCoreWebView2HttpHeadersCollectionIterator** iterator);
+        HRESULT GetIterator([out, retval] IVBCoreWebView2HttpHeadersCollectionIterator** iterator);
+    };
+
+    [uuid(79701053-7759-4162-8F7D-F1B3F084928D), odl, version(1.0)]
+    interface IVBCoreWebView2WebResourceResponseView : IUnknown
+    {
+        [propget] HRESULT Headers([out, retval] IVBCoreWebView2HttpResponseHeaders** headers);
+        [propget] HRESULT StatusCode([out, retval] long* statusCode);
+        [propget] HRESULT ReasonPhrase([out, retval] long* reasonPhrase);
+        HRESULT GetContent([in] VB6IUnknown* handler);
+    };
+
+    [uuid(D1DB483D-6796-4B8B-80FC-13712BB716F4), odl, version(1.0)]
+    interface IVBCoreWebView2WebResourceResponseReceivedEventArgs : IUnknown
+    {
+        [propget] HRESULT Request([out, retval] IVBCoreWebView2WebResourceRequest** request);
+        [propget] HRESULT Response([out, retval] IVBCoreWebView2WebResourceResponseView** response);
+    };
+
+    [uuid(f1131a5e-9ba9-11eb-a8b3-0242ac130003), odl, version(1.0)]
+    interface IVBCoreWebView2Frame : IUnknown
+    {
+        [propget] HRESULT Name([out, retval] long* name);
+    };
+
+    [uuid(4d6e7b5e-9baa-11eb-a8b3-0242ac130003), odl, version(1.0)]
+    interface IVBCoreWebView2FrameCreatedEventArgs : IUnknown
+    {
+        [propget] HRESULT Frame([out, retval] IVBCoreWebView2Frame** frame);
+    };
+
+    [uuid(3d6b6cf2-afe1-44c7-a995-c65117714336), odl, version(1.0)]
+    interface IVBCoreWebView2DownloadOperation : IUnknown
+    {
+        HRESULT add_BytesReceivedChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_BytesReceivedChanged([in] long token);
+        HRESULT add_EstimatedEndTimeChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_EstimatedEndTimeChanged([in] long token);
+        HRESULT add_StateChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_StateChanged([in] long token);
+        [propget] HRESULT Uri([out, retval] long* uri);
+        [propget] HRESULT ContentDisposition([out, retval] long* contentDisposition);
+        [propget] HRESULT MimeType([out, retval] long* mimeType);
+    };
+
+    [uuid(e99bbe21-43e9-4544-a732-282764eafa60), odl, version(1.0)]
+    interface IVBCoreWebView2DownloadStartingEventArgs : IUnknown
+    {
+        [propget] HRESULT DownloadOperation([out, retval] IVBCoreWebView2DownloadOperation** downloadOperation);
+        [propget] HRESULT Cancel([out, retval] long* cancel);
+        [propput] HRESULT Cancel([in] long cancel);
+        [propget] HRESULT ResultFilePath([out, retval] long* resultFilePath);
+        [propput] HRESULT ResultFilePath([in] long resultFilePath);
+        [propget] HRESULT Handled([out, retval] long* handled);
+        [propput] HRESULT Handled([in] long handled);
+        HRESULT GetDeferral([out, retval] VB6IUnknown** deferral);
+    };
+
+    [uuid(76eceacb-0462-4d94-ac83-423a6793775e), odl, version(1.0)]
+    interface IVBCoreWebView2 : IUnknown
+    {
+        [propget] HRESULT Settings([out, retval] IVBCoreWebView2Settings** settings);
+        [propget] HRESULT Source([out, retval] long* uri);
+        HRESULT Navigate([in] long uri);
+        HRESULT NavigateToString([in] long htmlContent);
+        HRESULT add_NavigationStarting([in] IVBWebView2NavigationStartingEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_NavigationStarting([in] long token);
+        HRESULT add_ContentLoading([in] IVBWebView2ContentLoadingEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_ContentLoading([in] long token);
+        HRESULT add_SourceChanged([in] IVBWebView2SourceChangedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_SourceChanged([in] long token);
+        HRESULT add_HistoryChanged([in] IVBWebView2HistoryChangedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_HistoryChanged([in] long token);
+        HRESULT add_NavigationCompleted([in] IVBWebView2NavigationCompletedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_NavigationCompleted([in] long token);
+        HRESULT add_FrameNavigationStarting([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_FrameNavigationStarting([in] long token);
+        HRESULT add_FrameNavigationCompleted([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_FrameNavigationCompleted([in] long token);
+        HRESULT add_ScriptDialogOpening([in] IVBWebView2ScriptDialogOpeningEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_ScriptDialogOpening([in] long token);
+        HRESULT add_PermissionRequested([in] IVBWebView2PermissionRequestedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_PermissionRequested([in] long token);
+        HRESULT add_ProcessFailed([in] IVBWebView2ProcessFailedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_ProcessFailed([in] long token);
+        HRESULT AddScriptToExecuteOnDocumentCreated([in] long javaScript, [in] IVBWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler* handler);
+        HRESULT RemoveScriptToExecuteOnDocumentCreated([in] long id);
+        HRESULT ExecuteScript([in] long javaScript, [in] IVBWebView2ExecuteScriptCompletedHandler* handler);
+        HRESULT CapturePreview([in] long imageFormat, [in] IVBStream* imageStream, [in] IVBWebView2CapturePreviewCompletedHandler* handler);
+        HRESULT Reload();
+        HRESULT PostWebMessageAsJson([in] long webMessageAsJson);
+        HRESULT PostWebMessageAsString([in] long webMessageAsString);
+        HRESULT add_WebMessageReceived([in] IVBWebView2WebMessageReceivedEventHandler* handler, [out, retval] long* token);
+        HRESULT remove_WebMessageReceived([in] long token);
+        HRESULT CallDevToolsProtocolMethod([in] long methodName, [in] long parametersAsJson, [in] IVBWebView2CallDevToolsProtocolMethodCompletedHandler* handler);
+        [propget] HRESULT BrowserProcessId([out, retval] long* value);
+        [propget] HRESULT CanGoBack([out, retval] long* canGoBack);
+        [propget] HRESULT CanGoForward([out, retval] long* canGoForward);
+        HRESULT GoBack();
+        HRESULT GoForward();
+        HRESULT GetDevToolsProtocolEventReceiver([in] long eventName, [out, retval] VB6IUnknown** receiver);
+        HRESULT Stop();
+        HRESULT add_NewWindowRequested([in] IVBWebView2NewWindowRequestedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_NewWindowRequested([in] long token);
+        HRESULT add_DocumentTitleChanged([in] IVBWebView2DocumentTitleChangedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_DocumentTitleChanged([in] long token);
+        [propget] HRESULT DocumentTitle([out, retval] long* title);
+        HRESULT AddHostObjectToScript([in] long name, [in] VARIANT* object);
+        HRESULT RemoveHostObjectFromScript([in] long name);
+        HRESULT OpenDevToolsWindow();
+        HRESULT add_ContainsFullScreenElementChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_ContainsFullScreenElementChanged([in] long token);
+        [propget] HRESULT ContainsFullScreenElement([out, retval] long* containsFullScreenElement);
+        HRESULT add_WebResourceRequested([in] IVBWebView2WebResourceRequestedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_WebResourceRequested([in] long token);
+        HRESULT AddWebResourceRequestedFilter([in] long uri, [in] long resourceContext);
+        HRESULT RemoveWebResourceRequestedFilter([in] long uri, [in] long resourceContext);
+        HRESULT add_WindowCloseRequested([in] IVBWebView2WindowCloseRequestedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_WindowCloseRequested([in] long token);
+    };
+
+    // ICoreWebView2_2 + _3 + _4 flattened onto the base vtable and published
+    // under _4's IID - covers WebResourceResponseReceived, FrameCreated,
+    // DownloadStarting and NavigateWithWebResourceRequest
+    [uuid(20d02d59-6df2-42dc-bd06-f98a694b1302), odl, version(1.0)]
+    interface IVBCoreWebView2_4 : IVBCoreWebView2
+    {
+        HRESULT add_WebResourceResponseReceived([in] IVBWebView2WebResourceResponseReceivedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_WebResourceResponseReceived([in] long token);
+        HRESULT NavigateWithWebResourceRequest([in] IVBCoreWebView2WebResourceRequest* request);
+        HRESULT add_DOMContentLoaded([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_DOMContentLoaded([in] long token);
+        [propget] HRESULT CookieManager([out, retval] VB6IUnknown** cookieManager);
+        [propget] HRESULT Environment([out, retval] VB6IUnknown** environment);
+        HRESULT TrySuspend([in] VB6IUnknown* handler);
+        HRESULT ResumeFromSuspend();
+        [propget] HRESULT IsSuspended([out, retval] long* isSuspended);
+        HRESULT SetVirtualHostNameToFolderMapping([in] long hostName, [in] long folderPath, [in] long accessKind);
+        HRESULT ClearVirtualHostNameToFolderMapping([in] long hostName);
+        HRESULT add_FrameCreated([in] IVBWebView2FrameCreatedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_FrameCreated([in] long token);
+        HRESULT add_DownloadStarting([in] IVBWebView2DownloadStartingEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_DownloadStarting([in] long token);
+    };
+
+    // ICoreWebView2_5 .. _11 flattened onto _4 and published under _11's IID -
+    // only ContextMenuRequested (from _11) is actually used; the rest are
+    // unused placeholders kept purely to preserve vtable slot alignment
+    [uuid(0be78e56-c193-4051-b943-23b460c08bdb), odl, version(1.0)]
+    interface IVBCoreWebView2_11 : IVBCoreWebView2_4
+    {
+        HRESULT add_ClientCertificateRequested([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_ClientCertificateRequested([in] long token);
+        HRESULT OpenTaskManagerWindow();
+        HRESULT PrintToPdf([in] long resultFilePath, [in] VB6IUnknown* printSettings, [in] VB6IUnknown* handler);
+        HRESULT add_IsMutedChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_IsMutedChanged([in] long token);
+        [propget] HRESULT IsMuted([out, retval] long* value);
+        [propput] HRESULT IsMuted([in] long value);
+        HRESULT add_IsDocumentPlayingAudioChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_IsDocumentPlayingAudioChanged([in] long token);
+        [propget] HRESULT IsDocumentPlayingAudio([out, retval] long* value);
+        HRESULT add_IsDefaultDownloadDialogOpenChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_IsDefaultDownloadDialogOpenChanged([in] long token);
+        [propget] HRESULT IsDefaultDownloadDialogOpen([out, retval] long* value);
+        HRESULT OpenDefaultDownloadDialog();
+        HRESULT CloseDefaultDownloadDialog();
+        [propget] HRESULT DefaultDownloadDialogCornerAlignment([out, retval] long* value);
+        [propput] HRESULT DefaultDownloadDialogCornerAlignment([in] long value);
+        [propget] HRESULT DefaultDownloadDialogMargin([out, retval] APIPOINT* value);
+        [propput] HRESULT DefaultDownloadDialogMargin([in] APIPOINT value);
+        HRESULT add_BasicAuthenticationRequested([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_BasicAuthenticationRequested([in] long token);
+        HRESULT CallDevToolsProtocolMethodForSession([in] long sessionId, [in] long methodName, [in] long parametersAsJson, [in] IVBWebView2CallDevToolsProtocolMethodCompletedHandler* handler);
+        HRESULT add_ContextMenuRequested([in] IVBWebView2ContextMenuRequestedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_ContextMenuRequested([in] long token);
+    };
+
+    [uuid(4d00c0d1-9434-4eb6-8078-8697a560334f), odl, version(1.0)]
+    interface IVBCoreWebView2Controller : IUnknown
+    {
+        [propget] HRESULT IsVisible([out, retval] long* isVisible);
+        [propput] HRESULT IsVisible([in] long isVisible);
+        [propget] HRESULT Bounds([out, retval] APIRECT* bounds);
+        HRESULT SetBounds([in] long Left, [in] long Top, [in] long Right, [in] long Bottom);
+        [propget] HRESULT ZoomFactor([out, retval] double* zoomFactor);
+        [propput] HRESULT ZoomFactor([in] double zoomFactor);
+        HRESULT add_ZoomFactorChanged([in] IVBWebView2ZoomFactorChangedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_ZoomFactorChanged([in] long token);
+        HRESULT SetBoundsAndZoomFactor([in] APIRECT bounds, [in] double zoomFactor);
+        HRESULT MoveFocus([in] long reason);
+        HRESULT add_MoveFocusRequested([in] IVBWebView2MoveFocusRequestedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_MoveFocusRequested([in] long token);
+        HRESULT add_GotFocus([in] IVBWebView2FocusChangedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_GotFocus([in] long token);
+        HRESULT add_LostFocus([in] IVBWebView2FocusChangedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_LostFocus([in] long token);
+        HRESULT add_AcceleratorKeyPressed([in] IVBWebView2AcceleratorKeyPressedEventHandler* eventHandler, [out, retval] long* token);
+        HRESULT remove_AcceleratorKeyPressed([in] long token);
+        [propget] HRESULT ParentWindow([out, retval] long* parentWindow);
+        [propput] HRESULT ParentWindow([in] long parentWindow);
+        HRESULT NotifyParentWindowPositionChanged();
+        HRESULT Close();
+        [propget] HRESULT CoreWebView2([out, retval] IVBCoreWebView2** coreWebView2);
+    };
+
+    [uuid(b96d755e-0319-4e92-a296-23436f46a1fc), odl, version(1.0)]
+    interface IVBCoreWebView2Environment : IUnknown
+    {
+        HRESULT CreateCoreWebView2Controller([in] long parentWindow, [in] IVBWebView2CreateControllerCompletedHandler* handler);
+        HRESULT CreateWebResourceResponse([in] VB6IUnknown* content, [in] long statusCode, [in] long reasonPhrase, [in] long headers, [out, retval] IVBCoreWebView2WebResourceResponse** response);
+        [propget] HRESULT BrowserVersionString([out, retval] long* versionInfo);
+        HRESULT add_NewBrowserVersionAvailable([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_NewBrowserVersionAvailable([in] long token);
+    };
+
+    // ICoreWebView2Environment2 - adds the web resource request factory
+    [uuid(41F3632B-5EF4-404F-AD82-2D606C5A9A21), odl, version(1.0)]
+    interface IVBCoreWebView2Environment2 : IVBCoreWebView2Environment
+    {
+        HRESULT CreateWebResourceRequest([in] long uri, [in] long method, [in] IVBStream* postData, [in] long headers, [out, retval] IVBCoreWebView2WebResourceRequest** request);
+    };
+
+    [uuid(5b495469-e119-438a-9b18-7604f25f2e49), odl, version(1.0)]
+    interface IVBCoreWebView2NavigationStartingEventArgs : IUnknown
+    {
+        [propget] HRESULT Uri([out, retval] long* uri);
+        [propget] HRESULT IsUserInitiated([out, retval] long* isUserInitiated);
+        [propget] HRESULT IsRedirected([out, retval] long* isRedirected);
+        [propget] HRESULT RequestHeaders([out, retval] VB6IUnknown** requestHeaders);
+        [propget] HRESULT Cancel([out, retval] long* cancel);
+        [propput] HRESULT Cancel([in] long cancel);
+    };
+
+    [uuid(30d68b7d-20d9-4752-a9ca-ec8448fbb5c1), odl, version(1.0)]
+    interface IVBCoreWebView2NavigationCompletedEventArgs : IUnknown
+    {
+        [propget] HRESULT IsSuccess([out, retval] long* isSuccess);
+        [propget] HRESULT WebErrorStatus([out, retval] long* webErrorStatus);
+        [propget] HRESULT NavigationId([out, retval] long* navigationId);
+    };
+
+    [uuid(0f99a40c-e962-4207-9e92-e3d542eff849), odl, version(1.0)]
+    interface IVBCoreWebView2WebMessageReceivedEventArgs : IUnknown
+    {
+        [propget] HRESULT Source([out, retval] long* source);
+        [propget] HRESULT WebMessageAsJson([out, retval] long* webMessageAsJson);
+        long TryGetWebMessageAsString([in, out] long* webMessageAsString);
+    };
+
+    [uuid(A4C46780-499F-101B-BB78-00AA00383CBB), odl]
+    interface IVbCollection  : IUnknown {
+        HRESULT GetTypeInfoCount([out, retval] int* pctinfo);
+        LONG GetTypeInfo([in] int itinfo,[in] long lcid,[out] void *pptinfo);
+        LONG GetIDsOfNames([in] void *riid,[in] LPWSTR *rgszNames,[in] int cNames,[in] long lcid,[out] long *rgdispid);
+        LONG Invoke([in] long dispidMember,[in] void *riid,[in] long lcid,[in] short wFlags,[in] void *pdispparams,[out] VARIANT *pvarResult,[out] void *pexcepinfo,[out] int *puArgErr);
+        long Item([in] VARIANT* Index, [out, optional] VARIANT* pvarRet);
+        long Add([in] VARIANT* Item, [in, optional] VARIANT* Key, [in, optional] VARIANT* Before, [in, optional] VARIANT* After);
+        long Count([out] long* pcRet);
+        long Remove([in] VARIANT* Index);
+        long NewEnum([out] IUnknown** ppunk);
+    };
+};
