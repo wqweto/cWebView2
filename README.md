@@ -55,11 +55,14 @@ nested and interleaved calls cannot cross wires.
 
 ## RC6 compatibility notes
 
-- The instance auto-registers itself as host object `vbHost` and injects a
-  global `vbH()` accessor on document creation, so existing RC6-style page
-  script like `vbH().RaiseMessageEvent('title_change', document.title)` works
-  unchanged. A `contextmenu` listener is injected the same way to raise
-  `UserContextMenu`.
+- The instance registers its `cWebView2Callback` as host object `vbHost` and
+  injects a global `vbH()` accessor on document creation, so existing
+  RC6-style page script like `vbH().RaiseMessageEvent('title_change',
+  document.title)` works unchanged. The callback only forwards a handful of
+  methods (`RaiseMessageEvent`, `RaiseContextMenuEvent`) to the owning
+  `cWebView2` — script never obtains a direct reference to the `cWebView2`
+  instance itself. A `contextmenu` listener is injected the same way to
+  raise `UserContextMenu`.
 - Default user data folder is `%LOCALAPPDATA%\<EXENAME>`, matching RC6, instead
   of the native default `<exe>.WebView2` next to the executable.
 - `JSMessage` fires from both the RC6 channel (`vbH().RaiseMessageEvent`) and
@@ -76,12 +79,8 @@ nested and interleaved calls cannot cross wires.
   returned a Cairo surface).
 - `WebResourceRequested` is a simplified allow/deny gate — deny answers the
   request with a synthesized `403`, no response-body rewriting.
-- `jsCallByName`'s `Obj` parameter is reserved (WebView2 cannot proxy live JS
-  objects); `MethodName` is evaluated as a dotted JS path.
 - `GotFocus`/`LostFocus` `Reason` is a best-effort heuristic (primed by
   `SetFocus`, defaults to `FocusReason_PROGRAMMATIC`).
-- `GetMostRecentInstallPath` is stubbed — Evergreen deployment resolves the
-  runtime automatically.
 - `CallDevToolsProtocolMethod` blocks and returns the CDP response, decoded
   like `jsRun`'s result, instead of RC6's fire-and-forget signature (RC6's own
   IDL has no retval either, but discarding the CDP response is rarely useful).
@@ -107,8 +106,11 @@ All RC6 `cWebView2` properties, methods and events are implemented and verified
 against live pages (navigation, JS interop incl. blocking/async calls and JSON
 marshaling, host objects, web messages, settings, script dialogs, permissions,
 new-window, accelerator keys, focus, web-resource filtering, response
-introspection, frames, downloads, capture) — except `GetMostRecentInstallPath`,
-which intentionally raises "not yet implemented".
+introspection, frames, downloads, capture) — except `GetMostRecentInstallPath`
+and `jsCallByName`, which intentionally raise "not yet implemented" (Evergreen
+deployment resolves the runtime automatically instead of needing an install
+path; WebView2 cannot proxy live JS objects the way RC6's `Obj` parameter
+implies).
 
 ### Additions beyond RC6 parity
 

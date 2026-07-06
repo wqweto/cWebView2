@@ -219,7 +219,7 @@ Private Sub m_oWebView2_TitleChange(ByVal Text As String)
     lblStatus.Caption = lblStatus.Caption & " | TitleChange=" & Text
 End Sub
 
-Private Sub m_oWebView2_JSMessage(ByVal sMsg As String, ByVal sMsgContent As String, oJSONContent As Object)
+Private Sub m_oWebView2_JSMessage(ByVal sMsg As String, ByVal sMsgContent As String, oJSONContent As Collection)
     If sMsg = "title_change" Then
         Caption = "cWebView2 Test Harness - " & sMsgContent
     ElseIf Not oJSONContent Is Nothing Then

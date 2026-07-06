@@ -101,15 +101,15 @@ Public Event SourceChanged()
 Public Event NavigationStarting(ByVal IsUserInitiated As Boolean, ByVal IsRedirected As Boolean, ByVal URI As String, Cancel As Boolean)
 Public Event NavigationCompleted(ByVal IsSuccess As Boolean, ByVal WebErrorStatus As Long)
 Public Event UserContextMenu(ByVal ScreenX As Long, ByVal ScreenY As Long)
-Public Event JSMessage(ByVal sMsg As String, ByVal sMsgContent As String, oJSONContent As Object)
+Public Event JSMessage(ByVal sMsg As String, ByVal sMsgContent As String, oJSONContent As Collection)
 Public Event JSAsyncResult(Result As Variant, ByVal Token As Currency, ByVal ErrString As String)
 Public Event GotFocus(ByVal Reason As eWebView2FocusReason)
 Public Event LostFocus(ByVal Reason As eWebView2FocusReason)
 Public Event AcceleratorKeyPressed(ByVal KeyState As eWebView2AccKeyState, ByVal IsExtendedKey As Boolean, ByVal WasKeyDown As Boolean, ByVal IsKeyReleased As Boolean, ByVal IsMenuKeyDown As Boolean, ByVal RepeatCount As Long, ByVal ScanCode As Long, IsHandled As Boolean)
-Public Event NewWindowRequested(ByVal IsUserInitiated As Boolean, IsHandled As Boolean, ByVal URI As String, NewWindowFeatures As Object)
+Public Event NewWindowRequested(ByVal IsUserInitiated As Boolean, IsHandled As Boolean, ByVal URI As String, NewWindowFeatures As Collection)
 Public Event PermissionRequested(ByVal IsUserInitiated As Boolean, State As eWebView2PermissionState, ByVal URI As String, ByVal PermissionKind As eWebView2PermissionKind)
 Public Event ScriptDialogOpening(ByVal ScriptDialogKind As eWebView2ScriptDialogKind, Accept As Boolean, ResultText As String, ByVal URI As String, ByVal Message As String, ByVal DefaultText As String)
-Public Event WebResourceResponseReceived(ByVal ReqURI As String, ByVal ReqMethod As String, ByVal RespStatus As Long, ByVal RespReasonPhrase As String, RespHeaders As Object)
+Public Event WebResourceResponseReceived(ByVal ReqURI As String, ByVal ReqMethod As String, ByVal RespStatus As Long, ByVal RespReasonPhrase As String, RespHeaders As Collection)
 Public Event FrameCreated(ByVal frameName As String)
 Public Event DownloadStarting(ByVal URI As String, ByVal MimeType As String, ByVal LocalSuggestedPath As String, ByVal LocalSuggestedFile As String, CancelBrowserDialog As Boolean, CancelDownloadOp As Boolean, NewLocalFilePath As String)
 Public Event WebResourceRequested(ByVal URI As String, ByVal FilterType As eWebView2ResourceFilter, Permit As eWebView2PermissionState)
@@ -196,23 +196,33 @@ End Sub
 '=========================================================================
 
 Public Property Get CanGoBack() As Boolean
-    CanGoBack = m_oWebView.CanGoBack
+    If Not m_oWebView Is Nothing Then
+        CanGoBack = m_oWebView.CanGoBack
+    End If
 End Property
 
 Public Property Get CanGoForward() As Boolean
-    CanGoForward = m_oWebView.CanGoForward
+    If Not m_oWebView Is Nothing Then
+        CanGoForward = m_oWebView.CanGoForward
+    End If
 End Property
 
 Public Property Get DocumentURL() As String
-    DocumentURL = pvToString(m_oWebView.Source)
+    If Not m_oWebView Is Nothing Then
+        DocumentURL = pvToString(m_oWebView.Source)
+    End If
 End Property
 
 Public Property Get DocumentTitle() As String
-    DocumentTitle = pvToString(m_oWebView.DocumentTitle)
+    If Not m_oWebView Is Nothing Then
+        DocumentTitle = pvToString(m_oWebView.DocumentTitle)
+    End If
 End Property
 
 Public Property Get BrowserProcessId() As Long
-    BrowserProcessId = m_oWebView.BrowserProcessId
+    If Not m_oWebView Is Nothing Then
+        BrowserProcessId = m_oWebView.BrowserProcessId
+    End If
 End Property
 
 Public Property Get HosthWnd() As Long
@@ -397,8 +407,7 @@ Public Function BindTo( _
         BindTo = hResult
         Exit Function
     End If
-    pvPumpUntil m_bInitComplete, SecondsToWaitForInitComplete
-    If Not m_bInitComplete Then
+    If Not pvPumpUntil(m_bInitComplete, SecondsToWaitForInitComplete) Then
         BindTo = E_FAIL_TIMEOUT
         Exit Function
     End If
@@ -414,7 +423,9 @@ Public Sub SyncSizeToHostWindow()
 
     On Error GoTo EH
     Call GetClientRect(m_hWndHost, uRect)
-    m_oController.SetBounds 0, 0, uRect.Right, uRect.Bottom
+    If Not m_oController Is Nothing Then
+        m_oController.SetBounds 0, 0, uRect.Right, uRect.Bottom
+    End If
     Exit Sub
 EH:
     PrintError "SyncSizeToHostWindow"
@@ -456,16 +467,22 @@ EH:
 End Sub
 
 Public Sub SetFocus(Optional ByVal Reason As eWebView2FocusReason = FocusReason_PROGRAMMATIC)
+    On Error GoTo EH
     m_eLastFocusReason = Reason
-    m_oController.MoveFocus Reason
+    If Not m_oController Is Nothing Then
+        m_oController.MoveFocus Reason
+    End If
+    Exit Sub
+EH:
+    PrintError "SetFocus"
 End Sub
 
 Public Function Navigate(ByVal URI As String, Optional ByVal SecondsToWaitForDocumentComplete As Double = 8) As Variant
     On Error GoTo EH
     m_bNavDone = False
+    m_bNavSuccess = True
     m_oWebView.Navigate StrPtr(URI)
-    pvPumpUntil m_bNavDone, SecondsToWaitForDocumentComplete
-    If Not m_bNavDone Then
+    If Not pvPumpUntil(m_bNavDone, SecondsToWaitForDocumentComplete) Then
         Navigate = Empty
         Exit Function
     End If
@@ -479,9 +496,9 @@ End Function
 Public Function NavigateToString(ByVal sHTMLContent As String, Optional ByVal SecondsToWaitForDocumentComplete As Double = 8) As Variant
     On Error GoTo EH
     m_bNavDone = False
+    m_bNavSuccess = True
     m_oWebView.NavigateToString StrPtr(sHTMLContent)
-    pvPumpUntil m_bNavDone, SecondsToWaitForDocumentComplete
-    If Not m_bNavDone Then
+    If Not pvPumpUntil(m_bNavDone, SecondsToWaitForDocumentComplete) Then
         Exit Function
     End If
     NavigateToString = m_bNavSuccess
@@ -524,9 +541,9 @@ Public Function NavigateWithWebResourceRequest(ByVal URI As String, Optional ByV
     End If
     Set oRequest = oEnv2.CreateWebResourceRequest(StrPtr(URI), StrPtr(Method), oStream, StrPtr(Headers_CrLfSeparated))
     m_bNavDone = False
+    m_bNavSuccess = True
     m_oWebView4.NavigateWithWebResourceRequest oRequest
-    pvPumpUntil m_bNavDone, SecondsToWaitForRequestComplete
-    If m_bNavDone Then
+    If pvPumpUntil(m_bNavDone, SecondsToWaitForRequestComplete) Then
         NavigateWithWebResourceRequest = m_bNavSuccess
     End If
     Exit Function
@@ -602,7 +619,7 @@ End Sub
 Public Sub RaiseMessageEvent(sMsg As Variant, sMsgContent As Variant)
     Dim sContent        As String
     Dim vResult         As Variant
-    Dim oContent        As Object
+    Dim oContent        As Collection
     Dim lIdx            As Long
 
     On Error GoTo EH
@@ -815,6 +832,12 @@ Private Function pvPumpUntil(bDone As Boolean, ByVal dblTimeout As Double) As Bo
     Dim dblTimer        As Double
 
     On Error GoTo EH
+    '--- 0 (or less) means fire-and-forget: caller wants to continue executing
+    '--- asynchronously, so report success without pumping any messages
+    If dblTimeout <= 0 Then
+        pvPumpUntil = True
+        Exit Function
+    End If
     dblTimer = TimerEx + dblTimeout
     Do While TimerEx <= dblTimer
         If m_bShuttingDown Then
@@ -1266,7 +1289,7 @@ Friend Sub OnControllerCreated(ByVal hResult As Long, ByVal oCtrl As IVBCoreWebV
     End If
     '--- RC6 compat: expose this instance to page script and inject the vbH()
     '--- accessor so code like vbH().RaiseMessageEvent(...) works unchanged
-    AddObject "vbHost", Me
+    AddObject "vbHost", m_oEventSink
     AddScriptToExecuteOnDocumentCreated "var vbH_; function vbH() { return vbH_ || (vbH_ = chrome.webview.hostObjects.sync.vbHost); }" & vbCrLf & _
         "window.addEventListener('contextmenu', function(e) { vbH().RaiseContextMenuEvent(e.screenX, e.screenY); });"
     SyncSizeToHostWindow
@@ -1319,7 +1342,7 @@ Friend Sub SinkPermissionRequested(ByVal bIsUserInitiated As Boolean, eState As 
     eState = eTemp
 End Sub
 
-Friend Sub SinkNewWindowRequested(ByVal bIsUserInitiated As Boolean, bHandled As Boolean, sUri As String, oFeatures As Object)
+Friend Sub SinkNewWindowRequested(ByVal bIsUserInitiated As Boolean, bHandled As Boolean, sUri As String, oFeatures As Collection)
     RaiseEvent NewWindowRequested(bIsUserInitiated, bHandled, sUri, oFeatures)
 End Sub
 
@@ -1450,7 +1473,7 @@ Friend Sub SinkFocusChanged(ByVal bGotFocus As Boolean)
 End Sub
 
 Friend Sub SinkWebMessageReceived(ByVal bIsString As Boolean, sMsg As String, sJson As String)
-    Dim oContent        As Object
+    Dim oContent        As Collection
     Dim vResult         As Variant
 
     On Error GoTo EH
@@ -1503,23 +1526,5 @@ Private Sub Class_Initialize()
 End Sub
 
 Private Sub Class_Terminate()
-    Set m_oWebView = Nothing
-    Set m_oWebView4 = Nothing
-    Set m_oWebView11 = Nothing
-    Set m_oController = Nothing
-    Set m_oEnvironment = Nothing
-    If Not m_oEventSink Is Nothing Then
-        m_oEventSink.Terminate
-        Set m_oEventSink = Nothing
-    End If
-    If Not m_oFocusGotSink Is Nothing Then
-        m_oFocusGotSink.Terminate
-        Set m_oFocusGotSink = Nothing
-    End If
-    If Not m_oFocusLostSink Is Nothing Then
-        m_oFocusLostSink.Terminate
-        Set m_oFocusLostSink = Nothing
-    End If
-    Set m_oSettings = Nothing
-    Set m_oSettings6 = Nothing
+    Shutdown
 End Sub

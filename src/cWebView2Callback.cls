@@ -135,6 +135,20 @@ Friend Sub Terminate()
     m_lOwnerWeakRef = 0
 End Sub
 
+Public Sub RaiseContextMenuEvent(ByVal ScreenX As Variant, ByVal ScreenY As Variant)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.RaiseContextMenuEvent ScreenX, ScreenY
+End Sub
+
+Public Sub RaiseMessageEvent(sMsg As Variant, sMsgContent As Variant)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.RaiseMessageEvent sMsg, sMsgContent
+End Sub
+
 '= private ===============================================================
 
 Private Function pvToString(ByVal lPtr As Long, Optional ByVal DontFree As Boolean) As String
