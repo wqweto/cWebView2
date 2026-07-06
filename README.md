@@ -72,9 +72,6 @@ nested and interleaved calls cannot cross wires.
 
 ### Deliberate deviations from RC6
 
-- `Scripting.Dictionary` replaces RC6's `_cCollection` everywhere
-  (`JSMessage.oJSONContent`, `NewWindowRequested.NewWindowFeatures`,
-  `WebResourceResponseReceived.RespHeaders`).
 - `CapturePreview` returns a `Byte()` array with the raw PNG/JPEG data (RC6
   returned a Cairo surface).
 - `WebResourceRequested` is a simplified allow/deny gate — deny answers the

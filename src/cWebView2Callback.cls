@@ -210,14 +210,14 @@ Private Property Let IVBWebView2EnvironmentOptions3_IsCustomCrashReportingEnable
     m_bIsCustomCrashReportingEnabled = (RHS <> 0)
 End Property
 
-Private Sub IVBWebView2EnvironmentOptions4_GetCustomSchemeRegistrations(count As Long, schemeRegistrations As Long)
+Private Sub IVBWebView2EnvironmentOptions4_GetCustomSchemeRegistrations(lCount As Long, lSchemeRegistrations As Long)
     '--- custom scheme registration is out of scope (no RC6 counterpart) -
     '--- always report zero registrations
-    count = 0
-    schemeRegistrations = 0
+    lCount = 0
+    lSchemeRegistrations = 0
 End Sub
 
-Private Sub IVBWebView2EnvironmentOptions4_SetCustomSchemeRegistrations(ByVal count As Long, ByVal schemeRegistrations As Long)
+Private Sub IVBWebView2EnvironmentOptions4_SetCustomSchemeRegistrations(ByVal lCount As Long, ByVal lSchemeRegistrations As Long)
 End Sub
 
 Private Property Get IVBWebView2EnvironmentOptions5_EnableTrackingPrevention() As Long
@@ -397,26 +397,26 @@ End Sub
 
 Private Sub IVBWebView2NewWindowRequestedEventHandler_Invoke(ByVal sender As VB6IUnknown, ByVal oArgs As IVBCoreWebView2NewWindowRequestedEventArgs)
     Dim oFeatures       As IVBCoreWebView2WindowFeatures
-    Dim oDict           As Object
+    Dim cFeatures       As Collection
     Dim bHandled        As Boolean
 
     If m_lOwnerWeakRef = 0 Then
         Exit Sub
     End If
     Set oFeatures = oArgs.WindowFeatures
-    Set oDict = CreateObject("Scripting.Dictionary")
-    oDict("HasPosition") = CBool(oFeatures.HasPosition)
-    oDict("HasSize") = CBool(oFeatures.HasSize)
-    oDict("Left") = oFeatures.Left
-    oDict("Top") = oFeatures.Top
-    oDict("Width") = oFeatures.Width
-    oDict("Height") = oFeatures.Height
-    oDict("ShouldDisplayMenuBar") = CBool(oFeatures.ShouldDisplayMenuBar)
-    oDict("ShouldDisplayStatus") = CBool(oFeatures.ShouldDisplayStatus)
-    oDict("ShouldDisplayToolbar") = CBool(oFeatures.ShouldDisplayToolbar)
-    oDict("ShouldDisplayScrollBars") = CBool(oFeatures.ShouldDisplayScrollBars)
+    Set cFeatures = New Collection
+    cFeatures.Add CBool(oFeatures.HasPosition), "HasPosition"
+    cFeatures.Add CBool(oFeatures.HasSize), "HasSize"
+    cFeatures.Add oFeatures.Left, "Left"
+    cFeatures.Add oFeatures.Top, "Top"
+    cFeatures.Add oFeatures.Width, "Width"
+    cFeatures.Add oFeatures.Height, "Height"
+    cFeatures.Add CBool(oFeatures.ShouldDisplayMenuBar), "ShouldDisplayMenuBar"
+    cFeatures.Add CBool(oFeatures.ShouldDisplayStatus), "ShouldDisplayStatus"
+    cFeatures.Add CBool(oFeatures.ShouldDisplayToolbar), "ShouldDisplayToolbar"
+    cFeatures.Add CBool(oFeatures.ShouldDisplayScrollBars), "ShouldDisplayScrollBars"
     bHandled = oArgs.Handled
-    pvOwner.SinkNewWindowRequested oArgs.IsUserInitiated, bHandled, pvToString(oArgs.URI), oDict
+    pvOwner.SinkNewWindowRequested oArgs.IsUserInitiated, bHandled, pvToString(oArgs.URI), cFeatures
     oArgs.Handled = -bHandled
 End Sub
 
@@ -594,7 +594,7 @@ Private Sub IVBWebView2ContextMenuRequestedEventHandler_Invoke(ByVal sender As V
     End If
     uLocation = oArgs.Location
     bHandled = oArgs.Handled
-    pvOwner.SinkContextMenuRequested pvToString(oTarget.PageURI), sLinkURI, sSelectionText, uLocation.X, uLocation.Y, bHandled
+    pvOwner.SinkContextMenuRequested pvToString(oTarget.PageURI), sLinkURI, sSelectionText, uLocation.x, uLocation.y, bHandled
     oArgs.Handled = -bHandled
 End Sub
 

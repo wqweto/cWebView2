@@ -68,13 +68,13 @@ Begin VB.Form Form1
       Top             =   360
       Width           =   840
    End
-   Begin VB.Label lblStatus
+   Begin VB.Label lblStatus 
       Height          =   2400
       Left            =   0
       TabIndex        =   4
       Top             =   5085
-      WordWrap        =   -1  'True
       Width           =   7920
+      WordWrap        =   -1  'True
    End
 End
 Attribute VB_Name = "Form1"

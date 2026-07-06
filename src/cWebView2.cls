@@ -125,6 +125,7 @@ Public Event ContextMenuRequested(ByVal PageURI As String, ByVal LinkURI As Stri
 ' API
 '=========================================================================
 
+Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
 Private Declare Function GetModuleHandle Lib "kernel32" Alias "GetModuleHandleW" (ByVal lpModuleName As Long) As Long
 Private Declare Function LoadLibrary Lib "kernel32" Alias "LoadLibraryW" (ByVal lpLibFileName As Long) As Long
 Private Declare Function GetClientRect Lib "user32" (ByVal hWnd As Long, lpRect As APIRECT) As Long
@@ -959,7 +960,9 @@ End Sub
 Private Function pvJsonEncode(vValue As Variant) As String
     Dim vElem           As Variant
     Dim sResult         As String
-    Dim oDict           As Object
+    Dim cCol            As Collection
+    Dim aKeys()         As String
+    Dim lIdx            As Long
 
     If IsArray(vValue) Then
         For Each vElem In vValue
@@ -972,13 +975,14 @@ Private Function pvJsonEncode(vValue As Variant) As String
     ElseIf IsObject(vValue) Then
         If vValue Is Nothing Then
             pvJsonEncode = "null"
-        ElseIf TypeName(vValue) = "Dictionary" Then
-            Set oDict = vValue
-            For Each vElem In oDict.Keys
+        ElseIf TypeName(vValue) = "Collection" Then
+            Set cCol = vValue
+            aKeys = CollectionAllKeys(cCol)
+            For lIdx = 1 To cCol.Count
                 If LenB(sResult) <> 0 Then
                     sResult = sResult & ","
                 End If
-                sResult = sResult & pvJsonEncodeString(CStr(vElem)) & ":" & pvJsonEncode(oDict.Item(vElem))
+                sResult = sResult & pvJsonEncodeString(aKeys(lIdx - 1)) & ":" & pvJsonEncode(cCol.Item(lIdx))
             Next
             pvJsonEncode = "{" & sResult & "}"
         Else
@@ -1033,7 +1037,7 @@ Private Function pvJsonEncodeString(sValue As String) As String
 End Function
 
 Private Sub pvJsonParseValue(sText As String, lIdx As Long, vResult As Variant)
-    Dim oDict           As Object
+    Dim cDict           As Collection
     Dim cItems          As Collection
     Dim sKey            As String
     Dim vItem           As Variant
@@ -1044,7 +1048,7 @@ Private Sub pvJsonParseValue(sText As String, lIdx As Long, vResult As Variant)
     pvJsonSkipSpace sText, lIdx
     Select Case Mid$(sText, lIdx, 1)
     Case "{"
-        Set oDict = CreateObject("Scripting.Dictionary")
+        Set cDict = New Collection
         lIdx = lIdx + 1
         pvJsonSkipSpace sText, lIdx
         If Mid$(sText, lIdx, 1) = "}" Then
@@ -1057,7 +1061,7 @@ Private Sub pvJsonParseValue(sText As String, lIdx As Long, vResult As Variant)
                 '--- skip ":"
                 lIdx = lIdx + 1
                 pvJsonParseValue sText, lIdx, vItem
-                oDict.Add sKey, vItem
+                cDict.Add vItem, sKey
                 pvJsonSkipSpace sText, lIdx
                 If Mid$(sText, lIdx, 1) <> "," Then
                     Exit Do
@@ -1067,7 +1071,7 @@ Private Sub pvJsonParseValue(sText As String, lIdx As Long, vResult As Variant)
             '--- skip "}"
             lIdx = lIdx + 1
         End If
-        Set vResult = oDict
+        Set vResult = cDict
     Case "["
         Set cItems = New Collection
         lIdx = lIdx + 1
@@ -1087,11 +1091,11 @@ Private Sub pvJsonParseValue(sText As String, lIdx As Long, vResult As Variant)
             '--- skip "]"
             lIdx = lIdx + 1
         End If
-        If cItems.count = 0 Then
+        If cItems.Count = 0 Then
             vResult = Array()
         Else
-            ReDim vResult(0 To cItems.count - 1)
-            For lJdx = 1 To cItems.count
+            ReDim vResult(0 To cItems.Count - 1)
+            For lJdx = 1 To cItems.Count
                 pvAssignVariant vResult(lJdx - 1), cItems.Item(lJdx)
             Next
         End If
@@ -1164,6 +1168,29 @@ Private Sub pvJsonSkipSpace(sText As String, lIdx As Long)
         End Select
     Loop
 End Sub
+
+Private Function CollectionAllKeys(oCol As Collection, Optional ByVal StartIndex As Long) As String()
+    Const o_KeyPtr              As Long = &H10
+    Const o_pNextIndexedItem    As Long = &H18
+    Dim lPtr            As Long
+    Dim aRetVal()       As String
+    Dim lIdx            As Long
+    Dim sTemp           As String
+    
+    If oCol.Count = 0 Then
+        aRetVal = Split(vbNullString)
+    Else
+        ReDim aRetVal(StartIndex To StartIndex + oCol.Count - 1) As String
+        lPtr = ObjPtr(oCol)
+        For lIdx = LBound(aRetVal) To UBound(aRetVal)
+            Call CopyMemory(lPtr, ByVal lPtr + o_pNextIndexedItem, 4)
+            Call CopyMemory(ByVal VarPtr(sTemp), ByVal lPtr + o_KeyPtr, 4)
+            aRetVal(lIdx) = sTemp
+        Next
+        Call CopyMemory(ByVal VarPtr(sTemp), 0&, 4)
+    End If
+    CollectionAllKeys = aRetVal
+End Function
 
 '= friend ================================================================
 
@@ -1321,23 +1348,38 @@ Friend Sub SinkWebResourceResponseReceived(oArgs As IVBCoreWebView2WebResourceRe
     Dim oRequest        As IVBCoreWebView2WebResourceRequest
     Dim oResponse       As IVBCoreWebView2WebResourceResponseView
     Dim oIter           As IVBCoreWebView2HttpHeadersCollectionIterator
-    Dim oDict           As Object
+    Dim cHeaders        As Collection
     Dim lName           As Long
     Dim lValue          As Long
-
+    Dim sKey            As String
+    Dim oTemp           As Collection
+    
     On Error GoTo EH
     Set oRequest = oArgs.Request
     Set oResponse = oArgs.Response
-    Set oDict = CreateObject("Scripting.Dictionary")
+    Set cHeaders = New Collection
     Set oIter = oResponse.Headers.GetIterator
     Do While oIter.HasCurrentHeader <> 0
         oIter.GetCurrentHeader lName, lValue
-        oDict(pvToString(lName)) = pvToString(lValue)
+        sKey = pvToString(lName)
+        If pvSearchCollection(cHeaders, sKey) Then
+            If IsObject(cHeaders.Item(sKey)) Then
+                Set oTemp = cHeaders.Item(sKey)
+            Else
+                Set oTemp = New Collection
+                oTemp.Add cHeaders.Item(sKey)
+                cHeaders.Remove sKey
+                cHeaders.Add oTemp, sKey
+            End If
+            oTemp.Add pvToString(lValue)
+        Else
+            cHeaders.Add pvToString(lValue), sKey
+        End If
         If oIter.MoveNext = 0 Then
             Exit Do
         End If
     Loop
-    RaiseEvent WebResourceResponseReceived(pvToString(oRequest.URI), pvToString(oRequest.Method), oResponse.StatusCode, pvToString(oResponse.ReasonPhrase), oDict)
+    RaiseEvent WebResourceResponseReceived(pvToString(oRequest.URI), pvToString(oRequest.Method), oResponse.StatusCode, pvToString(oResponse.ReasonPhrase), cHeaders)
     Exit Sub
 EH:
     PrintError "SinkWebResourceResponseReceived"
