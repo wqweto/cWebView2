@@ -7,3 +7,7 @@
 *.scc
 **/_del/*
 **/.claude/*
+*.dll
+*.exp
+*.lib
+*.zip

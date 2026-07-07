@@ -10,10 +10,10 @@ Runtime installed on the machine.
 
 | Path | Purpose |
 |---|---|
-| `src/cWebView2.cls` | The public class — RC6-compatible properties, methods and events |
+| `src/cWebView2.cls` | The public class — RC6-compatible properties, methods and events (~120KB compiled) |
 | `src/cWebView2Callback.cls` | Implements every native callback interface (completed-handlers, event handlers, environment options) and forwards to `cWebView2`'s Friend sinks |
 | `typelib/VBWebView2Impl.odl` / `.tlb` | Hand-written companion type library with VB6-safe redeclarations of the WebView2 interfaces (see below) |
-| `test/WebView2Loader.dll` | Microsoft's loader shim (x86), resolves the installed Evergreen runtime |
+| `WebView2Loader.dll` | Microsoft's loader shim (x86), resolves the installed Evergreen runtime |
 | `test/Form1.frm` | Manual test harness, grown alongside the implementation |
 | `test/Project1.vbp` | Test exe project — references only `stdole2.tlb` and `VBWebView2Impl.tlb` |
 | `doc/WebView2.idl` | The official WebView2 SDK IDL, kept as read-only reference only |
