@@ -10,7 +10,7 @@ Attribute VB_Name = "cWebView2"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 '=========================================================================
 ' CLASS: cWebView2
 ' RC6-compatible replacement of vbRichClient6's cWebView2, built directly
@@ -141,6 +141,7 @@ Private Declare Function TranslateMessage Lib "user32" (ByVal lpMsg As Long) As 
 Private Declare Function DispatchMessage Lib "user32" Alias "DispatchMessageW" (ByVal lpMsg As Long) As Long
 Private Declare Sub VariantClear Lib "oleaut32" (pvarg As Variant)
 Private Declare Function CreateStreamOnHGlobal Lib "ole32" (ByVal hGlobal As Long, ByVal fDeleteOnRelease As Long, ppstm As IVBStream) As Long
+Private Declare Function GetFileAttributes Lib "kernel32" Alias "GetFileAttributesW" (ByVal lpFileName As Long) As Long
 
 Private Type APIMSG
     hWnd                As Long
@@ -815,7 +816,7 @@ Private Function pvCreateWebView2Environment( _
             oHandler As IVBWebView2CreateEnvironmentCompletedHandler) As Long
     On Error GoTo EH
     If GetModuleHandle(StrPtr("WebView2Loader.dll")) = 0 Then
-        Call LoadLibrary(StrPtr(App.Path & "\WebView2Loader.dll"))
+        Call LoadLibrary(StrPtr(LocateFile(App.Path & "\External\WebView2Loader.dll")))
     End If
     '--- match RC6's default user data folder (%LOCALAPPDATA%\<EXEName>) instead
     '--- of the native default of "<exe>.WebView2" next to the executable
@@ -1213,6 +1214,43 @@ Private Function CollectionAllKeys(oCol As Collection, Optional ByVal StartIndex
         Call CopyMemory(ByVal VarPtr(sTemp), 0&, 4)
     End If
     CollectionAllKeys = aRetVal
+End Function
+
+Private Function LocateFile(sFile As String) As String
+    Dim sDir            As String
+    Dim sName           As String
+    Dim lPos            As Long
+    
+    If InStrRev(sFile, "\") > 0 Then
+        sDir = Left$(sFile, InStrRev(sFile, "\"))
+        sName = Mid$(sFile, InStrRev(sFile, "\") + 1)
+        Do While Not FileExists(sDir & sName)
+            If Len(sDir) > 1 Then
+                lPos = InStrRev(sDir, "\", Len(sDir) - 1)
+                If lPos > 0 Then
+                    sDir = Left$(sDir, lPos)
+                    If Left$(sDir, 2) = "\\" And InStrRev(sDir, "\", Len(sDir) - 1) <= 2 Then
+                        Exit Function
+                    End If
+                Else
+                    Exit Function
+                End If
+            Else
+                Exit Function
+            End If
+        Loop
+        LocateFile = sDir & sName
+    ElseIf FileExists(sFile) Then
+        LocateFile = sFile
+    End If
+End Function
+
+Private Function FileExists(sFile As String) As Boolean
+    If GetFileAttributes(StrPtr(sFile)) = -1 Then ' INVALID_FILE_ATTRIBUTES
+        FileExists = (Err.LastDllError = 32) ' ERROR_SHARING_VIOLATION
+    Else
+        FileExists = True
+    End If
 End Function
 
 '= friend ================================================================
