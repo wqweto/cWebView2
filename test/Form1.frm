@@ -60,11 +60,19 @@ Begin VB.Form Form1
       Top             =   360
       Width           =   6555
    End
-   Begin VB.CommandButton cmdRunJs 
+   Begin VB.CommandButton cmdRunJs
       Caption         =   "Run JS"
       Height          =   315
       Left            =   6600
       TabIndex        =   7
+      Top             =   360
+      Width           =   840
+   End
+   Begin VB.CommandButton cmdPdf
+      Caption         =   "PDF"
+      Height          =   315
+      Left            =   7500
+      TabIndex        =   8
       Top             =   360
       Width           =   840
    End
@@ -142,7 +150,8 @@ Private Sub Form_Resize()
     lblStatus.Move 0, ScaleHeight - lblStatus.Height, ScaleWidth
     cmdGo.Move ScaleWidth - cmdGo.Width, 0
     txtUrl.Move txtUrl.Left, 0, cmdGo.Left - txtUrl.Left - 60
-    cmdRunJs.Move ScaleWidth - cmdRunJs.Width, txtJs.Top
+    cmdPdf.Move ScaleWidth - cmdPdf.Width, txtJs.Top
+    cmdRunJs.Move cmdPdf.Left - cmdRunJs.Width - 60, txtJs.Top
     txtJs.Move 0, txtJs.Top, cmdRunJs.Left - 60
     If Not m_oWebView2 Is Nothing Then
         Call m_oWebView2.SyncSizeToHostWindow
@@ -247,6 +256,19 @@ Private Sub txtJs_KeyPress(KeyAscii As Integer)
     If KeyAscii = vbKeyReturn Then
         KeyAscii = 0
         cmdRunJs_Click
+    End If
+End Sub
+
+Private Sub cmdPdf_Click()
+    Dim sFile           As String
+    Dim vResult         As Variant
+
+    sFile = App.Path & "\PrintToPdf.pdf"
+    vResult = m_oWebView2.PrintToPdf(sFile)
+    If vResult = True Then
+        lblStatus.Caption = "Saved " & sFile & " (" & FileLen(sFile) & " bytes)"
+    Else
+        lblStatus.Caption = "PrintToPdf failed"
     End If
 End Sub
 

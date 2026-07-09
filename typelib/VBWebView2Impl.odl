@@ -65,6 +65,10 @@ library VBWebView2Impl
     interface IVBWebView2EnvironmentOptions3;
     interface IVBWebView2EnvironmentOptions4;
     interface IVBWebView2EnvironmentOptions5;
+    interface IVBWebView2EnvironmentOptions6;
+    interface IVBWebView2PrintToPdfCompletedHandler;
+    interface IVBWebView2ProfileAddBrowserExtensionCompletedHandler;
+    interface IVBWebView2ProfileGetBrowserExtensionsCompletedHandler;
     interface IVBWebView2CreateEnvironmentCompletedHandler;
     interface IVBWebView2CreateControllerCompletedHandler;
     interface IVBWebView2NavigationStartingEventHandler;
@@ -117,9 +121,15 @@ library VBWebView2Impl
     interface IVBCoreWebView2;
     interface IVBCoreWebView2_4;
     interface IVBCoreWebView2_11;
+    interface IVBCoreWebView2_13;
     interface IVBCoreWebView2Controller;
     interface IVBCoreWebView2Environment;
     interface IVBCoreWebView2Environment2;
+    interface IVBCoreWebView2Environment6;
+    interface IVBCoreWebView2PrintSettings;
+    interface IVBCoreWebView2Profile7;
+    interface IVBCoreWebView2BrowserExtension;
+    interface IVBCoreWebView2BrowserExtensionList;
     interface IVBCoreWebView2NavigationStartingEventArgs;
     interface IVBCoreWebView2NavigationCompletedEventArgs;
     interface IVBCoreWebView2WebMessageReceivedEventArgs;
@@ -178,6 +188,13 @@ library VBWebView2Impl
         [propput] HRESULT EnableTrackingPrevention([in] long value);
     };
 
+    [uuid(57d29cc3-c84f-42a0-b0e2-effbd5e179de), odl, version(1.0)]
+    interface IVBWebView2EnvironmentOptions6 : IUnknown
+    {
+        [propget] HRESULT AreBrowserExtensionsEnabled([out, retval] long* value);
+        [propput] HRESULT AreBrowserExtensionsEnabled([in] long value);
+    };
+
     [uuid(4e8a3389-c9d8-4bd2-b6b5-124fee6cc14d), odl, version(1.0)]
     interface IVBWebView2CreateEnvironmentCompletedHandler : IUnknown
     {
@@ -230,6 +247,24 @@ library VBWebView2Impl
     interface IVBWebView2CapturePreviewCompletedHandler : IUnknown
     {
         HRESULT Invoke([in] long errorCode);
+    };
+
+    [uuid(ccf1ef04-fd8e-4d5f-b2de-0983e41b8c36), odl, version(1.0)]
+    interface IVBWebView2PrintToPdfCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] long isSuccessful);
+    };
+
+    [uuid(df1aab27-82b9-4ab6-aae8-017a49398c14), odl, version(1.0)]
+    interface IVBWebView2ProfileAddBrowserExtensionCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] IVBCoreWebView2BrowserExtension* result);
+    };
+
+    [uuid(fce16a1c-f107-4601-8b75-fc4940ae25d0), odl, version(1.0)]
+    interface IVBWebView2ProfileGetBrowserExtensionsCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] IVBCoreWebView2BrowserExtensionList* result);
     };
 
     [uuid(5c4889f0-5ef6-4c5a-952c-d8f1b92d0574), odl, version(1.0)]
@@ -699,7 +734,7 @@ library VBWebView2Impl
         HRESULT add_ClientCertificateRequested([in] VB6IUnknown* eventHandler, [out, retval] long* token);
         HRESULT remove_ClientCertificateRequested([in] long token);
         HRESULT OpenTaskManagerWindow();
-        HRESULT PrintToPdf([in] long resultFilePath, [in] VB6IUnknown* printSettings, [in] VB6IUnknown* handler);
+        HRESULT PrintToPdf([in] long resultFilePath, [in] IVBCoreWebView2PrintSettings* printSettings, [in] IVBWebView2PrintToPdfCompletedHandler* handler);
         HRESULT add_IsMutedChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
         HRESULT remove_IsMutedChanged([in] long token);
         [propget] HRESULT IsMuted([out, retval] long* value);
@@ -721,6 +756,18 @@ library VBWebView2Impl
         HRESULT CallDevToolsProtocolMethodForSession([in] long sessionId, [in] long methodName, [in] long parametersAsJson, [in] IVBWebView2CallDevToolsProtocolMethodCompletedHandler* handler);
         HRESULT add_ContextMenuRequested([in] IVBWebView2ContextMenuRequestedEventHandler* eventHandler, [out, retval] long* token);
         HRESULT remove_ContextMenuRequested([in] long token);
+    };
+
+    // ICoreWebView2_12 .. _13 flattened onto _11 and published under _13's
+    // IID - only Profile (from _13) is actually used; retval is VB6IUnknown
+    // so the Set assignment QIs for Profile7 and fails soft on old runtimes
+    [uuid(f75f09a8-667e-4983-88d6-c8773f315e84), odl, version(1.0)]
+    interface IVBCoreWebView2_13 : IVBCoreWebView2_11
+    {
+        HRESULT add_StatusBarTextChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_StatusBarTextChanged([in] long token);
+        [propget] HRESULT StatusBarText([out, retval] long* value);
+        [propget] HRESULT Profile([out, retval] VB6IUnknown** value);
     };
 
     [uuid(4d00c0d1-9434-4eb6-8078-8697a560334f), odl, version(1.0)]
@@ -766,6 +813,97 @@ library VBWebView2Impl
     interface IVBCoreWebView2Environment2 : IVBCoreWebView2Environment
     {
         HRESULT CreateWebResourceRequest([in] long uri, [in] long method, [in] IVBStream* postData, [in] long headers, [out, retval] IVBCoreWebView2WebResourceRequest** request);
+    };
+
+    // ICoreWebView2Environment3 .. 6 flattened onto Environment2 and
+    // published under Environment6's IID - only CreatePrintSettings (from 6)
+    // is actually used
+    [uuid(e59ee362-acbd-4857-9a8e-d3644d9459a9), odl, version(1.0)]
+    interface IVBCoreWebView2Environment6 : IVBCoreWebView2Environment2
+    {
+        HRESULT CreateCoreWebView2CompositionController([in] long parentWindow, [in] VB6IUnknown* handler);
+        HRESULT CreateCoreWebView2PointerInfo([out, retval] VB6IUnknown** pointerInfo);
+        HRESULT GetAutomationProviderForWindow([in] long hwnd, [out, retval] VB6IUnknown** value);
+        HRESULT add_BrowserProcessExited([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_BrowserProcessExited([in] long token);
+        HRESULT CreatePrintSettings([out, retval] IVBCoreWebView2PrintSettings** value);
+    };
+
+    [uuid(377f3721-c74e-48ca-8db1-df68e51d60e2), odl, version(1.0)]
+    interface IVBCoreWebView2PrintSettings : IUnknown
+    {
+        [propget] HRESULT Orientation([out, retval] long* orientation);
+        [propput] HRESULT Orientation([in] long orientation);
+        [propget] HRESULT ScaleFactor([out, retval] double* scaleFactor);
+        [propput] HRESULT ScaleFactor([in] double scaleFactor);
+        [propget] HRESULT PageWidth([out, retval] double* pageWidth);
+        [propput] HRESULT PageWidth([in] double pageWidth);
+        [propget] HRESULT PageHeight([out, retval] double* pageHeight);
+        [propput] HRESULT PageHeight([in] double pageHeight);
+        [propget] HRESULT MarginTop([out, retval] double* marginTop);
+        [propput] HRESULT MarginTop([in] double marginTop);
+        [propget] HRESULT MarginBottom([out, retval] double* marginBottom);
+        [propput] HRESULT MarginBottom([in] double marginBottom);
+        [propget] HRESULT MarginLeft([out, retval] double* marginLeft);
+        [propput] HRESULT MarginLeft([in] double marginLeft);
+        [propget] HRESULT MarginRight([out, retval] double* marginRight);
+        [propput] HRESULT MarginRight([in] double marginRight);
+        [propget] HRESULT ShouldPrintBackgrounds([out, retval] long* value);
+        [propput] HRESULT ShouldPrintBackgrounds([in] long value);
+        [propget] HRESULT ShouldPrintSelectionOnly([out, retval] long* value);
+        [propput] HRESULT ShouldPrintSelectionOnly([in] long value);
+        [propget] HRESULT ShouldPrintHeaderAndFooter([out, retval] long* value);
+        [propput] HRESULT ShouldPrintHeaderAndFooter([in] long value);
+        [propget] HRESULT HeaderTitle([out, retval] long* headerTitle);
+        [propput] HRESULT HeaderTitle([in] long headerTitle);
+        [propget] HRESULT FooterUri([out, retval] long* footerUri);
+        [propput] HRESULT FooterUri([in] long footerUri);
+    };
+
+    // ICoreWebView2Profile .. Profile7 flattened onto the base vtable and
+    // published under Profile7's IID - only AddBrowserExtension and
+    // GetBrowserExtensions (from 7) are actually used
+    [uuid(7b4c7906-a1aa-4cb4-b723-db09f813d541), odl, version(1.0)]
+    interface IVBCoreWebView2Profile7 : IUnknown
+    {
+        [propget] HRESULT ProfileName([out, retval] long* value);
+        [propget] HRESULT IsInPrivateModeEnabled([out, retval] long* value);
+        [propget] HRESULT ProfilePath([out, retval] long* value);
+        [propget] HRESULT DefaultDownloadFolderPath([out, retval] long* value);
+        [propput] HRESULT DefaultDownloadFolderPath([in] long value);
+        [propget] HRESULT PreferredColorScheme([out, retval] long* value);
+        [propput] HRESULT PreferredColorScheme([in] long value);
+        HRESULT ClearBrowsingData([in] long dataKinds, [in] VB6IUnknown* handler);
+        HRESULT ClearBrowsingDataInTimeRange([in] long dataKinds, [in] double startTime, [in] double endTime, [in] VB6IUnknown* handler);
+        HRESULT ClearBrowsingDataAll([in] VB6IUnknown* handler);
+        [propget] HRESULT PreferredTrackingPreventionLevel([out, retval] long* value);
+        [propput] HRESULT PreferredTrackingPreventionLevel([in] long value);
+        HRESULT SetPermissionState([in] long permissionKind, [in] long origin, [in] long state, [in] VB6IUnknown* handler);
+        HRESULT GetNonDefaultPermissionSettings([in] VB6IUnknown* handler);
+        [propget] HRESULT CookieManager([out, retval] VB6IUnknown** value);
+        [propget] HRESULT IsPasswordAutosaveEnabled([out, retval] long* value);
+        [propput] HRESULT IsPasswordAutosaveEnabled([in] long value);
+        [propget] HRESULT IsGeneralAutofillEnabled([out, retval] long* value);
+        [propput] HRESULT IsGeneralAutofillEnabled([in] long value);
+        HRESULT AddBrowserExtension([in] long extensionFolderPath, [in] IVBWebView2ProfileAddBrowserExtensionCompletedHandler* handler);
+        HRESULT GetBrowserExtensions([in] IVBWebView2ProfileGetBrowserExtensionsCompletedHandler* handler);
+    };
+
+    [uuid(7ef7ffa0-fac5-462c-b189-3d9edbe575da), odl, version(1.0)]
+    interface IVBCoreWebView2BrowserExtension : IUnknown
+    {
+        [propget] HRESULT Id([out, retval] long* value);
+        [propget] HRESULT Name([out, retval] long* value);
+        HRESULT Remove([in] VB6IUnknown* handler);
+        [propget] HRESULT IsEnabled([out, retval] long* value);
+        HRESULT Enable([in] long isEnabled, [in] VB6IUnknown* handler);
+    };
+
+    [uuid(2ef3d2dc-bd5f-4f4d-90af-fd67798f0c2f), odl, version(1.0)]
+    interface IVBCoreWebView2BrowserExtensionList : IUnknown
+    {
+        [propget] HRESULT Count([out, retval] long* value);
+        HRESULT GetValueAtIndex([in] long index, [out, retval] IVBCoreWebView2BrowserExtension** value);
     };
 
     [uuid(5b495469-e119-438a-9b18-7604f25f2e49), odl, version(1.0)]

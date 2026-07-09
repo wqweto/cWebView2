@@ -161,6 +161,7 @@ Private m_oController               As IVBCoreWebView2Controller
 Private m_oWebView                  As IVBCoreWebView2
 Private m_oWebView4                 As IVBCoreWebView2_4
 Private m_oWebView11                As IVBCoreWebView2_11
+Private m_oWebView13                As IVBCoreWebView2_13
 Private m_oSettings                 As IVBCoreWebView2Settings
 Private m_oSettings6                As IVBCoreWebView2Settings6
 Private m_oEventSink                As cWebView2Callback
@@ -446,7 +447,8 @@ Public Function BindTo( _
         Optional ByVal AllowSingleSignOnUsingOSPrimaryAccount As Boolean, _
         Optional ByVal ExclusiveUserDataFolderAccess As Boolean, _
         Optional ByVal IsCustomCrashReportingEnabled As Boolean, _
-        Optional ByVal EnableTrackingPrevention As Boolean = True) As Long
+        Optional ByVal EnableTrackingPrevention As Boolean = True, _
+        Optional ByVal AreBrowserExtensionsEnabled As Boolean) As Long
     Const RPC_E_TIMEOUT                 As Long = &H8001011F
     Dim oOptions        As cWebView2Callback
     Dim oHandler        As cWebView2Callback
@@ -464,6 +466,7 @@ Public Function BindTo( _
     oOptions.ExclusiveUserDataFolderAccess = ExclusiveUserDataFolderAccess
     oOptions.IsCustomCrashReportingEnabled = IsCustomCrashReportingEnabled
     oOptions.EnableTrackingPrevention = EnableTrackingPrevention
+    oOptions.AreBrowserExtensionsEnabled = AreBrowserExtensionsEnabled
     Set oHandler = New cWebView2Callback
     oHandler.Init Me
     hResult = pvCreateWebView2Environment(browserInstallPath, userDataFolder, oOptions, oHandler)
@@ -813,6 +816,170 @@ EH:
     PrintError "CapturePreview"
 End Function
 
+Public Function PrintToPdf( _
+        ByVal ResultFilePath As String, _
+        Optional ByVal SecondsToWaitForPrintComplete As Double = 8, _
+        Optional ByVal Landscape As Boolean, _
+        Optional ByVal ScaleFactor As Double, _
+        Optional ByVal PageWidth As Double, _
+        Optional ByVal PageHeight As Double, _
+        Optional ByVal MarginTop As Double = -1, _
+        Optional ByVal MarginBottom As Double = -1, _
+        Optional ByVal MarginLeft As Double = -1, _
+        Optional ByVal MarginRight As Double = -1, _
+        Optional ByVal ShouldPrintBackgrounds As Boolean, _
+        Optional ByVal ShouldPrintSelectionOnly As Boolean, _
+        Optional ByVal ShouldPrintHeaderAndFooter As Boolean = True, _
+        Optional ByVal HeaderTitle As String, _
+        Optional ByVal FooterUri As String) As Variant
+    Const ORIENT_LANDSCAPE              As Long = 1
+    Dim oEnv6           As IVBCoreWebView2Environment6
+    Dim oSettings       As IVBCoreWebView2PrintSettings
+    Dim oHandler        As cWebView2Callback
+    Dim cToken          As Currency
+    Dim sKey            As String
+    Dim vItem           As Variant
+
+    On Error GoTo EH
+    If m_oWebView11 Is Nothing Then
+        Exit Function
+    End If
+    On Error Resume Next
+    Set oEnv6 = m_oEnvironment
+    On Error GoTo EH
+    If Not oEnv6 Is Nothing Then
+        Set oSettings = oEnv6.CreatePrintSettings()
+        If Landscape Then
+            oSettings.Orientation = ORIENT_LANDSCAPE
+        End If
+        If ScaleFactor > 0 Then
+            oSettings.ScaleFactor = ScaleFactor
+        End If
+        If PageWidth > 0 Then
+            oSettings.PageWidth = PageWidth
+        End If
+        If PageHeight > 0 Then
+            oSettings.PageHeight = PageHeight
+        End If
+        If MarginTop >= 0 Then
+            oSettings.MarginTop = MarginTop
+        End If
+        If MarginBottom >= 0 Then
+            oSettings.MarginBottom = MarginBottom
+        End If
+        If MarginLeft >= 0 Then
+            oSettings.MarginLeft = MarginLeft
+        End If
+        If MarginRight >= 0 Then
+            oSettings.MarginRight = MarginRight
+        End If
+        oSettings.ShouldPrintBackgrounds = -ShouldPrintBackgrounds
+        oSettings.ShouldPrintSelectionOnly = -ShouldPrintSelectionOnly
+        oSettings.ShouldPrintHeaderAndFooter = -ShouldPrintHeaderAndFooter
+        If LenB(HeaderTitle) <> 0 Then
+            oSettings.HeaderTitle = StrPtr(HeaderTitle)
+        End If
+        If LenB(FooterUri) <> 0 Then
+            oSettings.FooterUri = StrPtr(FooterUri)
+        End If
+    End If
+    cToken = pvNextToken()
+    sKey = "T" & cToken
+    Set oHandler = New cWebView2Callback
+    oHandler.Init Me, cToken
+    m_oWebView11.PrintToPdf StrPtr(ResultFilePath), oSettings, oHandler
+    If SecondsToWaitForPrintComplete <= 0 Then
+        PrintToPdf = True
+        Exit Function
+    End If
+    m_cScriptResults.Add True, "P" & cToken
+    If Not pvPumpUntilKey(m_cScriptResults, sKey, SecondsToWaitForPrintComplete) Then
+        m_cScriptResults.Remove "P" & cToken
+        Exit Function
+    End If
+    vItem = m_cScriptResults.Item(sKey)
+    m_cScriptResults.Remove sKey
+    If vItem(0) < 0 Then
+        Exit Function
+    End If
+    PrintToPdf = (vItem(1) = "true")
+    Exit Function
+EH:
+    PrintError "PrintToPdf"
+End Function
+
+Public Function AddBrowserExtension(ByVal ExtensionFolderPath As String, Optional ByVal SecondsToWaitForComplete As Double = 8) As String
+    Dim oProfile        As IVBCoreWebView2Profile7
+    Dim oHandler        As cWebView2Callback
+    Dim cToken          As Currency
+    Dim sKey            As String
+    Dim vItem           As Variant
+
+    On Error GoTo EH
+    Set oProfile = pvGetProfile7()
+    If oProfile Is Nothing Then
+        Exit Function
+    End If
+    cToken = pvNextToken()
+    sKey = "T" & cToken
+    Set oHandler = New cWebView2Callback
+    oHandler.Init Me, cToken
+    oProfile.AddBrowserExtension StrPtr(ExtensionFolderPath), oHandler
+    If SecondsToWaitForComplete <= 0 Then
+        Exit Function
+    End If
+    m_cScriptResults.Add True, "P" & cToken
+    If Not pvPumpUntilKey(m_cScriptResults, sKey, SecondsToWaitForComplete) Then
+        m_cScriptResults.Remove "P" & cToken
+        Exit Function
+    End If
+    vItem = m_cScriptResults.Item(sKey)
+    m_cScriptResults.Remove sKey
+    If vItem(0) < 0 Then
+        Exit Function
+    End If
+    AddBrowserExtension = vItem(1)
+    Exit Function
+EH:
+    PrintError "AddBrowserExtension"
+End Function
+
+Public Function GetBrowserExtensions(Optional ByVal SecondsToWaitForComplete As Double = 8) As Collection
+    Dim oProfile        As IVBCoreWebView2Profile7
+    Dim oHandler        As cWebView2Callback
+    Dim cToken          As Currency
+    Dim sKey            As String
+    Dim vItem           As Variant
+
+    On Error GoTo EH
+    Set oProfile = pvGetProfile7()
+    If oProfile Is Nothing Then
+        Exit Function
+    End If
+    cToken = pvNextToken()
+    sKey = "T" & cToken
+    Set oHandler = New cWebView2Callback
+    oHandler.Init Me, cToken
+    oProfile.GetBrowserExtensions oHandler
+    If SecondsToWaitForComplete <= 0 Then
+        Exit Function
+    End If
+    m_cScriptResults.Add True, "P" & cToken
+    If Not pvPumpUntilKey(m_cScriptResults, sKey, SecondsToWaitForComplete) Then
+        m_cScriptResults.Remove "P" & cToken
+        Exit Function
+    End If
+    vItem = m_cScriptResults.Item(sKey)
+    m_cScriptResults.Remove sKey
+    If vItem(0) < 0 Then
+        Exit Function
+    End If
+    Set GetBrowserExtensions = vItem(1)
+    Exit Function
+EH:
+    PrintError "GetBrowserExtensions"
+End Function
+
 Public Function CallByName(ByVal Obj As Object, ByVal ProcName As String, ByVal CallType As VbCallType, ParamArray P() As Variant) As Variant
     Select Case UBound(P)
     Case -1
@@ -877,6 +1044,7 @@ Public Sub Shutdown()
     End If
     Set m_oWebView4 = Nothing
     Set m_oWebView11 = Nothing
+    Set m_oWebView13 = Nothing
     If Not m_oController Is Nothing Then
         m_oController.Close
         Set m_oController = Nothing
@@ -1003,6 +1171,15 @@ End Function
 Private Function pvNextToken() As Currency
     m_cTokenSeq = m_cTokenSeq + 1
     pvNextToken = m_cTokenSeq
+End Function
+
+Private Function pvGetProfile7() As IVBCoreWebView2Profile7
+    '--- the Set QIs the raw profile pointer for Profile7's IID and fails
+    '--- soft on runtimes without browser extension support
+    On Error Resume Next
+    If Not m_oWebView13 Is Nothing Then
+        Set pvGetProfile7 = m_oWebView13.Profile
+    End If
 End Function
 
 Private Function pvExecScriptSync(sScript As String, vResult As Variant) As Boolean
@@ -1407,6 +1584,7 @@ Friend Sub OnControllerCreated(ByVal hResult As Long, ByVal oCtrl As IVBCoreWebV
     Set m_oSettings6 = m_oSettings
     Set m_oWebView4 = m_oWebView
     Set m_oWebView11 = m_oWebView
+    Set m_oWebView13 = m_oWebView
     On Error GoTo EH
     Set m_oEventSink = New cWebView2Callback
     m_oEventSink.Init Me
@@ -1671,6 +1849,35 @@ Friend Sub OnExecuteScriptCompleted(ByVal hResult As Long, sResultJson As String
     Exit Sub
 EH:
     PrintError "OnExecuteScriptCompleted"
+End Sub
+
+Friend Sub OnGetBrowserExtensions(ByVal hResult As Long, oList As IVBCoreWebView2BrowserExtensionList, ByVal cToken As Currency)
+    Dim cResult         As Collection
+    Dim cItem           As Collection
+    Dim oExt            As IVBCoreWebView2BrowserExtension
+    Dim lIdx            As Long
+
+    On Error GoTo EH
+    If Not pvSearchCollection(m_cScriptResults, "P" & cToken) Then
+        '--- unknown token (timed-out or fire-and-forget call) - discard result
+        Exit Sub
+    End If
+    m_cScriptResults.Remove "P" & cToken
+    Set cResult = New Collection
+    If hResult >= 0 And Not oList Is Nothing Then
+        For lIdx = 0 To oList.Count - 1
+            Set oExt = oList.GetValueAtIndex(lIdx)
+            Set cItem = New Collection
+            cItem.Add pvToString(oExt.Id), "Id"
+            cItem.Add pvToString(oExt.Name), "Name"
+            cItem.Add CBool(oExt.IsEnabled), "IsEnabled"
+            cResult.Add cItem, cItem.Item("Id")
+        Next
+    End If
+    m_cScriptResults.Add Array(hResult, cResult), "T" & cToken
+    Exit Sub
+EH:
+    PrintError "OnGetBrowserExtensions"
 End Sub
 
 '=========================================================================

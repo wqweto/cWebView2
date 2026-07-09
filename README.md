@@ -89,11 +89,12 @@ nested and interleaved calls cannot cross wires.
   IDL has no retval either, but discarding the CDP response is rarely useful).
 - `BindTo`'s `AllowSingleSignOnUsingOSPrimaryAccount` is `Boolean`, not RC6's
   `Long`.
-- `BindTo` has three trailing optional parameters beyond RC6's signature —
+- `BindTo` has four trailing optional parameters beyond RC6's signature —
   `ExclusiveUserDataFolderAccess`, `IsCustomCrashReportingEnabled`,
   `EnableTrackingPrevention` (default `True`, matching WebView2's own default)
-  — surfacing `ICoreWebView2EnvironmentOptions2/3/5`. `Options4`'s custom
-  scheme registration is not exposed (no RC6 counterpart, different shape of
+  and `AreBrowserExtensionsEnabled` — surfacing
+  `ICoreWebView2EnvironmentOptions2/3/5/6`. `Options4`'s custom scheme
+  registration is not exposed (no RC6 counterpart, different shape of
   feature entirely — an array of registration objects, not a simple flag).
 
 ## Building
@@ -127,6 +128,28 @@ raise "not yet implemented":
   come back together if `jsCallByName` parity turns out to matter.
 
 ### Additions beyond RC6 parity
+
+Methods with no RC6 counterpart, exposed because the native plumbing is cheap
+and the features are frequently requested:
+
+- `PrintToPdf(ResultFilePath, [SecondsToWaitForPrintComplete], [Landscape],
+  [ScaleFactor], [PageWidth/PageHeight], [margins], [ShouldPrintBackgrounds],
+  [ShouldPrintSelectionOnly], [ShouldPrintHeaderAndFooter], [HeaderTitle],
+  [FooterUri])` — blocking (or fire-and-forget at 0 seconds), returns
+  `True`/`False`, `Empty` on timeout. Settings ride
+  `ICoreWebView2Environment6.CreatePrintSettings`; the call itself uses the
+  `PrintToPdf` slot already present in the `_11` flatten.
+- `AddBrowserExtension(ExtensionFolderPath)` — installs an unpacked extension
+  into the profile, returns the extension Id (empty string on failure).
+  Requires `BindTo`'s `AreBrowserExtensionsEnabled:=True` (a fourth
+  RC6-surplus optional parameter, surfacing
+  `ICoreWebView2EnvironmentOptions6` — must be decided before environment
+  creation, and all `cWebView2` instances sharing a user data folder must
+  agree on it).
+- `GetBrowserExtensions()` — returns a `Collection` of per-extension
+  `Collection`s (`Id`, `Name`, `IsEnabled` keys), keyed by extension Id.
+  Extension APIs need a recent Evergreen runtime; on older runtimes the
+  internal `Profile7` QI fails soft and these return empty results.
 
 A handful of native WebView2/`WebBrowser`-style events with no RC6 counterpart
 are also exposed, since the native plumbing is either free (already needed for

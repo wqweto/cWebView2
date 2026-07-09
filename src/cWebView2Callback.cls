@@ -33,6 +33,7 @@ Implements IVBWebView2EnvironmentOptions2
 Implements IVBWebView2EnvironmentOptions3
 Implements IVBWebView2EnvironmentOptions4
 Implements IVBWebView2EnvironmentOptions5
+Implements IVBWebView2EnvironmentOptions6
 Implements IVBWebView2CreateEnvironmentCompletedHandler
 Implements IVBWebView2CreateControllerCompletedHandler
 Implements IVBWebView2NavigationStartingEventHandler
@@ -41,6 +42,9 @@ Implements IVBWebView2SourceChangedEventHandler
 Implements IVBWebView2ProcessFailedEventHandler
 Implements IVBWebView2ExecuteScriptCompletedHandler
 Implements IVBWebView2CapturePreviewCompletedHandler
+Implements IVBWebView2PrintToPdfCompletedHandler
+Implements IVBWebView2ProfileAddBrowserExtensionCompletedHandler
+Implements IVBWebView2ProfileGetBrowserExtensionsCompletedHandler
 Implements IVBWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler
 Implements IVBWebView2CallDevToolsProtocolMethodCompletedHandler
 Implements IVBWebView2WebMessageReceivedEventHandler
@@ -85,6 +89,7 @@ Private m_bAllowSSO                 As Boolean
 Private m_bExclusiveUserDataFolderAccess As Boolean
 Private m_bIsCustomCrashReportingEnabled As Boolean
 Private m_bEnableTrackingPrevention As Boolean
+Private m_bAreBrowserExtensionsEnabled As Boolean
 
 '=========================================================================
 ' Properties
@@ -116,6 +121,10 @@ End Property
 
 Public Property Let EnableTrackingPrevention(ByVal bValue As Boolean)
     m_bEnableTrackingPrevention = bValue
+End Property
+
+Public Property Let AreBrowserExtensionsEnabled(ByVal bValue As Boolean)
+    m_bAreBrowserExtensionsEnabled = bValue
 End Property
 
 Private Property Get pvOwner() As cWebView2
@@ -242,6 +251,14 @@ Private Property Let IVBWebView2EnvironmentOptions5_EnableTrackingPrevention(ByV
     m_bEnableTrackingPrevention = (RHS <> 0)
 End Property
 
+Private Property Get IVBWebView2EnvironmentOptions6_AreBrowserExtensionsEnabled() As Long
+    IVBWebView2EnvironmentOptions6_AreBrowserExtensionsEnabled = -m_bAreBrowserExtensionsEnabled
+End Property
+
+Private Property Let IVBWebView2EnvironmentOptions6_AreBrowserExtensionsEnabled(ByVal RHS As Long)
+    m_bAreBrowserExtensionsEnabled = (RHS <> 0)
+End Property
+
 '=========================================================================
 ' IVBWebView2CreateEnvironmentCompletedHandler interface
 '=========================================================================
@@ -332,6 +349,50 @@ Private Sub IVBWebView2CapturePreviewCompletedHandler_Invoke(ByVal hResult As Lo
         Exit Sub
     End If
     pvOwner.OnExecuteScriptCompleted hResult, vbNullString, m_cToken
+End Sub
+
+'=========================================================================
+' IVBWebView2PrintToPdfCompletedHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2PrintToPdfCompletedHandler_Invoke(ByVal hResult As Long, ByVal lIsSuccessful As Long)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    '--- payload is drained untouched by the sync waiter so "true"/"false"
+    '--- ride the same channel as script results
+    If lIsSuccessful <> 0 Then
+        pvOwner.OnExecuteScriptCompleted hResult, "true", m_cToken
+    Else
+        pvOwner.OnExecuteScriptCompleted hResult, "false", m_cToken
+    End If
+End Sub
+
+'=========================================================================
+' IVBWebView2ProfileAddBrowserExtensionCompletedHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2ProfileAddBrowserExtensionCompletedHandler_Invoke(ByVal hResult As Long, ByVal oResult As IVBCoreWebView2BrowserExtension)
+    Dim sId             As String
+
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    If Not oResult Is Nothing Then
+        sId = pvToString(oResult.Id)
+    End If
+    pvOwner.OnExecuteScriptCompleted hResult, sId, m_cToken
+End Sub
+
+'=========================================================================
+' IVBWebView2ProfileGetBrowserExtensionsCompletedHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2ProfileGetBrowserExtensionsCompletedHandler_Invoke(ByVal hResult As Long, ByVal oResult As IVBCoreWebView2BrowserExtensionList)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.OnGetBrowserExtensions hResult, oResult, m_cToken
 End Sub
 
 '=========================================================================
