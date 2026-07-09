@@ -31,3 +31,4 @@
 - Always omit `ByRef` parameter passing type, only specify `ByVal` if needed
 - Order of procedures in module: public events/enums/types, API declares, member variables and private enums/types, properties, methods, event handlers, base class events (e.g. Class_Terminate)
 - Order by type within properties/methods: public, friend and private
+- Use `pv` prefix for private procedures and `fr` for friend ones

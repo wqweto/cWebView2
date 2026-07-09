@@ -3,8 +3,9 @@
 A drop-in replacement of vbRichClient6's `cWebView2` class, implemented in pure VB6
 directly against the official Microsoft WebView2 COM API. No `RC6.dll` dependency,
 no dependency on the WebView2 SDK typelib — the only redistributable is
-`WebView2Loader.dll` deployed next to the exe, targeting the Evergreen WebView2
-Runtime installed on the machine.
+`WebView2Loader.dll`, located at runtime in the exe's `External` subfolder, next
+to the exe, or in any parent folder, targeting the Evergreen WebView2 Runtime
+installed on the machine.
 
 ## Layout
 
@@ -16,6 +17,8 @@ Runtime installed on the machine.
 | `WebView2Loader.dll` | Microsoft's loader shim (x86), resolves the installed Evergreen runtime |
 | `test/Form1.frm` | Manual test harness, grown alongside the implementation |
 | `test/Project1.vbp` | Test exe project — references only `stdole2.tlb` and `VBWebView2Impl.tlb` |
+| `contrib/dll/VbWebView2.vbp` | ActiveX DLL project packaging the classes as `VbWebView2.dll` (binary compatibility kept via `VbWebView2.cmp`) |
+| `contrib/dll/test/Project1.vbp` | Test exe consuming the compiled `VbWebView2.dll` |
 | `doc/WebView2.idl` | The official WebView2 SDK IDL, kept as read-only reference only |
 | `doc/RC6.idl` | vbRichClient6 IDL, kept as API-surface reference only |
 
@@ -97,8 +100,10 @@ nested and interleaved calls cannot cross wires.
 
 1. `MKTYPLIB.EXE typelib\VBWebView2Impl.odl` whenever the odl changes.
 2. Build `test\Project1.vbp` with VB6 (`VB6.EXE /make`).
-3. Ship `WebView2Loader.dll` next to the compiled exe. The Evergreen WebView2
-   Runtime must be installed on the target machine (preinstalled on Windows 11).
+3. Ship `WebView2Loader.dll` with the compiled exe — it is located at runtime in
+   the exe's `External` subfolder, next to the exe, or in any parent folder. The
+   Evergreen WebView2 Runtime must be installed on the target machine
+   (preinstalled on Windows 11).
 
 ## Status
 
@@ -106,11 +111,20 @@ All RC6 `cWebView2` properties, methods and events are implemented and verified
 against live pages (navigation, JS interop incl. blocking/async calls and JSON
 marshaling, host objects, web messages, settings, script dialogs, permissions,
 new-window, accelerator keys, focus, web-resource filtering, response
-introspection, frames, downloads, capture) — except `GetMostRecentInstallPath`
-and `jsCallByName`, which intentionally raise "not yet implemented" (Evergreen
-deployment resolves the runtime automatically instead of needing an install
-path; WebView2 cannot proxy live JS objects the way RC6's `Obj` parameter
-implies).
+introspection, frames, downloads, capture) — except the members below, which
+raise "not yet implemented":
+
+- `GetMostRecentInstallPath` — Evergreen deployment resolves the runtime
+  automatically, no install-path lookup needed.
+- `jsCallByName` — needs live JS object proxies, which the `ExecuteScript`
+  channel used here cannot provide (results are JSON strings only). RC6 gets
+  them through its `SetFuncObj` bridge: its injected script hands a JS
+  function table (`{run, cbn, propGet, propLet}`) to VB6 as a live `IDispatch`
+  proxy, routes `jsRun`/`jsProp`/`jsCallByName` through it with `CallByName`,
+  and receives results (incl. live JS objects) back via `RaiseResultEvent`
+  token correlation. `SetFuncObj` itself is likewise omitted — it is only
+  ever called by RC6's own injected script, never by user code. Both would
+  come back together if `jsCallByName` parity turns out to matter.
 
 ### Additions beyond RC6 parity
 
