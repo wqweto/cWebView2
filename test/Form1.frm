@@ -76,6 +76,14 @@ Begin VB.Form Form1
       Top             =   360
       Width           =   840
    End
+   Begin VB.CommandButton cmdVHost
+      Caption         =   "VHost"
+      Height          =   315
+      Left            =   6540
+      TabIndex        =   9
+      Top             =   360
+      Width           =   840
+   End
    Begin VB.Label lblStatus 
       Height          =   2400
       Left            =   0
@@ -152,7 +160,8 @@ Private Sub Form_Resize()
     txtUrl.Move txtUrl.Left, 0, cmdGo.Left - txtUrl.Left - 60
     cmdPdf.Move ScaleWidth - cmdPdf.Width, txtJs.Top
     cmdRunJs.Move cmdPdf.Left - cmdRunJs.Width - 60, txtJs.Top
-    txtJs.Move 0, txtJs.Top, cmdRunJs.Left - 60
+    cmdVHost.Move cmdRunJs.Left - cmdVHost.Width - 60, txtJs.Top
+    txtJs.Move 0, txtJs.Top, cmdVHost.Left - 60
     If Not m_oWebView2 Is Nothing Then
         Call m_oWebView2.SyncSizeToHostWindow
     End If
@@ -270,6 +279,25 @@ Private Sub cmdPdf_Click()
     Else
         lblStatus.Caption = "PrintToPdf failed"
     End If
+End Sub
+
+Private Sub cmdVHost_Click()
+    Dim sDir            As String
+    Dim sStatus         As String
+    Dim vResult         As Variant
+
+    On Error Resume Next
+    sDir = App.Path & "\vhost"
+    MkDir sDir
+    Open sDir & "\index.html" For Output As #1
+    Print #1, "<html><head><title>VHostOK</title></head><body><h1>Virtual host mapping works</h1></body></html>"
+    Close #1
+    m_oWebView2.SetVirtualHostNameToFolderMapping "appassets", sDir
+    vResult = m_oWebView2.Navigate("https://appassets/index.html")
+    sStatus = "vhost.Navigate=" & vResult & " title=" & m_oWebView2.DocumentTitle
+    m_oWebView2.ClearVirtualHostNameToFolderMapping "appassets"
+    vResult = m_oWebView2.Navigate("https://appassets/index.html")
+    lblStatus.Caption = sStatus & " | cleared.Navigate=" & vResult & " (expected False)"
 End Sub
 
 Private Sub m_oWebView2_ScriptDialogOpening(ByVal ScriptDialogKind As eWebView2ScriptDialogKind, ByRef Accept As Boolean, ByRef ResultText As String, ByVal URI As String, ByVal Message As String, ByVal DefaultText As String)

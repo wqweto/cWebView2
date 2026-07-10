@@ -90,6 +90,12 @@ Public Enum eWebView2AccKeyState
     SysKey_UP = 3
 End Enum
 
+Public Enum eWebView2HostResourceAccessKind
+    HostResourceAccess_DENY = 0
+    HostResourceAccess_ALLOW = 1
+    HostResourceAccess_DENY_CORS = 2
+End Enum
+
 '=========================================================================
 ' Public events
 '=========================================================================
@@ -640,6 +646,26 @@ Public Sub RemoveWebResourceRequestedFilter(ByVal sFilter As String, ByVal Filte
     Exit Sub
 EH:
     PrintError "RemoveWebResourceRequestedFilter"
+End Sub
+
+Public Sub SetVirtualHostNameToFolderMapping(ByVal HostName As String, ByVal FolderPath As String, Optional ByVal AccessKind As eWebView2HostResourceAccessKind = HostResourceAccess_DENY)
+    On Error GoTo EH
+    If Not m_oWebView4 Is Nothing Then
+        m_oWebView4.SetVirtualHostNameToFolderMapping StrPtr(HostName), StrPtr(FolderPath), AccessKind
+    End If
+    Exit Sub
+EH:
+    PrintError "SetVirtualHostNameToFolderMapping"
+End Sub
+
+Public Sub ClearVirtualHostNameToFolderMapping(ByVal HostName As String)
+    On Error GoTo EH
+    If Not m_oWebView4 Is Nothing Then
+        m_oWebView4.ClearVirtualHostNameToFolderMapping StrPtr(HostName)
+    End If
+    Exit Sub
+EH:
+    PrintError "ClearVirtualHostNameToFolderMapping"
 End Sub
 
 Public Sub AddScriptToExecuteOnDocumentCreated(ByVal jsCode As String)

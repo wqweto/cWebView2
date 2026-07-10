@@ -150,6 +150,14 @@ and the features are frequently requested:
   `Collection`s (`Id`, `Name`, `IsEnabled` keys), keyed by extension Id.
   Extension APIs need a recent Evergreen runtime; on older runtimes the
   internal `Profile7` QI fails soft and these return empty results.
+- `SetVirtualHostNameToFolderMapping(HostName, FolderPath, [AccessKind])` /
+  `ClearVirtualHostNameToFolderMapping(HostName)` — serve a local folder as
+  `https://<HostName>/...`. `AccessKind` defaults to
+  `HostResourceAccess_DENY` (the mapped origin still serves its own content;
+  other origins can't read it — Microsoft's recommended default). Mappings
+  persist for the browser instance's lifetime: set once after `BindTo`, then
+  `Navigate "https://<HostName>/..."`. The host name must be a bare name —
+  no scheme or slashes.
 
 A handful of native WebView2/`WebBrowser`-style events with no RC6 counterpart
 are also exposed, since the native plumbing is either free (already needed for
