@@ -96,6 +96,55 @@ Public Enum eWebView2HostResourceAccessKind
     HostResourceAccess_DENY_CORS = 2
 End Enum
 
+Public Enum eWebView2PreferredColorScheme
+    ColorScheme_AUTO = 0
+    ColorScheme_LIGHT = 1
+    ColorScheme_DARK = 2
+End Enum
+
+Public Enum eWebView2TrackingPreventionLevel
+    TrackingPrevention_NONE = 0
+    TrackingPrevention_BASIC = 1
+    TrackingPrevention_BALANCED = 2
+    TrackingPrevention_STRICT = 3
+End Enum
+
+Public Enum eWebView2DownloadDialogCornerAlignment
+    DownloadDialogCorner_TOP_LEFT = 0
+    DownloadDialogCorner_TOP_RIGHT = 1
+    DownloadDialogCorner_BOTTOM_LEFT = 2
+    DownloadDialogCorner_BOTTOM_RIGHT = 3
+End Enum
+
+Public Enum eWebView2CookieSameSiteKind
+    SameSite_NONE = 0
+    SameSite_LAX = 1
+    SameSite_STRICT = 2
+End Enum
+
+Public Enum eWebView2PrintDialogKind
+    PrintDialog_BROWSER = 0
+    PrintDialog_SYSTEM = 1
+End Enum
+
+Public Enum eWebView2BrowsingDataKinds
+    BrowsingData_FILE_SYSTEMS = &H1
+    BrowsingData_INDEXED_DB = &H2
+    BrowsingData_LOCAL_STORAGE = &H4
+    BrowsingData_WEB_SQL = &H8
+    BrowsingData_CACHE_STORAGE = &H10
+    BrowsingData_ALL_DOM_STORAGE = &H20
+    BrowsingData_COOKIES = &H40
+    BrowsingData_ALL_SITE = &H80
+    BrowsingData_DISK_CACHE = &H100
+    BrowsingData_DOWNLOAD_HISTORY = &H200
+    BrowsingData_GENERAL_AUTOFILL = &H400
+    BrowsingData_PASSWORD_AUTOSAVE = &H800
+    BrowsingData_BROWSING_HISTORY = &H1000
+    BrowsingData_SETTINGS = &H2000
+    BrowsingData_ALL_PROFILE = &H3FFF
+End Enum
+
 '=========================================================================
 ' Public events
 '=========================================================================
@@ -126,6 +175,10 @@ Public Event WindowCloseRequested()
 Public Event ZoomFactorChanged()
 Public Event MoveFocusRequested(ByVal Reason As eWebView2FocusReason, Handled As Boolean)
 Public Event ContextMenuRequested(ByVal PageURI As String, ByVal LinkURI As String, ByVal SelectionText As String, ByVal ScreenX As Long, ByVal ScreenY As Long, Handled As Boolean)
+Public Event DOMContentLoaded()
+Public Event StatusBarTextChanged(ByVal Text As String)
+Public Event ContainsFullScreenElementChanged()
+Public Event BasicAuthenticationRequested(ByVal URI As String, ByVal Challenge As String, UserName As String, Password As String, Cancel As Boolean)
 
 '=========================================================================
 ' API
@@ -138,6 +191,7 @@ Private Declare Function GetClientRect Lib "user32" (ByVal hWnd As Long, lpRect 
 Private Declare Function SysReAllocString Lib "oleaut32" (ByVal pBSTR As Long, ByVal lpsz As Long) As Long
 Private Declare Sub CoTaskMemFree Lib "ole32" (ByVal pv As Long)
 Private Declare Function CreateCoreWebView2EnvironmentWithOptions Lib "WebView2Loader" (ByVal browserExecutableFolder As Long, ByVal userDataFolder As Long, ByVal environmentOptions As Long, ByVal environmentCreatedHandler As Long) As Long
+Private Declare Function GetAvailableCoreWebView2BrowserVersionString Lib "WebView2Loader" (ByVal browserExecutableFolder As Long, versionInfo As Long) As Long
 Private Declare Function QueryPerformanceCounter Lib "kernel32" (lpPerformanceCount As Currency) As Long
 Private Declare Function QueryPerformanceFrequency Lib "kernel32" (lpFrequency As Currency) As Long
 Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
@@ -168,6 +222,7 @@ Private m_oWebView                  As IVBCoreWebView2
 Private m_oWebView4                 As IVBCoreWebView2_4
 Private m_oWebView11                As IVBCoreWebView2_11
 Private m_oWebView13                As IVBCoreWebView2_13
+Private m_oWebView16                As IVBCoreWebView2_16
 Private m_oSettings                 As IVBCoreWebView2Settings
 Private m_oSettings6                As IVBCoreWebView2Settings6
 Private m_oEventSink                As cWebView2Callback
@@ -236,6 +291,13 @@ End Property
 
 Public Property Get HosthWnd() As Long
     HosthWnd = m_hWndHost
+End Property
+
+Public Property Let HosthWnd(ByVal hValue As Long)
+    m_hWndHost = hValue
+    If Not m_oController Is Nothing Then
+        m_oController.ParentWindow = hValue
+    End If
 End Property
 
 Public Property Get ZoomFactor() As Double
@@ -440,6 +502,165 @@ Public Property Let IsSwipeNavigationEnabled(ByVal bValue As Boolean)
     End If
 End Property
 
+Public Property Get IsBuiltInErrorPageEnabled() As Boolean
+    If Not m_oSettings Is Nothing Then
+        IsBuiltInErrorPageEnabled = m_oSettings.IsBuiltInErrorPageEnabled
+    End If
+End Property
+
+Public Property Let IsBuiltInErrorPageEnabled(ByVal bValue As Boolean)
+    If Not m_oSettings Is Nothing Then
+        m_oSettings.IsBuiltInErrorPageEnabled = -bValue
+    End If
+End Property
+
+Public Property Get ContainsFullScreenElement() As Boolean
+    If Not m_oWebView Is Nothing Then
+        ContainsFullScreenElement = m_oWebView.ContainsFullScreenElement
+    End If
+End Property
+
+Public Property Get IsMuted() As Boolean
+    If Not m_oWebView11 Is Nothing Then
+        IsMuted = m_oWebView11.IsMuted
+    End If
+End Property
+
+Public Property Let IsMuted(ByVal bValue As Boolean)
+    If Not m_oWebView11 Is Nothing Then
+        m_oWebView11.IsMuted = -bValue
+    End If
+End Property
+
+Public Property Get IsDocumentPlayingAudio() As Boolean
+    If Not m_oWebView11 Is Nothing Then
+        IsDocumentPlayingAudio = m_oWebView11.IsDocumentPlayingAudio
+    End If
+End Property
+
+Public Property Get IsDefaultDownloadDialogOpen() As Boolean
+    If Not m_oWebView11 Is Nothing Then
+        IsDefaultDownloadDialogOpen = m_oWebView11.IsDefaultDownloadDialogOpen
+    End If
+End Property
+
+Public Property Get DefaultDownloadDialogCornerAlignment() As eWebView2DownloadDialogCornerAlignment
+    If Not m_oWebView11 Is Nothing Then
+        DefaultDownloadDialogCornerAlignment = m_oWebView11.DefaultDownloadDialogCornerAlignment
+    End If
+End Property
+
+Public Property Let DefaultDownloadDialogCornerAlignment(ByVal eValue As eWebView2DownloadDialogCornerAlignment)
+    If Not m_oWebView11 Is Nothing Then
+        m_oWebView11.DefaultDownloadDialogCornerAlignment = eValue
+    End If
+End Property
+
+Public Property Get DefaultDownloadDialogMargin() As APIPOINT
+    If Not m_oWebView11 Is Nothing Then
+        DefaultDownloadDialogMargin = m_oWebView11.DefaultDownloadDialogMargin
+    End If
+End Property
+
+Public Property Let DefaultDownloadDialogMargin(uValue As APIPOINT)
+    If Not m_oWebView11 Is Nothing Then
+        m_oWebView11.SetDefaultDownloadDialogMargin uValue.x, uValue.y
+    End If
+End Property
+
+Public Property Get StatusBarText() As String
+    If Not m_oWebView13 Is Nothing Then
+        StatusBarText = pvToString(m_oWebView13.StatusBarText)
+    End If
+End Property
+
+Public Property Get BrowserVersion() As String
+    If Not m_oEnvironment Is Nothing Then
+        BrowserVersion = pvToString(m_oEnvironment.BrowserVersionString)
+    End If
+End Property
+
+Public Property Get ProfileName() As String
+    Dim oProfile        As IVBCoreWebView2Profile7
+
+    Set oProfile = pvGetProfile7()
+    If Not oProfile Is Nothing Then
+        ProfileName = pvToString(oProfile.ProfileName)
+    End If
+End Property
+
+Public Property Get ProfilePath() As String
+    Dim oProfile        As IVBCoreWebView2Profile7
+
+    Set oProfile = pvGetProfile7()
+    If Not oProfile Is Nothing Then
+        ProfilePath = pvToString(oProfile.ProfilePath)
+    End If
+End Property
+
+Public Property Get IsInPrivateModeEnabled() As Boolean
+    Dim oProfile        As IVBCoreWebView2Profile7
+
+    Set oProfile = pvGetProfile7()
+    If Not oProfile Is Nothing Then
+        IsInPrivateModeEnabled = oProfile.IsInPrivateModeEnabled
+    End If
+End Property
+
+Public Property Get DefaultDownloadFolderPath() As String
+    Dim oProfile        As IVBCoreWebView2Profile7
+
+    Set oProfile = pvGetProfile7()
+    If Not oProfile Is Nothing Then
+        DefaultDownloadFolderPath = pvToString(oProfile.DefaultDownloadFolderPath)
+    End If
+End Property
+
+Public Property Let DefaultDownloadFolderPath(ByVal sValue As String)
+    Dim oProfile        As IVBCoreWebView2Profile7
+
+    Set oProfile = pvGetProfile7()
+    If Not oProfile Is Nothing Then
+        oProfile.DefaultDownloadFolderPath = StrPtr(sValue)
+    End If
+End Property
+
+Public Property Get PreferredColorScheme() As eWebView2PreferredColorScheme
+    Dim oProfile        As IVBCoreWebView2Profile7
+
+    Set oProfile = pvGetProfile7()
+    If Not oProfile Is Nothing Then
+        PreferredColorScheme = oProfile.PreferredColorScheme
+    End If
+End Property
+
+Public Property Let PreferredColorScheme(ByVal eValue As eWebView2PreferredColorScheme)
+    Dim oProfile        As IVBCoreWebView2Profile7
+
+    Set oProfile = pvGetProfile7()
+    If Not oProfile Is Nothing Then
+        oProfile.PreferredColorScheme = eValue
+    End If
+End Property
+
+Public Property Get PreferredTrackingPreventionLevel() As eWebView2TrackingPreventionLevel
+    Dim oProfile        As IVBCoreWebView2Profile7
+
+    Set oProfile = pvGetProfile7()
+    If Not oProfile Is Nothing Then
+        PreferredTrackingPreventionLevel = oProfile.PreferredTrackingPreventionLevel
+    End If
+End Property
+
+Public Property Let PreferredTrackingPreventionLevel(ByVal eValue As eWebView2TrackingPreventionLevel)
+    Dim oProfile        As IVBCoreWebView2Profile7
+
+    Set oProfile = pvGetProfile7()
+    If Not oProfile Is Nothing Then
+        oProfile.PreferredTrackingPreventionLevel = eValue
+    End If
+End Property
+
 '=========================================================================
 ' Methods
 '=========================================================================
@@ -498,6 +719,8 @@ Public Sub SyncSizeToHostWindow()
     Call GetClientRect(m_hWndHost, uRect)
     If Not m_oController Is Nothing Then
         m_oController.SetBounds 0, 0, uRect.Right, uRect.Bottom
+        '--- keep popup/dialog placement correct after host window moves
+        m_oController.NotifyParentWindowPositionChanged
     End If
     Exit Sub
 EH:
@@ -530,6 +753,7 @@ Public Sub MoveRelativeToHostWindow(x As Variant, y As Variant, dx As Variant, d
         lHeight = CLng(dy)
     End If
     m_oController.SetBounds lLeft, lTop, lLeft + lWidth, lTop + lHeight
+    m_oController.NotifyParentWindowPositionChanged
     x = lLeft
     y = lTop
     dx = lWidth
@@ -605,9 +829,20 @@ Public Sub OpenDevToolsWindow()
 End Sub
 
 Public Function GetMostRecentInstallPath(Optional ByVal EdgeChannel As String = "EdgeWebView", Optional VersionString As String) As String
-    #If EdgeChannel And VersionString Then
-    #End If
-    pvNotImplemented "GetMostRecentInstallPath"
+    Dim lPtr            As Long
+
+    On Error GoTo EH
+    '--- Evergreen deployment resolves the runtime automatically so no install
+    '--- path is returned (EdgeChannel unused), but VersionString is filled
+    '--- with the runtime version the loader would pick
+    If pvEnsureLoader() Then
+        If GetAvailableCoreWebView2BrowserVersionString(0, lPtr) >= 0 Then
+            VersionString = pvToString(lPtr)
+        End If
+    End If
+    Exit Function
+EH:
+    PrintError "GetMostRecentInstallPath"
 End Function
 
 Public Function NavigateWithWebResourceRequest(ByVal URI As String, Optional ByVal Method As String = "GET", Optional ByVal Headers_CrLfSeparated As String, Optional ContentStream As Object, Optional ByVal SecondsToWaitForRequestComplete As Double = 8) As Variant
@@ -667,6 +902,163 @@ Public Sub ClearVirtualHostNameToFolderMapping(ByVal HostName As String)
 EH:
     PrintError "ClearVirtualHostNameToFolderMapping"
 End Sub
+
+Public Sub Stop_()
+    On Error GoTo EH
+    If Not m_oWebView Is Nothing Then
+        m_oWebView.Stop
+    End If
+    Exit Sub
+EH:
+    PrintError "Stop_"
+End Sub
+
+Public Sub PostWebMessageAsString(ByVal sMessage As String)
+    On Error GoTo EH
+    If Not m_oWebView Is Nothing Then
+        m_oWebView.PostWebMessageAsString StrPtr(sMessage)
+    End If
+    Exit Sub
+EH:
+    PrintError "PostWebMessageAsString"
+End Sub
+
+Public Sub PostWebMessageAsJson(ByVal sJson As String)
+    On Error GoTo EH
+    If Not m_oWebView Is Nothing Then
+        m_oWebView.PostWebMessageAsJson StrPtr(sJson)
+    End If
+    Exit Sub
+EH:
+    PrintError "PostWebMessageAsJson"
+End Sub
+
+Public Sub OpenTaskManagerWindow()
+    On Error GoTo EH
+    If Not m_oWebView11 Is Nothing Then
+        m_oWebView11.OpenTaskManagerWindow
+    End If
+    Exit Sub
+EH:
+    PrintError "OpenTaskManagerWindow"
+End Sub
+
+Public Sub OpenDefaultDownloadDialog()
+    On Error GoTo EH
+    If Not m_oWebView11 Is Nothing Then
+        m_oWebView11.OpenDefaultDownloadDialog
+    End If
+    Exit Sub
+EH:
+    PrintError "OpenDefaultDownloadDialog"
+End Sub
+
+Public Sub CloseDefaultDownloadDialog()
+    On Error GoTo EH
+    If Not m_oWebView11 Is Nothing Then
+        m_oWebView11.CloseDefaultDownloadDialog
+    End If
+    Exit Sub
+EH:
+    PrintError "CloseDefaultDownloadDialog"
+End Sub
+
+Public Sub SetBoundsAndZoomFactor(ByVal Left As Long, ByVal Top As Long, ByVal Right As Long, ByVal Bottom As Long, ByVal ZoomFactor As Double)
+    On Error GoTo EH
+    If Not m_oController Is Nothing Then
+        m_oController.SetBoundsAndZoomFactor Left, Top, Right, Bottom, ZoomFactor
+    End If
+    Exit Sub
+EH:
+    PrintError "SetBoundsAndZoomFactor"
+End Sub
+
+Public Sub NotifyParentWindowPositionChanged()
+    On Error GoTo EH
+    If Not m_oController Is Nothing Then
+        m_oController.NotifyParentWindowPositionChanged
+    End If
+    Exit Sub
+EH:
+    PrintError "NotifyParentWindowPositionChanged"
+End Sub
+
+Public Function TrySuspend(Optional ByVal SecondsToWaitForComplete As Double = 8) As Variant
+    Dim oHandler        As cWebView2Callback
+    Dim cToken          As Currency
+    Dim sKey            As String
+    Dim vItem           As Variant
+
+    On Error GoTo EH
+    If m_oWebView4 Is Nothing Or m_oController Is Nothing Then
+        Exit Function
+    End If
+    '--- the native call fails unless the webview is hidden first; visibility
+    '--- is restored by ResumeFromSuspend (or automatically by the browser
+    '--- when the webview becomes visible again)
+    m_oController.IsVisible = 0
+    cToken = pvNextToken()
+    sKey = "T" & cToken
+    Set oHandler = New cWebView2Callback
+    oHandler.Init Me, cToken
+    m_oWebView4.TrySuspend oHandler
+    If SecondsToWaitForComplete <= 0 Then
+        TrySuspend = True
+        Exit Function
+    End If
+    m_cScriptResults.Add True, "P" & cToken
+    If Not pvPumpUntilKey(m_cScriptResults, sKey, SecondsToWaitForComplete) Then
+        m_cScriptResults.Remove "P" & cToken
+        Exit Function
+    End If
+    vItem = m_cScriptResults.Item(sKey)
+    m_cScriptResults.Remove sKey
+    If vItem(0) < 0 Then
+        Exit Function
+    End If
+    TrySuspend = (vItem(1) = "true")
+    Exit Function
+EH:
+    PrintError "TrySuspend"
+End Function
+
+Public Sub ResumeFromSuspend()
+    On Error GoTo EH
+    If Not m_oWebView4 Is Nothing Then
+        m_oWebView4.ResumeFromSuspend
+    End If
+    If Not m_oController Is Nothing Then
+        m_oController.IsVisible = 1
+    End If
+    Exit Sub
+EH:
+    PrintError "ResumeFromSuspend"
+End Sub
+
+Public Property Get IsSuspended() As Boolean
+    If Not m_oWebView4 Is Nothing Then
+        IsSuspended = m_oWebView4.IsSuspended
+    End If
+End Property
+
+Public Function ClearBrowsingData(ByVal DataKinds As eWebView2BrowsingDataKinds, Optional ByVal SecondsToWaitForComplete As Double = 8) As Variant
+    ClearBrowsingData = pvClearBrowsingData(DataKinds, 0, 0, SecondsToWaitForComplete)
+End Function
+
+Public Function ClearBrowsingDataInTimeRange(ByVal DataKinds As eWebView2BrowsingDataKinds, ByVal StartTime As Date, ByVal EndTime As Date, Optional ByVal SecondsToWaitForComplete As Double = 8) As Variant
+    Const SECS_PER_DAY                  As Long = 86400
+    Dim dblStart        As Double
+    Dim dblEnd          As Double
+
+    '--- native times are seconds since the UNIX epoch
+    dblStart = (StartTime - #1/1/1970#) * SECS_PER_DAY
+    dblEnd = (EndTime - #1/1/1970#) * SECS_PER_DAY
+    ClearBrowsingDataInTimeRange = pvClearBrowsingData(DataKinds, dblStart, dblEnd, SecondsToWaitForComplete, UseTimeRange:=True)
+End Function
+
+Public Function ClearBrowsingDataAll(Optional ByVal SecondsToWaitForComplete As Double = 8) As Variant
+    ClearBrowsingDataAll = pvClearBrowsingData(0, 0, 0, SecondsToWaitForComplete, UseAll:=True)
+End Function
 
 Public Sub AddScriptToExecuteOnDocumentCreated(ByVal jsCode As String)
     Dim oHandler        As cWebView2Callback
@@ -793,6 +1185,46 @@ EH:
     PrintError "CallDevToolsProtocolMethod"
 End Function
 
+Public Function CallDevToolsProtocolMethodForSession(ByVal SessionId As String, ByVal MethodName As String, ByVal ParamsAsJSON As String) As Variant
+    Dim oHandler        As cWebView2Callback
+    Dim cToken          As Currency
+    Dim sKey            As String
+    Dim vItem           As Variant
+    Dim sJson           As String
+    Dim lIdx            As Long
+
+    On Error GoTo EH
+    If m_oWebView11 Is Nothing Then
+        Exit Function
+    End If
+    cToken = pvNextToken()
+    sKey = "T" & cToken
+    Set oHandler = New cWebView2Callback
+    oHandler.Init Me, cToken
+    m_oWebView11.CallDevToolsProtocolMethodForSession StrPtr(SessionId), StrPtr(MethodName), StrPtr(ParamsAsJSON), oHandler
+    '--- jsCallTimeOutSeconds 0 (or less) means fire-and-forget: CDP response
+    '--- is discarded on arrival
+    If m_dbljsCallTimeOutSeconds <= 0 Then
+        Exit Function
+    End If
+    m_cScriptResults.Add True, "P" & cToken
+    If Not pvPumpUntilKey(m_cScriptResults, sKey, m_dbljsCallTimeOutSeconds) Then
+        m_cScriptResults.Remove "P" & cToken
+        Exit Function
+    End If
+    vItem = m_cScriptResults.Item(sKey)
+    m_cScriptResults.Remove sKey
+    If vItem(0) < 0 Then
+        Exit Function
+    End If
+    sJson = vItem(1)
+    lIdx = 1
+    pvJsonParseValue sJson, lIdx, CallDevToolsProtocolMethodForSession
+    Exit Function
+EH:
+    PrintError "CallDevToolsProtocolMethodForSession"
+End Function
+
 Public Function CapturePreview(Optional ByVal ImageFormat As eWebView2ImageCaptureFormat = CaptureAs_PNG) As Byte()
     Const STREAM_SEEK_SET               As Long = 0
     Const STREAM_SEEK_END               As Long = 2
@@ -858,8 +1290,6 @@ Public Function PrintToPdf( _
         Optional ByVal ShouldPrintHeaderAndFooter As Boolean = True, _
         Optional ByVal HeaderTitle As String, _
         Optional ByVal FooterUri As String) As Variant
-    Const ORIENT_LANDSCAPE              As Long = 1
-    Dim oEnv6           As IVBCoreWebView2Environment6
     Dim oSettings       As IVBCoreWebView2PrintSettings
     Dim oHandler        As cWebView2Callback
     Dim cToken          As Currency
@@ -870,45 +1300,7 @@ Public Function PrintToPdf( _
     If m_oWebView11 Is Nothing Then
         Exit Function
     End If
-    On Error Resume Next
-    Set oEnv6 = m_oEnvironment
-    On Error GoTo EH
-    If Not oEnv6 Is Nothing Then
-        Set oSettings = oEnv6.CreatePrintSettings()
-        If Landscape Then
-            oSettings.Orientation = ORIENT_LANDSCAPE
-        End If
-        If ScaleFactor > 0 Then
-            oSettings.ScaleFactor = ScaleFactor
-        End If
-        If PageWidth > 0 Then
-            oSettings.PageWidth = PageWidth
-        End If
-        If PageHeight > 0 Then
-            oSettings.PageHeight = PageHeight
-        End If
-        If MarginTop >= 0 Then
-            oSettings.MarginTop = MarginTop
-        End If
-        If MarginBottom >= 0 Then
-            oSettings.MarginBottom = MarginBottom
-        End If
-        If MarginLeft >= 0 Then
-            oSettings.MarginLeft = MarginLeft
-        End If
-        If MarginRight >= 0 Then
-            oSettings.MarginRight = MarginRight
-        End If
-        oSettings.ShouldPrintBackgrounds = -ShouldPrintBackgrounds
-        oSettings.ShouldPrintSelectionOnly = -ShouldPrintSelectionOnly
-        oSettings.ShouldPrintHeaderAndFooter = -ShouldPrintHeaderAndFooter
-        If LenB(HeaderTitle) <> 0 Then
-            oSettings.HeaderTitle = StrPtr(HeaderTitle)
-        End If
-        If LenB(FooterUri) <> 0 Then
-            oSettings.FooterUri = StrPtr(FooterUri)
-        End If
-    End If
+    Set oSettings = pvBuildPrintSettings(Landscape, ScaleFactor, PageWidth, PageHeight, MarginTop, MarginBottom, MarginLeft, MarginRight, ShouldPrintBackgrounds, ShouldPrintSelectionOnly, ShouldPrintHeaderAndFooter, HeaderTitle, FooterUri)
     cToken = pvNextToken()
     sKey = "T" & cToken
     Set oHandler = New cWebView2Callback
@@ -933,6 +1325,162 @@ Public Function PrintToPdf( _
 EH:
     PrintError "PrintToPdf"
 End Function
+
+Public Function PrintToPdfStream( _
+        Optional ByVal SecondsToWaitForPrintComplete As Double = 8, _
+        Optional ByVal Landscape As Boolean, _
+        Optional ByVal ScaleFactor As Double, _
+        Optional ByVal PageWidth As Double, _
+        Optional ByVal PageHeight As Double, _
+        Optional ByVal MarginTop As Double = -1, _
+        Optional ByVal MarginBottom As Double = -1, _
+        Optional ByVal MarginLeft As Double = -1, _
+        Optional ByVal MarginRight As Double = -1, _
+        Optional ByVal ShouldPrintBackgrounds As Boolean, _
+        Optional ByVal ShouldPrintSelectionOnly As Boolean, _
+        Optional ByVal ShouldPrintHeaderAndFooter As Boolean = True, _
+        Optional ByVal HeaderTitle As String, _
+        Optional ByVal FooterUri As String) As Byte()
+    Dim oSettings       As IVBCoreWebView2PrintSettings
+    Dim oHandler        As cWebView2Callback
+    Dim cToken          As Currency
+    Dim sKey            As String
+    Dim vItem           As Variant
+
+    On Error GoTo EH
+    If m_oWebView16 Is Nothing Then
+        Exit Function
+    End If
+    Set oSettings = pvBuildPrintSettings(Landscape, ScaleFactor, PageWidth, PageHeight, MarginTop, MarginBottom, MarginLeft, MarginRight, ShouldPrintBackgrounds, ShouldPrintSelectionOnly, ShouldPrintHeaderAndFooter, HeaderTitle, FooterUri)
+    cToken = pvNextToken()
+    sKey = "T" & cToken
+    Set oHandler = New cWebView2Callback
+    oHandler.Init Me, cToken
+    m_oWebView16.PrintToPdfStream oSettings, oHandler
+    If SecondsToWaitForPrintComplete <= 0 Then
+        Exit Function
+    End If
+    m_cScriptResults.Add True, "P" & cToken
+    If Not pvPumpUntilKey(m_cScriptResults, sKey, SecondsToWaitForPrintComplete) Then
+        m_cScriptResults.Remove "P" & cToken
+        Exit Function
+    End If
+    vItem = m_cScriptResults.Item(sKey)
+    m_cScriptResults.Remove sKey
+    If vItem(0) < 0 Then
+        Exit Function
+    End If
+    PrintToPdfStream = vItem(1)
+    Exit Function
+EH:
+    PrintError "PrintToPdfStream"
+End Function
+
+Public Sub ShowPrintUI(Optional ByVal DialogKind As eWebView2PrintDialogKind = PrintDialog_BROWSER)
+    On Error GoTo EH
+    If Not m_oWebView16 Is Nothing Then
+        m_oWebView16.ShowPrintUI DialogKind
+    End If
+    Exit Sub
+EH:
+    PrintError "ShowPrintUI"
+End Sub
+
+Public Function GetCookies(Optional ByVal URI As String, Optional ByVal SecondsToWaitForComplete As Double = 8) As Collection
+    Dim oManager        As IVBCoreWebView2CookieManager
+    Dim oHandler        As cWebView2Callback
+    Dim cToken          As Currency
+    Dim sKey            As String
+    Dim vItem           As Variant
+
+    On Error GoTo EH
+    Set oManager = pvGetCookieManager()
+    If oManager Is Nothing Then
+        Exit Function
+    End If
+    cToken = pvNextToken()
+    sKey = "T" & cToken
+    Set oHandler = New cWebView2Callback
+    oHandler.Init Me, cToken
+    oManager.GetCookies StrPtr(URI), oHandler
+    If SecondsToWaitForComplete <= 0 Then
+        Exit Function
+    End If
+    m_cScriptResults.Add True, "P" & cToken
+    If Not pvPumpUntilKey(m_cScriptResults, sKey, SecondsToWaitForComplete) Then
+        m_cScriptResults.Remove "P" & cToken
+        Exit Function
+    End If
+    vItem = m_cScriptResults.Item(sKey)
+    m_cScriptResults.Remove sKey
+    If vItem(0) < 0 Then
+        Exit Function
+    End If
+    Set GetCookies = vItem(1)
+    Exit Function
+EH:
+    PrintError "GetCookies"
+End Function
+
+Public Sub AddOrUpdateCookie( _
+        ByVal Name As String, _
+        ByVal Value As String, _
+        ByVal Domain As String, _
+        Optional ByVal Path As String = "/", _
+        Optional ByVal Expires As Date, _
+        Optional ByVal IsSecure As Boolean, _
+        Optional ByVal IsHttpOnly As Boolean, _
+        Optional ByVal SameSite As eWebView2CookieSameSiteKind = SameSite_LAX)
+    Const SECS_PER_DAY                  As Long = 86400
+    Dim oManager        As IVBCoreWebView2CookieManager
+    Dim oCookie         As IVBCoreWebView2Cookie
+
+    On Error GoTo EH
+    Set oManager = pvGetCookieManager()
+    If oManager Is Nothing Then
+        Exit Sub
+    End If
+    Set oCookie = oManager.CreateCookie(StrPtr(Name), StrPtr(Value), StrPtr(Domain), StrPtr(Path))
+    '--- zero date means session cookie (native default Expires of -1)
+    If Expires <> 0 Then
+        oCookie.Expires = (Expires - #1/1/1970#) * SECS_PER_DAY
+    End If
+    oCookie.IsSecure = -IsSecure
+    oCookie.IsHttpOnly = -IsHttpOnly
+    oCookie.SameSite = SameSite
+    oManager.AddOrUpdateCookie oCookie
+    Exit Sub
+EH:
+    PrintError "AddOrUpdateCookie"
+End Sub
+
+Public Sub DeleteCookies(ByVal Name As String, ByVal URI As String)
+    Dim oManager        As IVBCoreWebView2CookieManager
+
+    On Error GoTo EH
+    Set oManager = pvGetCookieManager()
+    If Not oManager Is Nothing Then
+        '--- cookies are matched by name AND URI natively - an empty URI
+        '--- deletes nothing, hence the parameter is not optional
+        oManager.DeleteCookies StrPtr(Name), StrPtr(URI)
+    End If
+    Exit Sub
+EH:
+    PrintError "DeleteCookies"
+End Sub
+
+Public Sub DeleteAllCookies()
+    Dim oManager        As IVBCoreWebView2CookieManager
+
+    On Error GoTo EH
+    Set oManager = pvGetCookieManager()
+    If Not oManager Is Nothing Then
+        oManager.DeleteAllCookies
+    End If
+    Exit Sub
+EH:
+    PrintError "DeleteAllCookies"
+End Sub
 
 Public Function AddBrowserExtension(ByVal ExtensionFolderPath As String, Optional ByVal SecondsToWaitForComplete As Double = 8) As String
     Dim oProfile        As IVBCoreWebView2Profile7
@@ -1071,6 +1619,7 @@ Public Sub Shutdown()
     Set m_oWebView4 = Nothing
     Set m_oWebView11 = Nothing
     Set m_oWebView13 = Nothing
+    Set m_oWebView16 = Nothing
     If Not m_oController Is Nothing Then
         m_oController.Close
         Set m_oController = Nothing
@@ -1100,20 +1649,12 @@ Private Function pvCreateWebView2Environment( _
             oOptions As IVBWebView2EnvironmentOptions, _
             oHandler As IVBWebView2CreateEnvironmentCompletedHandler) As Long
     Const E_MOD_NOT_FOUND               As Long = &H8007007E
-    Dim sLoader         As String
 
     On Error GoTo EH
-    If GetModuleHandle(StrPtr("WebView2Loader.dll")) = 0 Then
-        sLoader = LocateFile(App.Path & "\External\WebView2Loader.dll")
-        '--- fail fast so a missing loader is not masked as BindTo timeout
-        If LenB(sLoader) = 0 Then
-            pvCreateWebView2Environment = E_MOD_NOT_FOUND
-            Exit Function
-        End If
-        If LoadLibrary(StrPtr(sLoader)) = 0 Then
-            pvCreateWebView2Environment = E_MOD_NOT_FOUND
-            Exit Function
-        End If
+    '--- fail fast so a missing loader is not masked as BindTo timeout
+    If Not pvEnsureLoader() Then
+        pvCreateWebView2Environment = E_MOD_NOT_FOUND
+        Exit Function
     End If
     '--- match RC6's default user data folder (%LOCALAPPDATA%\<EXEName>) instead
     '--- of the native default of "<exe>.WebView2" next to the executable
@@ -1199,6 +1740,59 @@ Private Function pvNextToken() As Currency
     pvNextToken = m_cTokenSeq
 End Function
 
+Private Function pvEnsureLoader() As Boolean
+    Dim sLoader         As String
+
+    If GetModuleHandle(StrPtr("WebView2Loader.dll")) <> 0 Then
+        pvEnsureLoader = True
+        Exit Function
+    End If
+    sLoader = LocateFile(App.Path & "\External\WebView2Loader.dll")
+    If LenB(sLoader) <> 0 Then
+        pvEnsureLoader = (LoadLibrary(StrPtr(sLoader)) <> 0)
+    End If
+End Function
+
+Private Function pvClearBrowsingData(ByVal lDataKinds As Long, ByVal dblStartTime As Double, ByVal dblEndTime As Double, ByVal dblTimeout As Double, Optional ByVal UseTimeRange As Boolean, Optional ByVal UseAll As Boolean) As Variant
+    Dim oProfile        As IVBCoreWebView2Profile7
+    Dim oHandler        As cWebView2Callback
+    Dim cToken          As Currency
+    Dim sKey            As String
+    Dim vItem           As Variant
+
+    On Error GoTo EH
+    Set oProfile = pvGetProfile7()
+    If oProfile Is Nothing Then
+        Exit Function
+    End If
+    cToken = pvNextToken()
+    sKey = "T" & cToken
+    Set oHandler = New cWebView2Callback
+    oHandler.Init Me, cToken
+    If UseAll Then
+        oProfile.ClearBrowsingDataAll oHandler
+    ElseIf UseTimeRange Then
+        oProfile.ClearBrowsingDataInTimeRange lDataKinds, dblStartTime, dblEndTime, oHandler
+    Else
+        oProfile.ClearBrowsingData lDataKinds, oHandler
+    End If
+    If dblTimeout <= 0 Then
+        pvClearBrowsingData = True
+        Exit Function
+    End If
+    m_cScriptResults.Add True, "P" & cToken
+    If Not pvPumpUntilKey(m_cScriptResults, sKey, dblTimeout) Then
+        m_cScriptResults.Remove "P" & cToken
+        Exit Function
+    End If
+    vItem = m_cScriptResults.Item(sKey)
+    m_cScriptResults.Remove sKey
+    pvClearBrowsingData = (vItem(0) >= 0)
+    Exit Function
+EH:
+    PrintError "pvClearBrowsingData"
+End Function
+
 Private Function pvGetProfile7() As IVBCoreWebView2Profile7
     '--- the Set QIs the raw profile pointer for Profile7's IID and fails
     '--- soft on runtimes without browser extension support
@@ -1206,6 +1800,77 @@ Private Function pvGetProfile7() As IVBCoreWebView2Profile7
     If Not m_oWebView13 Is Nothing Then
         Set pvGetProfile7 = m_oWebView13.Profile
     End If
+End Function
+
+Private Function pvGetCookieManager() As IVBCoreWebView2CookieManager
+    On Error Resume Next
+    If Not m_oWebView4 Is Nothing Then
+        Set pvGetCookieManager = m_oWebView4.CookieManager
+    End If
+End Function
+
+Private Function pvBuildPrintSettings( _
+            ByVal bLandscape As Boolean, _
+            ByVal dblScaleFactor As Double, _
+            ByVal dblPageWidth As Double, _
+            ByVal dblPageHeight As Double, _
+            ByVal dblMarginTop As Double, _
+            ByVal dblMarginBottom As Double, _
+            ByVal dblMarginLeft As Double, _
+            ByVal dblMarginRight As Double, _
+            ByVal bShouldPrintBackgrounds As Boolean, _
+            ByVal bShouldPrintSelectionOnly As Boolean, _
+            ByVal bShouldPrintHeaderAndFooter As Boolean, _
+            sHeaderTitle As String, _
+            sFooterUri As String) As IVBCoreWebView2PrintSettings
+    Const ORIENT_LANDSCAPE              As Long = 1
+    Dim oEnv6           As IVBCoreWebView2Environment6
+    Dim oSettings       As IVBCoreWebView2PrintSettings
+
+    On Error Resume Next
+    Set oEnv6 = m_oEnvironment
+    On Error GoTo EH
+    If oEnv6 Is Nothing Then
+        Exit Function
+    End If
+    Set oSettings = oEnv6.CreatePrintSettings()
+    If bLandscape Then
+        oSettings.Orientation = ORIENT_LANDSCAPE
+    End If
+    If dblScaleFactor > 0 Then
+        oSettings.ScaleFactor = dblScaleFactor
+    End If
+    If dblPageWidth > 0 Then
+        oSettings.PageWidth = dblPageWidth
+    End If
+    If dblPageHeight > 0 Then
+        oSettings.PageHeight = dblPageHeight
+    End If
+    If dblMarginTop >= 0 Then
+        oSettings.MarginTop = dblMarginTop
+    End If
+    If dblMarginBottom >= 0 Then
+        oSettings.MarginBottom = dblMarginBottom
+    End If
+    If dblMarginLeft >= 0 Then
+        oSettings.MarginLeft = dblMarginLeft
+    End If
+    If dblMarginRight >= 0 Then
+        oSettings.MarginRight = dblMarginRight
+    End If
+    oSettings.ShouldPrintBackgrounds = -bShouldPrintBackgrounds
+    oSettings.ShouldPrintSelectionOnly = -bShouldPrintSelectionOnly
+    oSettings.ShouldPrintHeaderAndFooter = -bShouldPrintHeaderAndFooter
+    If LenB(sHeaderTitle) <> 0 Then
+        oSettings.HeaderTitle = StrPtr(sHeaderTitle)
+    End If
+    If LenB(sFooterUri) <> 0 Then
+        oSettings.FooterUri = StrPtr(sFooterUri)
+    End If
+    Set pvBuildPrintSettings = oSettings
+    Exit Function
+EH:
+    PrintError "pvBuildPrintSettings"
 End Function
 
 Private Function pvExecScriptSync(sScript As String, vResult As Variant) As Boolean
@@ -1611,6 +2276,7 @@ Friend Sub OnControllerCreated(ByVal hResult As Long, ByVal oCtrl As IVBCoreWebV
     Set m_oWebView4 = m_oWebView
     Set m_oWebView11 = m_oWebView
     Set m_oWebView13 = m_oWebView
+    Set m_oWebView16 = m_oWebView
     On Error GoTo EH
     Set m_oEventSink = New cWebView2Callback
     m_oEventSink.Init Me
@@ -1627,6 +2293,7 @@ Friend Sub OnControllerCreated(ByVal hResult As Long, ByVal oCtrl As IVBCoreWebV
     m_oWebView.add_ContentLoading m_oEventSink
     m_oWebView.add_HistoryChanged m_oEventSink
     m_oWebView.add_WindowCloseRequested m_oEventSink
+    m_oWebView.add_ContainsFullScreenElementChanged m_oEventSink
     m_oController.add_AcceleratorKeyPressed m_oEventSink
     m_oController.add_ZoomFactorChanged m_oEventSink
     m_oController.add_MoveFocusRequested m_oEventSink
@@ -1642,9 +2309,14 @@ Friend Sub OnControllerCreated(ByVal hResult As Long, ByVal oCtrl As IVBCoreWebV
         m_oWebView4.add_WebResourceResponseReceived m_oEventSink
         m_oWebView4.add_FrameCreated m_oEventSink
         m_oWebView4.add_DownloadStarting m_oEventSink
+        m_oWebView4.add_DOMContentLoaded m_oEventSink
     End If
     If Not m_oWebView11 Is Nothing Then
         m_oWebView11.add_ContextMenuRequested m_oEventSink
+        m_oWebView11.add_BasicAuthenticationRequested m_oEventSink
+    End If
+    If Not m_oWebView13 Is Nothing Then
+        m_oWebView13.add_StatusBarTextChanged m_oEventSink
     End If
     '--- RC6 compat: expose this instance to page script and inject the vbH()
     '--- accessor so code like vbH().RaiseMessageEvent(...) works unchanged
@@ -1787,6 +2459,18 @@ Friend Sub SinkWindowCloseRequested()
     RaiseEvent WindowCloseRequested
 End Sub
 
+Friend Sub SinkDOMContentLoaded()
+    RaiseEvent DOMContentLoaded
+End Sub
+
+Friend Sub SinkStatusBarTextChanged()
+    RaiseEvent StatusBarTextChanged(StatusBarText)
+End Sub
+
+Friend Sub SinkContainsFullScreenElementChanged()
+    RaiseEvent ContainsFullScreenElementChanged
+End Sub
+
 Friend Sub SinkZoomFactorChanged()
     RaiseEvent ZoomFactorChanged
 End Sub
@@ -1904,6 +2588,101 @@ Friend Sub OnGetBrowserExtensions(ByVal hResult As Long, oList As IVBCoreWebView
     Exit Sub
 EH:
     PrintError "OnGetBrowserExtensions"
+End Sub
+
+Friend Sub SinkBasicAuthenticationRequested(oArgs As IVBCoreWebView2BasicAuthenticationRequestedEventArgs)
+    Dim oResponse       As IVBCoreWebView2BasicAuthenticationResponse
+    Dim sUserName       As String
+    Dim sPassword       As String
+    Dim bCancel         As Boolean
+
+    On Error GoTo EH
+    bCancel = oArgs.Cancel
+    RaiseEvent BasicAuthenticationRequested(pvToString(oArgs.Uri), pvToString(oArgs.Challenge), sUserName, sPassword, bCancel)
+    oArgs.Cancel = -bCancel
+    If LenB(sUserName) <> 0 Or LenB(sPassword) <> 0 Then
+        Set oResponse = oArgs.Response
+        oResponse.UserName = StrPtr(sUserName)
+        oResponse.Password = StrPtr(sPassword)
+    End If
+    Exit Sub
+EH:
+    PrintError "SinkBasicAuthenticationRequested"
+End Sub
+
+Friend Sub OnGetCookies(ByVal hResult As Long, oList As IVBCoreWebView2CookieList, ByVal cToken As Currency)
+    Const SECS_PER_DAY                  As Long = 86400
+    Dim cResult         As Collection
+    Dim cItem           As Collection
+    Dim oCookie         As IVBCoreWebView2Cookie
+    Dim lIdx            As Long
+
+    On Error GoTo EH
+    If Not pvSearchCollection(m_cScriptResults, "P" & cToken) Then
+        '--- unknown token (timed-out or fire-and-forget call) - discard result
+        Exit Sub
+    End If
+    m_cScriptResults.Remove "P" & cToken
+    Set cResult = New Collection
+    If hResult >= 0 And Not oList Is Nothing Then
+        For lIdx = 0 To oList.Count - 1
+            Set oCookie = oList.GetValueAtIndex(lIdx)
+            Set cItem = New Collection
+            cItem.Add pvToString(oCookie.Name), "Name"
+            cItem.Add pvToString(oCookie.Value), "Value"
+            cItem.Add pvToString(oCookie.Domain), "Domain"
+            cItem.Add pvToString(oCookie.Path), "Path"
+            cItem.Add CBool(oCookie.IsSession), "IsSession"
+            If Not oCookie.IsSession Then
+                cItem.Add #1/1/1970# + oCookie.Expires / SECS_PER_DAY, "Expires"
+            End If
+            cItem.Add CBool(oCookie.IsSecure), "IsSecure"
+            cItem.Add CBool(oCookie.IsHttpOnly), "IsHttpOnly"
+            cItem.Add oCookie.SameSite, "SameSite"
+            '--- no key on purpose: cookie names repeat across domains/paths
+            cResult.Add cItem
+        Next
+    End If
+    m_cScriptResults.Add Array(hResult, cResult), "T" & cToken
+    Exit Sub
+EH:
+    PrintError "OnGetCookies"
+End Sub
+
+Friend Sub OnPrintToPdfStream(ByVal hResult As Long, oPdfStream As IVBStream, ByVal cToken As Currency)
+    Const STREAM_SEEK_SET               As Long = 0
+    Const STREAM_SEEK_END               As Long = 2
+    Const E_FAIL                        As Long = &H80004005
+    Dim baResult()      As Byte
+    Dim cPos            As Currency
+    Dim lSize           As Long
+    Dim lRead           As Long
+
+    On Error GoTo EH
+    If Not pvSearchCollection(m_cScriptResults, "P" & cToken) Then
+        '--- unknown token (timed-out or fire-and-forget call) - discard result
+        Exit Sub
+    End If
+    m_cScriptResults.Remove "P" & cToken
+    If hResult >= 0 And Not oPdfStream Is Nothing Then
+        '--- IVBStream positions travel as CURRENCY i.e. scaled by 1/10000
+        oPdfStream.Seek 0, STREAM_SEEK_END, cPos
+        lSize = cPos * 10000
+    End If
+    If lSize > 0 Then
+        oPdfStream.Seek 0, STREAM_SEEK_SET, cPos
+        ReDim baResult(0 To lSize - 1)
+        oPdfStream.Read VarPtr(baResult(0)), lSize, lRead
+        m_cScriptResults.Add Array(hResult, baResult), "T" & cToken
+    Else
+        If hResult >= 0 Then
+            hResult = E_FAIL
+        End If
+        m_cScriptResults.Add Array(hResult, vbNullString), "T" & cToken
+    End If
+    Exit Sub
+EH:
+    PrintError "OnPrintToPdfStream"
 End Sub
 
 '=========================================================================

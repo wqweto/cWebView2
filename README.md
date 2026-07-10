@@ -112,12 +112,14 @@ All RC6 `cWebView2` properties, methods and events are implemented and verified
 against live pages (navigation, JS interop incl. blocking/async calls and JSON
 marshaling, host objects, web messages, settings, script dialogs, permissions,
 new-window, accelerator keys, focus, web-resource filtering, response
-introspection, frames, downloads, capture) — except the members below, which
-raise "not yet implemented":
+introspection, frames, downloads, capture) — except the members below:
 
-- `GetMostRecentInstallPath` — Evergreen deployment resolves the runtime
-  automatically, no install-path lookup needed.
-- `jsCallByName` — needs live JS object proxies, which the `ExecuteScript`
+- `GetMostRecentInstallPath` — returns an empty path (Evergreen deployment
+  resolves the runtime automatically, there is no meaningful install path)
+  but fills the `VersionString` out-param with the runtime version the
+  loader resolves.
+- `jsCallByName` — raises "not yet implemented"; needs live JS object
+  proxies, which the `ExecuteScript`
   channel used here cannot provide (results are JSON strings only). RC6 gets
   them through its `SetFuncObj` bridge: its injected script hands a JS
   function table (`{run, cbn, propGet, propLet}`) to VB6 as a live `IDispatch`
@@ -158,6 +160,42 @@ and the features are frequently requested:
   persist for the browser instance's lifetime: set once after `BindTo`, then
   `Navigate "https://<HostName>/..."`. The host name must be a bare name —
   no scheme or slashes.
+- `Stop_` — cancels in-flight navigation/loading, `WebBrowser.Stop` style
+  (trailing underscore because `Stop` is a VB6 keyword).
+- `PostWebMessageAsString`/`PostWebMessageAsJson` — host-to-page messaging;
+  page script receives via `chrome.webview.addEventListener('message', ...)`.
+- `ContainsFullScreenElement` — detect HTML fullscreen (resize/borderless the
+  host form).
+- `IsBuiltInErrorPageEnabled` — the one base setting RC6 didn't surface.
+- `IsMuted` (get/let), `IsDocumentPlayingAudio` — tab audio control.
+- Default download dialog control — `OpenDefaultDownloadDialog`/
+  `CloseDefaultDownloadDialog`/`IsDefaultDownloadDialogOpen`,
+  `DefaultDownloadDialogCornerAlignment` and `DefaultDownloadDialogMargin`.
+- Profile properties — `PreferredColorScheme` (dark mode),
+  `DefaultDownloadFolderPath`, `PreferredTrackingPreventionLevel`,
+  `ProfileName`, `ProfilePath`, `IsInPrivateModeEnabled`.
+- `StatusBarText`, `BrowserVersion` — runtime/status introspection;
+  `OpenTaskManagerWindow` — browser diagnostics.
+- `CallDevToolsProtocolMethodForSession` — CDP against a specific target
+  session, same blocking semantics as `CallDevToolsProtocolMethod`.
+- `SetBoundsAndZoomFactor`, `NotifyParentWindowPositionChanged` (also called
+  internally on resize/move), `HosthWnd` is now writable (re-hosting).
+- `TrySuspend`/`ResumeFromSuspend`/`IsSuspended` — release memory while in
+  the background; `TrySuspend` hides the webview first (a native
+  precondition), `ResumeFromSuspend` makes it visible again.
+- `ClearBrowsingData(DataKinds)`, `ClearBrowsingDataInTimeRange(DataKinds,
+  StartTime, EndTime)`, `ClearBrowsingDataAll` — clear cache/cookies/history
+  etc per `eWebView2BrowsingDataKinds` flags; blocking with the usual
+  fire-and-forget at 0 seconds.
+- Cookie management — `GetCookies([URI])` returns a `Collection` of
+  per-cookie `Collection`s (`Name`, `Value`, `Domain`, `Path`, `IsSession`,
+  `Expires`, `IsSecure`, `IsHttpOnly`, `SameSite` keys);
+  `AddOrUpdateCookie(Name, Value, Domain, [Path], [Expires], ...)` (zero
+  `Expires` = session cookie); `DeleteCookies(Name, URI)` (both required —
+  cookies are matched by name *and* URI natively); `DeleteAllCookies`.
+- `PrintToPdfStream([settings...])` — same settings as `PrintToPdf` but
+  returns the PDF as a `Byte()` array, no file involved. `ShowPrintUI`
+  opens the browser or system print dialog.
 
 A handful of native WebView2/`WebBrowser`-style events with no RC6 counterpart
 are also exposed, since the native plumbing is either free (already needed for
@@ -170,6 +208,17 @@ something else) or fills a gap the JS-bridge-based events can't:
 - `ZoomFactorChanged()` — native counterpart to the `ZoomFactor` property.
 - `MoveFocusRequested(Reason, Handled)` — Tab/Shift+Tab reached the edge of the
   web content; `Reason` reuses `eWebView2FocusReason`.
+- `DOMContentLoaded()` — the classic DOM-ready moment, between
+  `ContentLoading` and `DocumentComplete`.
+- `StatusBarTextChanged(Text)` — hover-link/status text, pairs with the
+  `StatusBarText` property.
+- `ContainsFullScreenElementChanged()` — page entered/left HTML fullscreen;
+  read `ContainsFullScreenElement` to react.
+- `BasicAuthenticationRequested(URI, Challenge, UserName, Password, Cancel)`
+  — supply credentials for HTTP basic/proxy auth via the `ByRef` params.
+  Note Chromium's flow: the challenged navigation first completes with
+  `WebErrorStatus` 17 (`VALID_AUTHENTICATION_CREDENTIALS_REQUIRED`), then
+  the authenticated retry loads.
 - `ContextMenuRequested(PageURI, LinkURI, SelectionText, ScreenX, ScreenY, Handled)`
   — the *native* context-menu event, richer than the JS-injected `UserContextMenu`
   (which only reports coordinates): carries link/selection info and can actually

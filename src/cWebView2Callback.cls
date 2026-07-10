@@ -45,6 +45,14 @@ Implements IVBWebView2CapturePreviewCompletedHandler
 Implements IVBWebView2PrintToPdfCompletedHandler
 Implements IVBWebView2ProfileAddBrowserExtensionCompletedHandler
 Implements IVBWebView2ProfileGetBrowserExtensionsCompletedHandler
+Implements IVBWebView2TrySuspendCompletedHandler
+Implements IVBWebView2ClearBrowsingDataCompletedHandler
+Implements IVBWebView2DOMContentLoadedEventHandler
+Implements IVBWebView2StatusBarTextChangedEventHandler
+Implements IVBWebView2ContainsFullScreenElementChangedEventHandler
+Implements IVBWebView2BasicAuthenticationRequestedEventHandler
+Implements IVBWebView2GetCookiesCompletedHandler
+Implements IVBWebView2PrintToPdfStreamCompletedHandler
 Implements IVBWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler
 Implements IVBWebView2CallDevToolsProtocolMethodCompletedHandler
 Implements IVBWebView2WebMessageReceivedEventHandler
@@ -393,6 +401,98 @@ Private Sub IVBWebView2ProfileGetBrowserExtensionsCompletedHandler_Invoke(ByVal 
         Exit Sub
     End If
     pvOwner.OnGetBrowserExtensions hResult, oResult, m_cToken
+End Sub
+
+'=========================================================================
+' IVBWebView2TrySuspendCompletedHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2TrySuspendCompletedHandler_Invoke(ByVal hResult As Long, ByVal lIsSuccessful As Long)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    If lIsSuccessful <> 0 Then
+        pvOwner.OnExecuteScriptCompleted hResult, "true", m_cToken
+    Else
+        pvOwner.OnExecuteScriptCompleted hResult, "false", m_cToken
+    End If
+End Sub
+
+'=========================================================================
+' IVBWebView2ClearBrowsingDataCompletedHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2ClearBrowsingDataCompletedHandler_Invoke(ByVal hResult As Long)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.OnExecuteScriptCompleted hResult, vbNullString, m_cToken
+End Sub
+
+'=========================================================================
+' IVBWebView2DOMContentLoadedEventHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2DOMContentLoadedEventHandler_Invoke(ByVal sender As VB6IUnknown, ByVal oArgs As VB6IUnknown)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.SinkDOMContentLoaded
+End Sub
+
+'=========================================================================
+' IVBWebView2StatusBarTextChangedEventHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2StatusBarTextChangedEventHandler_Invoke(ByVal sender As VB6IUnknown, ByVal oArgs As VB6IUnknown)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.SinkStatusBarTextChanged
+End Sub
+
+'=========================================================================
+' IVBWebView2ContainsFullScreenElementChangedEventHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2ContainsFullScreenElementChangedEventHandler_Invoke(ByVal sender As VB6IUnknown, ByVal oArgs As VB6IUnknown)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.SinkContainsFullScreenElementChanged
+End Sub
+
+'=========================================================================
+' IVBWebView2BasicAuthenticationRequestedEventHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2BasicAuthenticationRequestedEventHandler_Invoke(ByVal sender As VB6IUnknown, ByVal oArgs As IVBCoreWebView2BasicAuthenticationRequestedEventArgs)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.SinkBasicAuthenticationRequested oArgs
+End Sub
+
+'=========================================================================
+' IVBWebView2GetCookiesCompletedHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2GetCookiesCompletedHandler_Invoke(ByVal hResult As Long, ByVal oResult As IVBCoreWebView2CookieList)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.OnGetCookies hResult, oResult, m_cToken
+End Sub
+
+'=========================================================================
+' IVBWebView2PrintToPdfStreamCompletedHandler interface
+'=========================================================================
+
+Private Sub IVBWebView2PrintToPdfStreamCompletedHandler_Invoke(ByVal hResult As Long, ByVal oPdfStream As IVBStream)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.OnPrintToPdfStream hResult, oPdfStream, m_cToken
 End Sub
 
 '=========================================================================

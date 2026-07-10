@@ -84,6 +84,14 @@ Begin VB.Form Form1
       Top             =   360
       Width           =   840
    End
+   Begin VB.CommandButton cmdDark
+      Caption         =   "Dark"
+      Height          =   315
+      Left            =   5580
+      TabIndex        =   10
+      Top             =   360
+      Width           =   840
+   End
    Begin VB.Label lblStatus 
       Height          =   2400
       Left            =   0
@@ -120,8 +128,11 @@ Private Sub Form_Load()
     End If
     m_oWebView2.AddScriptToExecuteOnDocumentCreated "var observer = new MutationObserver(function() { vbH().RaiseMessageEvent('title_change', document.title); });" & vbCrLf & _
         "document.addEventListener('DOMContentLoaded', function() { observer.observe(document.querySelector('title'), { childList: true }); vbH().RaiseMessageEvent('title_change', document.title); }); "
+    m_oWebView2.AddScriptToExecuteOnDocumentCreated "chrome.webview.addEventListener('message', function(e) { vbH().RaiseMessageEvent('host_msg', '' + e.data); });"
     txtUrl.Text = "https://www.dir.bg"
     Call m_oWebView2.Navigate(txtUrl.Text)
+    m_oWebView2.PostWebMessageAsString "hello-from-host"
+    lblStatus.Caption = lblStatus.Caption & " | ver=" & m_oWebView2.BrowserVersion & " profile=" & m_oWebView2.ProfileName
     lblStatus.Caption = lblStatus.Caption & "jsRun(eval,40+2)=" & m_oWebView2.jsRun("eval", "40+2") & _
         ", jsRunAsync#" & m_oWebView2.jsRunAsync("eval", "6*7") & _
         ", UA.len=" & Len(m_oWebView2.UserAgent) & _
@@ -161,7 +172,8 @@ Private Sub Form_Resize()
     cmdPdf.Move ScaleWidth - cmdPdf.Width, txtJs.Top
     cmdRunJs.Move cmdPdf.Left - cmdRunJs.Width - 60, txtJs.Top
     cmdVHost.Move cmdRunJs.Left - cmdVHost.Width - 60, txtJs.Top
-    txtJs.Move 0, txtJs.Top, cmdVHost.Left - 60
+    cmdDark.Move cmdVHost.Left - cmdDark.Width - 60, txtJs.Top
+    txtJs.Move 0, txtJs.Top, cmdDark.Left - 60
     If Not m_oWebView2 Is Nothing Then
         Call m_oWebView2.SyncSizeToHostWindow
     End If
@@ -203,6 +215,10 @@ End Sub
 
 Private Sub m_oWebView2_ContentLoading(ByVal IsErrorPage As Boolean)
     lblStatus.Caption = lblStatus.Caption & " | ContentLoading(err=" & IsErrorPage & ")"
+End Sub
+
+Private Sub m_oWebView2_DOMContentLoaded()
+    lblStatus.Caption = lblStatus.Caption & " | DOMContentLoaded"
 End Sub
 
 Private Sub m_oWebView2_HistoryChanged()
@@ -279,6 +295,15 @@ Private Sub cmdPdf_Click()
     Else
         lblStatus.Caption = "PrintToPdf failed"
     End If
+End Sub
+
+Private Sub cmdDark_Click()
+    If m_oWebView2.PreferredColorScheme = ColorScheme_DARK Then
+        m_oWebView2.PreferredColorScheme = ColorScheme_LIGHT
+    Else
+        m_oWebView2.PreferredColorScheme = ColorScheme_DARK
+    End If
+    lblStatus.Caption = "PreferredColorScheme=" & m_oWebView2.PreferredColorScheme & " | IsMuted=" & m_oWebView2.IsMuted & " | StatusBarText=" & m_oWebView2.StatusBarText
 End Sub
 
 Private Sub cmdVHost_Click()

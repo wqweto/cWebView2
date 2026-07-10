@@ -69,6 +69,20 @@ library VBWebView2Impl
     interface IVBWebView2PrintToPdfCompletedHandler;
     interface IVBWebView2ProfileAddBrowserExtensionCompletedHandler;
     interface IVBWebView2ProfileGetBrowserExtensionsCompletedHandler;
+    interface IVBWebView2TrySuspendCompletedHandler;
+    interface IVBWebView2ClearBrowsingDataCompletedHandler;
+    interface IVBWebView2DOMContentLoadedEventHandler;
+    interface IVBWebView2StatusBarTextChangedEventHandler;
+    interface IVBWebView2ContainsFullScreenElementChangedEventHandler;
+    interface IVBWebView2BasicAuthenticationRequestedEventHandler;
+    interface IVBWebView2GetCookiesCompletedHandler;
+    interface IVBWebView2PrintToPdfStreamCompletedHandler;
+    interface IVBCoreWebView2BasicAuthenticationRequestedEventArgs;
+    interface IVBCoreWebView2BasicAuthenticationResponse;
+    interface IVBCoreWebView2CookieManager;
+    interface IVBCoreWebView2Cookie;
+    interface IVBCoreWebView2CookieList;
+    interface IVBCoreWebView2_16;
     interface IVBWebView2CreateEnvironmentCompletedHandler;
     interface IVBWebView2CreateControllerCompletedHandler;
     interface IVBWebView2NavigationStartingEventHandler;
@@ -265,6 +279,113 @@ library VBWebView2Impl
     interface IVBWebView2ProfileGetBrowserExtensionsCompletedHandler : IUnknown
     {
         HRESULT Invoke([in] long errorCode, [in] IVBCoreWebView2BrowserExtensionList* result);
+    };
+
+    [uuid(00f206a7-9d17-4605-91f6-4e8e4de192e3), odl, version(1.0)]
+    interface IVBWebView2TrySuspendCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] long isSuccessful);
+    };
+
+    [uuid(e9710a06-1d1d-49b2-8234-226f35846ae5), odl, version(1.0)]
+    interface IVBWebView2ClearBrowsingDataCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode);
+    };
+
+    [uuid(4bac7e9c-199e-49ed-87ed-249303acf019), odl, version(1.0)]
+    interface IVBWebView2DOMContentLoadedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    [uuid(a5e3b0d0-10df-4156-bfad-3b43867acac6), odl, version(1.0)]
+    interface IVBWebView2StatusBarTextChangedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    [uuid(e45d98b1-afef-45be-8baf-6c7728867f73), odl, version(1.0)]
+    interface IVBWebView2ContainsFullScreenElementChangedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] VB6IUnknown* args);
+    };
+
+    [uuid(58b4d6c2-18d4-497e-b39b-9a96533fa278), odl, version(1.0)]
+    interface IVBWebView2BasicAuthenticationRequestedEventHandler : IUnknown
+    {
+        HRESULT Invoke([in] VB6IUnknown* sender, [in] IVBCoreWebView2BasicAuthenticationRequestedEventArgs* args);
+    };
+
+    [uuid(5a4f5069-5c15-47c3-8646-f4de1c116670), odl, version(1.0)]
+    interface IVBWebView2GetCookiesCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] IVBCoreWebView2CookieList* result);
+    };
+
+    [uuid(4c9f8229-8f93-444f-a711-2c0dfd6359d5), odl, version(1.0)]
+    interface IVBWebView2PrintToPdfStreamCompletedHandler : IUnknown
+    {
+        HRESULT Invoke([in] long errorCode, [in] IVBStream* pdfStream);
+    };
+
+    [uuid(ef05516f-d897-4f9e-b672-d8e2307a3fb0), odl, version(1.0)]
+    interface IVBCoreWebView2BasicAuthenticationRequestedEventArgs : IUnknown
+    {
+        [propget] HRESULT Uri([out, retval] long* value);
+        [propget] HRESULT Challenge([out, retval] long* challenge);
+        [propget] HRESULT Response([out, retval] IVBCoreWebView2BasicAuthenticationResponse** response);
+        [propget] HRESULT Cancel([out, retval] long* cancel);
+        [propput] HRESULT Cancel([in] long cancel);
+        HRESULT GetDeferral([out, retval] VB6IUnknown** deferral);
+    };
+
+    [uuid(07023f7d-2d77-4d67-9040-6e7d428c6a40), odl, version(1.0)]
+    interface IVBCoreWebView2BasicAuthenticationResponse : IUnknown
+    {
+        [propget] HRESULT UserName([out, retval] long* userName);
+        [propput] HRESULT UserName([in] long userName);
+        [propget] HRESULT Password([out, retval] long* password);
+        [propput] HRESULT Password([in] long password);
+    };
+
+    [uuid(177CD9E7-B6F5-451A-94A0-5D7A3A4C4141), odl, version(1.0)]
+    interface IVBCoreWebView2CookieManager : IUnknown
+    {
+        HRESULT CreateCookie([in] long name, [in] long value, [in] long domain, [in] long path, [out, retval] IVBCoreWebView2Cookie** cookie);
+        HRESULT CopyCookie([in] IVBCoreWebView2Cookie* cookieParam, [out, retval] IVBCoreWebView2Cookie** cookie);
+        HRESULT GetCookies([in] long uri, [in] IVBWebView2GetCookiesCompletedHandler* handler);
+        HRESULT AddOrUpdateCookie([in] IVBCoreWebView2Cookie* cookie);
+        HRESULT DeleteCookie([in] IVBCoreWebView2Cookie* cookie);
+        HRESULT DeleteCookies([in] long name, [in] long uri);
+        HRESULT DeleteCookiesWithDomainAndPath([in] long name, [in] long domain, [in] long path);
+        HRESULT DeleteAllCookies();
+    };
+
+    [uuid(AD26D6BE-1486-43E6-BF87-A2034006CA21), odl, version(1.0)]
+    interface IVBCoreWebView2Cookie : IUnknown
+    {
+        [propget] HRESULT Name([out, retval] long* name);
+        [propget] HRESULT Value([out, retval] long* value);
+        [propput] HRESULT Value([in] long value);
+        [propget] HRESULT Domain([out, retval] long* domain);
+        [propget] HRESULT Path([out, retval] long* path);
+        [propget] HRESULT Expires([out, retval] double* expires);
+        [propput] HRESULT Expires([in] double expires);
+        [propget] HRESULT IsHttpOnly([out, retval] long* isHttpOnly);
+        [propput] HRESULT IsHttpOnly([in] long isHttpOnly);
+        [propget] HRESULT SameSite([out, retval] long* sameSite);
+        [propput] HRESULT SameSite([in] long sameSite);
+        [propget] HRESULT IsSecure([out, retval] long* isSecure);
+        [propput] HRESULT IsSecure([in] long isSecure);
+        [propget] HRESULT IsSession([out, retval] long* isSession);
+    };
+
+    [uuid(f7f6f714-5d2a-43c6-9503-346ece02d186), odl, version(1.0)]
+    interface IVBCoreWebView2CookieList : IUnknown
+    {
+        [propget] HRESULT Count([out, retval] long* value);
+        HRESULT GetValueAtIndex([in] long index, [out, retval] IVBCoreWebView2Cookie** value);
     };
 
     [uuid(5c4889f0-5ef6-4c5a-952c-d8f1b92d0574), odl, version(1.0)]
@@ -690,7 +811,7 @@ library VBWebView2Impl
         HRESULT AddHostObjectToScript([in] long name, [in] VARIANT* object);
         HRESULT RemoveHostObjectFromScript([in] long name);
         HRESULT OpenDevToolsWindow();
-        HRESULT add_ContainsFullScreenElementChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT add_ContainsFullScreenElementChanged([in] IVBWebView2ContainsFullScreenElementChangedEventHandler* eventHandler, [out, retval] long* token);
         HRESULT remove_ContainsFullScreenElementChanged([in] long token);
         [propget] HRESULT ContainsFullScreenElement([out, retval] long* containsFullScreenElement);
         HRESULT add_WebResourceRequested([in] IVBWebView2WebResourceRequestedEventHandler* eventHandler, [out, retval] long* token);
@@ -710,11 +831,11 @@ library VBWebView2Impl
         HRESULT add_WebResourceResponseReceived([in] IVBWebView2WebResourceResponseReceivedEventHandler* eventHandler, [out, retval] long* token);
         HRESULT remove_WebResourceResponseReceived([in] long token);
         HRESULT NavigateWithWebResourceRequest([in] IVBCoreWebView2WebResourceRequest* request);
-        HRESULT add_DOMContentLoaded([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT add_DOMContentLoaded([in] IVBWebView2DOMContentLoadedEventHandler* eventHandler, [out, retval] long* token);
         HRESULT remove_DOMContentLoaded([in] long token);
         [propget] HRESULT CookieManager([out, retval] VB6IUnknown** cookieManager);
         [propget] HRESULT Environment([out, retval] VB6IUnknown** environment);
-        HRESULT TrySuspend([in] VB6IUnknown* handler);
+        HRESULT TrySuspend([in] IVBWebView2TrySuspendCompletedHandler* handler);
         HRESULT ResumeFromSuspend();
         [propget] HRESULT IsSuspended([out, retval] long* isSuspended);
         HRESULT SetVirtualHostNameToFolderMapping([in] long hostName, [in] long folderPath, [in] long accessKind);
@@ -750,8 +871,10 @@ library VBWebView2Impl
         [propget] HRESULT DefaultDownloadDialogCornerAlignment([out, retval] long* value);
         [propput] HRESULT DefaultDownloadDialogCornerAlignment([in] long value);
         [propget] HRESULT DefaultDownloadDialogMargin([out, retval] APIPOINT* value);
-        [propput] HRESULT DefaultDownloadDialogMargin([in] APIPOINT value);
-        HRESULT add_BasicAuthenticationRequested([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        // native signature is [in] APIPOINT by value - declared as two longs
+        // (same x86 stdcall stack image) because VB6 cannot pass UDTs ByVal
+        HRESULT SetDefaultDownloadDialogMargin([in] long x, [in] long y);
+        HRESULT add_BasicAuthenticationRequested([in] IVBWebView2BasicAuthenticationRequestedEventHandler* eventHandler, [out, retval] long* token);
         HRESULT remove_BasicAuthenticationRequested([in] long token);
         HRESULT CallDevToolsProtocolMethodForSession([in] long sessionId, [in] long methodName, [in] long parametersAsJson, [in] IVBWebView2CallDevToolsProtocolMethodCompletedHandler* handler);
         HRESULT add_ContextMenuRequested([in] IVBWebView2ContextMenuRequestedEventHandler* eventHandler, [out, retval] long* token);
@@ -764,10 +887,27 @@ library VBWebView2Impl
     [uuid(f75f09a8-667e-4983-88d6-c8773f315e84), odl, version(1.0)]
     interface IVBCoreWebView2_13 : IVBCoreWebView2_11
     {
-        HRESULT add_StatusBarTextChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT add_StatusBarTextChanged([in] IVBWebView2StatusBarTextChangedEventHandler* eventHandler, [out, retval] long* token);
         HRESULT remove_StatusBarTextChanged([in] long token);
         [propget] HRESULT StatusBarText([out, retval] long* value);
         [propget] HRESULT Profile([out, retval] VB6IUnknown** value);
+    };
+
+    // ICoreWebView2_14 .. _16 flattened onto _13 and published under _16's
+    // IID - only ShowPrintUI and PrintToPdfStream (from _16) are actually used
+    [uuid(0EB34DC9-9F91-41E1-8639-95CD5943906B), odl, version(1.0)]
+    interface IVBCoreWebView2_16 : IVBCoreWebView2_13
+    {
+        HRESULT add_ServerCertificateErrorDetected([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_ServerCertificateErrorDetected([in] long token);
+        HRESULT ClearServerCertificateErrorActions([in] VB6IUnknown* handler);
+        HRESULT add_FaviconChanged([in] VB6IUnknown* eventHandler, [out, retval] long* token);
+        HRESULT remove_FaviconChanged([in] long token);
+        [propget] HRESULT FaviconUri([out, retval] long* value);
+        HRESULT GetFavicon([in] long format, [in] VB6IUnknown* handler);
+        HRESULT Print([in] IVBCoreWebView2PrintSettings* printSettings, [in] VB6IUnknown* handler);
+        HRESULT ShowPrintUI([in] long printDialogKind);
+        HRESULT PrintToPdfStream([in] IVBCoreWebView2PrintSettings* printSettings, [in] IVBWebView2PrintToPdfStreamCompletedHandler* handler);
     };
 
     [uuid(4d00c0d1-9434-4eb6-8078-8697a560334f), odl, version(1.0)]
@@ -781,7 +921,9 @@ library VBWebView2Impl
         [propput] HRESULT ZoomFactor([in] double zoomFactor);
         HRESULT add_ZoomFactorChanged([in] IVBWebView2ZoomFactorChangedEventHandler* eventHandler, [out, retval] long* token);
         HRESULT remove_ZoomFactorChanged([in] long token);
-        HRESULT SetBoundsAndZoomFactor([in] APIRECT bounds, [in] double zoomFactor);
+        // native signature is [in] APIRECT by value - declared as four longs
+        // (same x86 stdcall stack image) because VB6 cannot pass UDTs ByVal
+        HRESULT SetBoundsAndZoomFactor([in] long Left, [in] long Top, [in] long Right, [in] long Bottom, [in] double zoomFactor);
         HRESULT MoveFocus([in] long reason);
         HRESULT add_MoveFocusRequested([in] IVBWebView2MoveFocusRequestedEventHandler* eventHandler, [out, retval] long* token);
         HRESULT remove_MoveFocusRequested([in] long token);
@@ -873,9 +1015,9 @@ library VBWebView2Impl
         [propput] HRESULT DefaultDownloadFolderPath([in] long value);
         [propget] HRESULT PreferredColorScheme([out, retval] long* value);
         [propput] HRESULT PreferredColorScheme([in] long value);
-        HRESULT ClearBrowsingData([in] long dataKinds, [in] VB6IUnknown* handler);
-        HRESULT ClearBrowsingDataInTimeRange([in] long dataKinds, [in] double startTime, [in] double endTime, [in] VB6IUnknown* handler);
-        HRESULT ClearBrowsingDataAll([in] VB6IUnknown* handler);
+        HRESULT ClearBrowsingData([in] long dataKinds, [in] IVBWebView2ClearBrowsingDataCompletedHandler* handler);
+        HRESULT ClearBrowsingDataInTimeRange([in] long dataKinds, [in] double startTime, [in] double endTime, [in] IVBWebView2ClearBrowsingDataCompletedHandler* handler);
+        HRESULT ClearBrowsingDataAll([in] IVBWebView2ClearBrowsingDataCompletedHandler* handler);
         [propget] HRESULT PreferredTrackingPreventionLevel([out, retval] long* value);
         [propput] HRESULT PreferredTrackingPreventionLevel([in] long value);
         HRESULT SetPermissionState([in] long permissionKind, [in] long origin, [in] long state, [in] VB6IUnknown* handler);

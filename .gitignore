@@ -12,3 +12,4 @@
 *.lib
 *.zip
 *.exe
+test/vhost/
