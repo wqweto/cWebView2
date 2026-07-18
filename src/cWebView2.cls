@@ -202,6 +202,8 @@ Private Declare Function DispatchMessage Lib "user32" Alias "DispatchMessageW" (
 Private Declare Sub VariantClear Lib "oleaut32" (pvarg As Variant)
 Private Declare Function CreateStreamOnHGlobal Lib "ole32" (ByVal hGlobal As Long, ByVal fDeleteOnRelease As Long, ppstm As IVBStream) As Long
 Private Declare Function GetFileAttributes Lib "kernel32" Alias "GetFileAttributesW" (ByVal lpFileName As Long) As Long
+Private Declare Function CreateEvent Lib "kernel32" Alias "CreateEventW" (ByVal lpEventAttributes As Long, ByVal bManualReset As Long, ByVal bInitialState As Long, ByVal lpName As Long) As Long
+Private Declare Function CloseHandle Lib "kernel32" (ByVal hObject As Long) As Long
 
 Private Type APIMSG
     hWnd                As Long
@@ -242,6 +244,7 @@ Private m_cTokenSeq                 As Currency
 '--- token - sync waiter pending, "A" & token - async result expected
 Private m_cScriptResults            As Collection
 Private m_sJsLastError              As String
+Private m_hPumpEvent                As Long
 
 '=========================================================================
 ' Error handling
@@ -676,7 +679,6 @@ Public Function BindTo( _
         Optional ByVal IsCustomCrashReportingEnabled As Boolean, _
         Optional ByVal EnableTrackingPrevention As Boolean = True, _
         Optional ByVal AreBrowserExtensionsEnabled As Boolean) As Long
-    Const RPC_E_TIMEOUT                 As Long = &H8001011F
     Dim oOptions        As cWebView2Callback
     Dim oHandler        As cWebView2Callback
     Dim hResult         As Long
@@ -696,19 +698,24 @@ Public Function BindTo( _
     oOptions.AreBrowserExtensionsEnabled = AreBrowserExtensionsEnabled
     Set oHandler = New cWebView2Callback
     oHandler.Init Me
+    '--- RC6 compat: 1 on success, 0 on any failure; underlying error codes
+    '--- go to the debug console only
     hResult = pvCreateWebView2Environment(browserInstallPath, userDataFolder, oOptions, oHandler)
     If hResult <> 0 Then
-        BindTo = hResult
+        Debug.Print "Critical error: environment creation failed with &H" & Hex$(hResult) & " [BindTo]"
         Exit Function
     End If
     If Not pvPumpUntil(m_bInitComplete, SecondsToWaitForInitComplete) Then
-        BindTo = RPC_E_TIMEOUT
+        Debug.Print "Critical error: timeout waiting for init [BindTo]"
         Exit Function
     End If
-    BindTo = m_hInitError
+    If m_hInitError <> 0 Then
+        Debug.Print "Critical error: init failed with &H" & Hex$(m_hInitError) & " [BindTo]"
+        Exit Function
+    End If
+    BindTo = 1
     Exit Function
 EH:
-    BindTo = Err.Number
     PrintError "BindTo"
 End Function
 
@@ -777,13 +784,14 @@ End Sub
 Public Function Navigate(ByVal URI As String, Optional ByVal SecondsToWaitForDocumentComplete As Double = 8) As Variant
     On Error GoTo EH
     m_bNavDone = False
-    m_bNavSuccess = True
     m_oWebView.Navigate StrPtr(URI)
     If Not pvPumpUntil(m_bNavDone, SecondsToWaitForDocumentComplete) Then
         Navigate = Empty
         Exit Function
     End If
-    Navigate = m_bNavSuccess
+    '--- RC6 compat: 1 whenever navigation completed within the wait - even
+    '--- for an unsuccessful navigation (error page) - and Empty on timeout
+    Navigate = 1
     Exit Function
 EH:
     Navigate = Empty
@@ -793,12 +801,11 @@ End Function
 Public Function NavigateToString(ByVal sHTMLContent As String, Optional ByVal SecondsToWaitForDocumentComplete As Double = 8) As Variant
     On Error GoTo EH
     m_bNavDone = False
-    m_bNavSuccess = True
     m_oWebView.NavigateToString StrPtr(sHTMLContent)
     If Not pvPumpUntil(m_bNavDone, SecondsToWaitForDocumentComplete) Then
         Exit Function
     End If
-    NavigateToString = m_bNavSuccess
+    NavigateToString = 1
     Exit Function
 EH:
     PrintError "NavigateToString"
@@ -830,14 +837,22 @@ End Sub
 
 Public Function GetMostRecentInstallPath(Optional ByVal EdgeChannel As String = "EdgeWebView", Optional VersionString As String) As String
     Dim lPtr            As Long
+    Dim sPath           As String
 
     On Error GoTo EH
-    '--- Evergreen deployment resolves the runtime automatically so no install
-    '--- path is returned (EdgeChannel unused), but VersionString is filled
-    '--- with the runtime version the loader would pick
     If pvEnsureLoader() Then
         If GetAvailableCoreWebView2BrowserVersionString(0, lPtr) >= 0 Then
             VersionString = pvToString(lPtr)
+        End If
+    End If
+    If LenB(VersionString) <> 0 Then
+        sPath = Environ$("ProgramFiles(x86)")
+        If LenB(sPath) = 0 Then
+            sPath = Environ$("ProgramFiles")
+        End If
+        sPath = sPath & "\Microsoft\" & EdgeChannel & "\Application\" & VersionString
+        If FileExists(sPath) Then
+            GetMostRecentInstallPath = sPath
         End If
     End If
     Exit Function
@@ -857,10 +872,9 @@ Public Function NavigateWithWebResourceRequest(ByVal URI As String, Optional ByV
     End If
     Set oRequest = oEnv2.CreateWebResourceRequest(StrPtr(URI), StrPtr(Method), oStream, StrPtr(Headers_CrLfSeparated))
     m_bNavDone = False
-    m_bNavSuccess = True
     m_oWebView4.NavigateWithWebResourceRequest oRequest
     If pvPumpUntil(m_bNavDone, SecondsToWaitForRequestComplete) Then
-        NavigateWithWebResourceRequest = m_bNavSuccess
+        NavigateWithWebResourceRequest = 1
     End If
     Exit Function
 EH:
@@ -1113,15 +1127,13 @@ Public Sub RaiseMessageEvent(sMsg As Variant, sMsgContent As Variant)
     Dim sContent        As String
     Dim vResult         As Variant
     Dim oContent        As Collection
-    Dim lIdx            As Long
 
     On Error GoTo EH
     sContent = sMsgContent
     '--- populate oJSONContent only when the content looks like a JSON object/array
     Select Case Left$(LTrim$(sContent), 1)
     Case "{", "["
-        lIdx = 1
-        pvJsonParseValue sContent, lIdx, vResult
+        pvJsonParseValue sContent, 1, vResult
         If IsObject(vResult) Then
             Set oContent = vResult
         End If
@@ -1154,7 +1166,6 @@ Public Function CallDevToolsProtocolMethod(ByVal MethodName As String, ByVal Par
     Dim sKey            As String
     Dim vItem           As Variant
     Dim sJson           As String
-    Dim lIdx            As Long
 
     On Error GoTo EH
     cToken = pvNextToken()
@@ -1178,8 +1189,7 @@ Public Function CallDevToolsProtocolMethod(ByVal MethodName As String, ByVal Par
         Exit Function
     End If
     sJson = vItem(1)
-    lIdx = 1
-    pvJsonParseValue sJson, lIdx, CallDevToolsProtocolMethod
+    pvJsonParseValue sJson, 1, CallDevToolsProtocolMethod
     Exit Function
 EH:
     PrintError "CallDevToolsProtocolMethod"
@@ -1191,7 +1201,6 @@ Public Function CallDevToolsProtocolMethodForSession(ByVal SessionId As String, 
     Dim sKey            As String
     Dim vItem           As Variant
     Dim sJson           As String
-    Dim lIdx            As Long
 
     On Error GoTo EH
     If m_oWebView11 Is Nothing Then
@@ -1218,8 +1227,7 @@ Public Function CallDevToolsProtocolMethodForSession(ByVal SessionId As String, 
         Exit Function
     End If
     sJson = vItem(1)
-    lIdx = 1
-    pvJsonParseValue sJson, lIdx, CallDevToolsProtocolMethodForSession
+    pvJsonParseValue sJson, 1, CallDevToolsProtocolMethodForSession
     Exit Function
 EH:
     PrintError "CallDevToolsProtocolMethodForSession"
@@ -1703,11 +1711,16 @@ Private Sub SpinThreadMessagePump(Optional ByVal Flush As Boolean, Optional ByVa
     Const WM_MOUSEFIRST As Long = &H200
     Const WM_MOUSELAST  As Long = &H209
     Dim uMsg            As APIMSG
-    
+
+    '--- CoWaitForMultipleHandles fails with E_INVALIDARG when passed no
+    '--- waitable handles, so wait on a dummy never-signaled event
+    If m_hPumpEvent = 0 Then
+        m_hPumpEvent = CreateEvent(0, 1, 0, 0)
+    End If
     If Flush Then
         Call Sleep(1)
     End If
-    Call CoWaitForMultipleHandles(0, 0, 0, 0, 0)
+    Call CoWaitForMultipleHandles(0, 0, 1, m_hPumpEvent, 0)
     Do While PeekMessage(VarPtr(uMsg), hWnd, FromMsg, ToMsg, PM_REMOVE) <> 0
         Call TranslateMessage(VarPtr(uMsg))
         If Flush And (uMsg.lMessage >= WM_KEYFIRST And uMsg.lMessage <= WM_KEYLAST _
@@ -1717,7 +1730,7 @@ Private Sub SpinThreadMessagePump(Optional ByVal Flush As Boolean, Optional ByVa
         Else
             Call DispatchMessage(VarPtr(uMsg))
         End If
-        Call CoWaitForMultipleHandles(0, 0, 0, 0, 0)
+        Call CoWaitForMultipleHandles(0, 0, 1, m_hPumpEvent, 0)
     Loop
 End Sub
 
@@ -1879,7 +1892,6 @@ Private Function pvExecScriptSync(sScript As String, vResult As Variant) As Bool
     Dim sKey            As String
     Dim vItem           As Variant
     Dim sJson           As String
-    Dim lIdx            As Long
 
     On Error GoTo EH
     m_sJsLastError = vbNullString
@@ -1907,8 +1919,7 @@ Private Function pvExecScriptSync(sScript As String, vResult As Variant) As Bool
         Exit Function
     End If
     sJson = vItem(1)
-    lIdx = 1
-    pvJsonParseValue sJson, lIdx, vResult
+    pvJsonParseValue sJson, 1, vResult
     pvExecScriptSync = True
     Exit Function
 EH:
@@ -2125,6 +2136,10 @@ Private Sub pvJsonParseValue(sText As String, lIdx As Long, vResult As Variant)
             lIdx = lIdx + 1
         Loop
         vResult = Val(Mid$(sText, lStart, lIdx - lStart))
+        '--- RC6 compat: integral JSON numbers travel as Long
+        If vResult = Int(vResult) And Abs(vResult) <= 2147483647 Then
+            vResult = CLng(vResult)
+        End If
     End Select
 End Sub
 
@@ -2696,4 +2711,8 @@ End Sub
 
 Private Sub Class_Terminate()
     Shutdown
+    If m_hPumpEvent <> 0 Then
+        Call CloseHandle(m_hPumpEvent)
+        m_hPumpEvent = 0
+    End If
 End Sub

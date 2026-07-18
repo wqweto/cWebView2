@@ -75,6 +75,11 @@ nested and interleaved calls cannot cross wires.
   synchronous host-object proxy, so page script can call `Name.MethodName(...)`
   directly, like with RC6. The native `chrome.webview.hostObjects[.sync].Name`
   forms remain available (the async proxy returns Promises).
+- Return values verified against live RC6: `BindTo` returns `1` on success
+  and `0` on failure (details go to the debug console); `Navigate`/
+  `NavigateToString`/`NavigateWithWebResourceRequest` return `1` whenever
+  the navigation completed within the wait — even when it landed on an
+  error page — and `Empty` on timeout.
 
 ### Deliberate deviations from RC6
 
@@ -114,10 +119,10 @@ marshaling, host objects, web messages, settings, script dialogs, permissions,
 new-window, accelerator keys, focus, web-resource filtering, response
 introspection, frames, downloads, capture) — except the members below:
 
-- `GetMostRecentInstallPath` — returns an empty path (Evergreen deployment
-  resolves the runtime automatically, there is no meaningful install path)
-  but fills the `VersionString` out-param with the runtime version the
-  loader resolves.
+- `GetMostRecentInstallPath` — resolves the runtime version through the
+  loader, fills the `VersionString` out-param and returns
+  `%ProgramFiles(x86)%\Microsoft\<EdgeChannel>\Application\<version>` when
+  that folder exists (matching live RC6 output), empty string otherwise.
 - `jsCallByName` — raises "not yet implemented"; needs live JS object
   proxies, which the `ExecuteScript`
   channel used here cannot provide (results are JSON strings only). RC6 gets

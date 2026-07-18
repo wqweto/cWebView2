@@ -122,8 +122,8 @@ Private Sub Form_Load()
     Visible = True
     Set m_oWebView2 = New cWebView2
     hResult = m_oWebView2.BindTo(picHost.hWnd, , , , "--allow-run-as-system", , False, True, False)
-    If hResult <> 0 Then
-        MsgBox "BindTo failed: 0x" & Hex$(hResult), vbCritical
+    If hResult <> 1 Then
+        MsgBox "BindTo failed", vbCritical
         Exit Sub
     End If
     m_oWebView2.AddScriptToExecuteOnDocumentCreated "var observer = new MutationObserver(function() { vbH().RaiseMessageEvent('title_change', document.title); });" & vbCrLf & _
@@ -322,7 +322,7 @@ Private Sub cmdVHost_Click()
     sStatus = "vhost.Navigate=" & vResult & " title=" & m_oWebView2.DocumentTitle
     m_oWebView2.ClearVirtualHostNameToFolderMapping "appassets"
     vResult = m_oWebView2.Navigate("https://appassets/index.html")
-    lblStatus.Caption = sStatus & " | cleared.Navigate=" & vResult & " (expected False)"
+    lblStatus.Caption = sStatus & " | cleared.Navigate=" & vResult & " (expected 1, error page)"
 End Sub
 
 Private Sub m_oWebView2_ScriptDialogOpening(ByVal ScriptDialogKind As eWebView2ScriptDialogKind, ByRef Accept As Boolean, ByRef ResultText As String, ByVal URI As String, ByVal Message As String, ByVal DefaultText As String)
