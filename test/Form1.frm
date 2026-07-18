@@ -60,7 +60,7 @@ Begin VB.Form Form1
       Top             =   360
       Width           =   6555
    End
-   Begin VB.CommandButton cmdRunJs
+   Begin VB.CommandButton cmdRunJs 
       Caption         =   "Run JS"
       Height          =   315
       Left            =   6600
@@ -68,7 +68,7 @@ Begin VB.Form Form1
       Top             =   360
       Width           =   840
    End
-   Begin VB.CommandButton cmdPdf
+   Begin VB.CommandButton cmdPdf 
       Caption         =   "PDF"
       Height          =   315
       Left            =   7500
@@ -76,7 +76,7 @@ Begin VB.Form Form1
       Top             =   360
       Width           =   840
    End
-   Begin VB.CommandButton cmdVHost
+   Begin VB.CommandButton cmdVHost 
       Caption         =   "VHost"
       Height          =   315
       Left            =   6540
@@ -84,7 +84,7 @@ Begin VB.Form Form1
       Top             =   360
       Width           =   840
    End
-   Begin VB.CommandButton cmdDark
+   Begin VB.CommandButton cmdDark 
       Caption         =   "Dark"
       Height          =   315
       Left            =   5580
@@ -115,6 +115,7 @@ Option Explicit
 
 Private WithEvents m_oWebView2          As cWebView2
 Attribute m_oWebView2.VB_VarHelpID = -1
+Private m_bProbedJsRun                   As Boolean
 
 Private Sub Form_Load()
     Dim hResult         As Long
@@ -249,11 +250,14 @@ Private Sub m_oWebView2_JSAsyncResult(Result As Variant, ByVal Token As Currency
     lblStatus.Caption = lblStatus.Caption & " -> async#" & Token & "=" & Result & " " & ErrString
 End Sub
 
-Private Sub m_oWebView2_TitleChange(ByVal Text As String)
-    lblStatus.Caption = lblStatus.Caption & " | TitleChange=" & Text
+Private Sub m_oWebView2_TitleChanged(ByVal Text As String)
+    lblStatus.Caption = lblStatus.Caption & " | TitleChanged=" & Text
 End Sub
 
 Private Sub m_oWebView2_JSMessage(ByVal sMsg As String, ByVal sMsgContent As String, oJSONContent As Collection)
+    Dim vResult         As Variant
+    Dim dblT            As Double
+
     If sMsg = "title_change" Then
         Caption = "cWebView2 Test Harness - " & sMsgContent
     ElseIf Not oJSONContent Is Nothing Then
@@ -262,6 +266,19 @@ Private Sub m_oWebView2_JSMessage(ByVal sMsg As String, ByVal sMsgContent As Str
         lblStatus.Caption = lblStatus.Caption & " | " & sMsg & "=" & sMsgContent
     Else
         lblStatus.Caption = lblStatus.Caption & " | msg=" & sMsg
+    End If
+    '--- reproduce the reported bug once: a blocking jsRun from within the
+    '--- JSMessage event times out because WebView2 defers the completion (and
+    '--- the sync bridge's nested RaiseResultEvent) while this handler is on
+    '--- the stack. Uses a short timeout so the demo hang stays brief
+    If Not m_bProbedJsRun Then
+        m_bProbedJsRun = True
+        m_oWebView2.jsCallTimeOutSeconds = 2
+        dblT = Timer
+        vResult = m_oWebView2.jsRun("eval", "6*7")
+        lblStatus.Caption = lblStatus.Caption & " | jsRun-in-JSMessage=" & CStr(vResult) & _
+            " (" & Format$(Timer - dblT, "0.00") & "s err=" & m_oWebView2.jsLastError & ")"
+        m_oWebView2.jsCallTimeOutSeconds = 8
     End If
 End Sub
 

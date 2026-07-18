@@ -1075,8 +1075,17 @@ library VBWebView2Impl
         long TryGetWebMessageAsString([in, out] long* webMessageAsString);
     };
 
-    [uuid(A4C46780-499F-101B-BB78-00AA00383CBB), odl]
-    interface IVbCollection  : IUnknown {
+    [uuid(00020400-0000-0000-C000-000000000046), odl, version(1.0)]
+    interface IVBDispatch : IUnknown
+    {
+        long GetTypeInfoCount([in] long pctinfo);
+        long GetTypeInfo([in] long itinfo, [in] long lcid, [in] long pptinfo);
+        long GetIDsOfNames([in] long riid, [in] long rgszNames, [in] long cNames, [in] long lcid, [in] long rgdispid);
+        long Invoke([in] long dispidMember, [in] long riid, [in] long lcid, [in] long wFlags, [in] long pdispparams, [in] long pvarResult, [in] long pexcepinfo, [in] long puArgErr);
+    };
+
+    [uuid(A4C46780-499F-101B-BB78-00AA00383CBB), odl, version(1.0)]
+    interface IVBCollection : IUnknown {
         HRESULT GetTypeInfoCount([out, retval] int* pctinfo);
         LONG GetTypeInfo([in] int itinfo,[in] long lcid,[out] void *pptinfo);
         LONG GetIDsOfNames([in] void *riid,[in] LPWSTR *rgszNames,[in] int cNames,[in] long lcid,[out] long *rgdispid);

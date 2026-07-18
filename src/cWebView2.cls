@@ -168,7 +168,7 @@ Public Event WebResourceResponseReceived(ByVal ReqURI As String, ByVal ReqMethod
 Public Event FrameCreated(ByVal frameName As String)
 Public Event DownloadStarting(ByVal URI As String, ByVal MimeType As String, ByVal LocalSuggestedPath As String, ByVal LocalSuggestedFile As String, CancelBrowserDialog As Boolean, CancelDownloadOp As Boolean, NewLocalFilePath As String)
 Public Event WebResourceRequested(ByVal URI As String, ByVal FilterType As eWebView2ResourceFilter, Permit As eWebView2PermissionState)
-Public Event TitleChange(ByVal Text As String)
+Public Event TitleChanged(ByVal Text As String)
 Public Event ContentLoading(ByVal IsErrorPage As Boolean)
 Public Event HistoryChanged()
 Public Event WindowCloseRequested()
@@ -185,7 +185,6 @@ Public Event BasicAuthenticationRequested(ByVal URI As String, ByVal Challenge A
 '=========================================================================
 
 Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
-Private Declare Function GetModuleHandle Lib "kernel32" Alias "GetModuleHandleW" (ByVal lpModuleName As Long) As Long
 Private Declare Function LoadLibrary Lib "kernel32" Alias "LoadLibraryW" (ByVal lpLibFileName As Long) As Long
 Private Declare Function GetClientRect Lib "user32" (ByVal hWnd As Long, lpRect As APIRECT) As Long
 Private Declare Function SysReAllocString Lib "oleaut32" (ByVal pBSTR As Long, ByVal lpsz As Long) As Long
@@ -214,6 +213,30 @@ Private Type APIMSG
     pt                  As APIPOINT
 End Type
 
+Private Type APIDISPPARAMS
+    rgvarg              As Long
+    rgdispidNamedArgs   As Long
+    cArgs               As Long
+    cNamedArgs          As Long
+End Type
+
+'=========================================================================
+' MST
+'=========================================================================
+
+Private Const SIGN_BIT                      As Long = &H80000000
+Private Const PTR_SIZE                      As Long = 4
+
+Private Declare Function VirtualAlloc Lib "kernel32" (ByVal lpAddress As Long, ByVal dwSize As Long, ByVal flAllocationType As Long, ByVal flProtect As Long) As Long
+Private Declare Function CallWindowProc Lib "user32" Alias "CallWindowProcA" (ByVal lpPrevWndFunc As Long, ByVal hWnd As Long, ByVal Msg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
+Private Declare Function GetModuleHandle Lib "kernel32" Alias "GetModuleHandleA" (ByVal lpModuleName As String) As Long
+Private Declare Function GetProcAddress Lib "kernel32" (ByVal hModule As Long, ByVal lpProcName As String) As Long
+Private Declare Function GetCurrentProcessId Lib "kernel32" () As Long
+Private Declare Function GetEnvironmentVariable Lib "kernel32" Alias "GetEnvironmentVariableA" (ByVal lpName As String, ByVal lpBuffer As String, ByVal nSize As Long) As Long
+Private Declare Function SetEnvironmentVariable Lib "kernel32" Alias "SetEnvironmentVariableA" (ByVal lpName As String, ByVal lpValue As String) As Long
+Private Declare Function FindWindowEx Lib "user32" Alias "FindWindowExA" (ByVal hWndParent As Long, ByVal hWndChildAfter As Long, ByVal lpszClass As String, ByVal lpszWindow As String) As Long
+Private Declare Function GetWindowThreadProcessId Lib "user32" (ByVal hWnd As Long, lpdwProcessId As Long) As Long
+    
 '=========================================================================
 ' Constants and member variables
 '=========================================================================
@@ -245,6 +268,34 @@ Private m_cTokenSeq                 As Currency
 Private m_cScriptResults            As Collection
 Private m_sJsLastError              As String
 Private m_hPumpEvent                As Long
+'--- per-document JS function table ({run, cbn, propGet, propLet}) received
+'--- via SetFuncObj - the RC6-style synchronous bridge into the renderer
+Private m_oFuncObj                  As Object
+Private m_pTimer                    As IUnknown
+Private m_cEventQueue               As Collection
+
+Private Enum eDeferredEvent
+    ev_InitComplete = 1
+    ev_DocumentComplete
+    ev_NavigationCompleted
+    ev_SourceChanged
+    ev_ProcessFailed
+    ev_JSMessage
+    ev_JSAsyncResult
+    ev_UserContextMenu
+    ev_GotFocus
+    ev_LostFocus
+    ev_WebResourceResponseReceived
+    ev_FrameCreated
+    ev_TitleChanged
+    ev_ContentLoading
+    ev_HistoryChanged
+    ev_WindowCloseRequested
+    ev_ZoomFactorChanged
+    ev_DOMContentLoaded
+    ev_StatusBarTextChanged
+    ev_ContainsFullScreenElementChanged
+End Enum
 
 '=========================================================================
 ' Error handling
@@ -252,10 +303,6 @@ Private m_hPumpEvent                As Long
 
 Private Sub PrintError(sFunction As String)
     Debug.Print "Critical error: " & Err.Description & " [" & sFunction & "]"
-End Sub
-
-Private Sub pvNotImplemented(sFunction As String)
-    Err.Raise vbObjectError, "cWebView2", sFunction & " is not yet implemented"
 End Sub
 
 '=========================================================================
@@ -420,12 +467,24 @@ Public Property Let jsCallTimeOutSeconds(ByVal dblValue As Double)
 End Property
 
 Public Property Get jsProp(ByVal PropName As String) As Variant
+    '--- dotted paths ride the bridge so the value can come back as a live JS
+    '--- object; arbitrary expressions keep the ExecuteScript evaluation path
+    If pvIsDottedPath(PropName) Then
+        If pvBridgeInvoke("propGet", Array(PropName), Array(), jsProp) Then
+            Exit Property
+        End If
+    End If
     pvExecScriptSync PropName, jsProp
 End Property
 
 Public Property Let jsProp(ByVal PropName As String, ByVal RHS As Variant)
     Dim vResult         As Variant
 
+    If pvIsDottedPath(PropName) Then
+        If pvBridgeInvoke("propLet", Array(PropName, RHS), Array(), vResult) Then
+            Exit Property
+        End If
+    End If
     pvExecScriptSync PropName & "=" & pvJsonEncode(RHS), vResult
 End Property
 
@@ -662,6 +721,10 @@ Public Property Let PreferredTrackingPreventionLevel(ByVal eValue As eWebView2Tr
     If Not oProfile Is Nothing Then
         oProfile.PreferredTrackingPreventionLevel = eValue
     End If
+End Property
+
+Private Property Get pvAddressOfTimerProc() As cWebView2
+    Set pvAddressOfTimerProc = InitAddressOfMethod(Me, 0)
 End Property
 
 '=========================================================================
@@ -1138,23 +1201,43 @@ Public Sub RaiseMessageEvent(sMsg As Variant, sMsgContent As Variant)
             Set oContent = vResult
         End If
     End Select
-    RaiseEvent JSMessage(CStr(sMsg), sContent, oContent)
+    '--- defer: this is called synchronously from page script over vbH(), so
+    '--- raising JSMessage inline would deadlock a jsRun in the handler
+    pvQueueEvent ev_JSMessage, CStr(sMsg), sContent, oContent
     Exit Sub
 EH:
     PrintError "RaiseMessageEvent"
 End Sub
 
 Public Sub RaiseResultEvent(Res As Variant, ByVal Token As Variant, ByVal ErrMsg As Variant)
+    Dim cToken          As Currency
+
     On Error GoTo EH
-    RaiseEvent JSAsyncResult(Res, CCur(Token), CStr(ErrMsg))
+    cToken = CCur(Token)
+    If pvSearchCollection(m_cScriptResults, "P" & cToken) Then
+        '--- nested completion of the pvBridgeInvoke call in flight below us
+        '--- on the stack - stash the result (possibly a live JS object proxy)
+        m_cScriptResults.Remove "P" & cToken
+        m_cScriptResults.Add Array(0, Res, CStr(ErrMsg)), "T" & cToken
+    Else
+        pvQueueEvent ev_JSAsyncResult, Res, cToken, CStr(ErrMsg)
+    End If
     Exit Sub
 EH:
     PrintError "RaiseResultEvent"
 End Sub
 
+Public Sub SetFuncObj(FuncObj As Variant)
+    On Error GoTo EH
+    Set m_oFuncObj = FuncObj
+    Exit Sub
+EH:
+    PrintError "SetFuncObj"
+End Sub
+
 Public Sub RaiseContextMenuEvent(ByVal ScreenX As Variant, ByVal ScreenY As Variant)
     On Error GoTo EH
-    RaiseEvent UserContextMenu(CLng(ScreenX), CLng(ScreenY))
+    pvQueueEvent ev_UserContextMenu, CLng(ScreenX), CLng(ScreenY)
     Exit Sub
 EH:
     PrintError "RaiseContextMenuEvent"
@@ -1563,41 +1646,34 @@ EH:
 End Function
 
 Public Function CallByName(ByVal Obj As Object, ByVal ProcName As String, ByVal CallType As VbCallType, ParamArray P() As Variant) As Variant
-    Select Case UBound(P)
-    Case -1
-        pvAssignVariant CallByName, VBA.CallByName(Obj, ProcName, CallType)
-    Case 0
-        pvAssignVariant CallByName, VBA.CallByName(Obj, ProcName, CallType, P(0))
-    Case 1
-        pvAssignVariant CallByName, VBA.CallByName(Obj, ProcName, CallType, P(0), P(1))
-    Case 2
-        pvAssignVariant CallByName, VBA.CallByName(Obj, ProcName, CallType, P(0), P(1), P(2))
-    Case 3
-        pvAssignVariant CallByName, VBA.CallByName(Obj, ProcName, CallType, P(0), P(1), P(2), P(3))
-    Case 4
-        pvAssignVariant CallByName, VBA.CallByName(Obj, ProcName, CallType, P(0), P(1), P(2), P(3), P(4))
-    Case 5
-        pvAssignVariant CallByName, VBA.CallByName(Obj, ProcName, CallType, P(0), P(1), P(2), P(3), P(4), P(5))
-    Case 6
-        pvAssignVariant CallByName, VBA.CallByName(Obj, ProcName, CallType, P(0), P(1), P(2), P(3), P(4), P(5), P(6))
-    Case 7
-        pvAssignVariant CallByName, VBA.CallByName(Obj, ProcName, CallType, P(0), P(1), P(2), P(3), P(4), P(5), P(6), P(7))
-    Case Else
-        Err.Raise 450                               '--- wrong number of arguments
-    End Select
+    Dim vArgs           As Variant
+    Dim hResult         As Long
+
+    '--- raw IDispatch with LOCALE_USER_DEFAULT
+    vArgs = P
+    hResult = pvDispatchInvoke(Obj, ProcName, CallType, vArgs, CallByName)
+    If hResult < 0 Then
+        Err.Raise hResult
+    End If
 End Function
 
 Public Function jsCallByName(ByVal Obj As Object, ByVal MethodName As String, ByVal CallType As VbCallType, ParamArray P() As Variant) As Variant
-    #If Obj And MethodName And CallType And P Then
-    #End If
-    pvNotImplemented "jsCallByName"
+    Dim vArgs           As Variant
+
+    '--- dispatches on a live JS object over the sync bridge; on failure the
+    '--- result stays Empty and jsLastError holds the reason (there is no
+    '--- ExecuteScript fallback - live JS proxies only travel over the bridge)
+    vArgs = P
+    pvBridgeInvoke "cbn", Array(Obj, CallType, MethodName), vArgs, jsCallByName
 End Function
 
 Public Function jsRun(ByVal FuncName As String, ParamArray P() As Variant) As Variant
     Dim vArgs           As Variant
 
     vArgs = P
-    pvExecScriptSync pvJsBuildCall(FuncName, vArgs), jsRun
+    If Not pvBridgeInvoke("run", Array(FuncName), vArgs, jsRun) Then
+        pvExecScriptSync pvJsBuildCall(FuncName, vArgs), jsRun
+    End If
 End Function
 
 Public Function jsRunAsync(ByVal FuncName As String, ParamArray P() As Variant) As Currency
@@ -1620,6 +1696,12 @@ End Function
 Public Sub Shutdown()
     On Error Resume Next
     m_bShuttingDown = True
+    If Not m_pTimer Is Nothing Then
+        Call TerminateFireOnceTimerThunk(m_pTimer, Me)
+        Set m_pTimer = Nothing
+    End If
+    Set m_cEventQueue = Nothing
+    Set m_oFuncObj = Nothing
     If Not m_oWebView Is Nothing Then
         m_oWebView.RemoveHostObjectFromScript StrPtr("vbHost")
         Set m_oWebView = Nothing
@@ -1649,7 +1731,94 @@ Public Sub Shutdown()
     Set m_oSettings6 = Nothing
 End Sub
 
+Public Function TimerProc() As Long
+Attribute TimerProc.VB_MemberFlags = "40"
+    Dim cBatch          As Collection
+    Dim vEvent          As Variant
+    Dim oContent        As Collection
+    Dim vAsync          As Variant
+
+    On Error GoTo EH
+    '--- fire-once: release the timer up front so events queued while raising
+    '--- (e.g. a jsRun that itself pumps) re-arm a fresh timer for the next tick
+    Set m_pTimer = Nothing
+    Set cBatch = m_cEventQueue
+    Set m_cEventQueue = Nothing
+    If cBatch Is Nothing Then
+        Exit Function
+    End If
+    For Each vEvent In cBatch
+        Select Case vEvent(0)
+        Case ev_InitComplete
+            RaiseEvent InitComplete
+        Case ev_DocumentComplete
+            RaiseEvent DocumentComplete
+        Case ev_NavigationCompleted
+            RaiseEvent NavigationCompleted(vEvent(1), vEvent(2))
+        Case ev_SourceChanged
+            RaiseEvent SourceChanged
+        Case ev_ProcessFailed
+            RaiseEvent ProcessFailed
+        Case ev_JSMessage
+            Set oContent = Nothing
+            If IsObject(vEvent(3)) Then
+                Set oContent = vEvent(3)
+            End If
+            RaiseEvent JSMessage(CStr(vEvent(1)), CStr(vEvent(2)), oContent)
+        Case ev_JSAsyncResult
+            pvAssignVariant vAsync, vEvent(1)
+            RaiseEvent JSAsyncResult(vAsync, CCur(vEvent(2)), CStr(vEvent(3)))
+        Case ev_UserContextMenu
+            RaiseEvent UserContextMenu(vEvent(1), vEvent(2))
+        Case ev_GotFocus
+            RaiseEvent GotFocus(vEvent(1))
+        Case ev_LostFocus
+            RaiseEvent LostFocus(vEvent(1))
+        Case ev_WebResourceResponseReceived
+            Set oContent = Nothing
+            If IsObject(vEvent(5)) Then
+                Set oContent = vEvent(5)
+            End If
+            RaiseEvent WebResourceResponseReceived(CStr(vEvent(1)), CStr(vEvent(2)), vEvent(3), CStr(vEvent(4)), oContent)
+        Case ev_FrameCreated
+            RaiseEvent FrameCreated(CStr(vEvent(1)))
+        Case ev_TitleChanged
+            RaiseEvent TitleChanged(CStr(vEvent(1)))
+        Case ev_ContentLoading
+            RaiseEvent ContentLoading(vEvent(1))
+        Case ev_HistoryChanged
+            RaiseEvent HistoryChanged
+        Case ev_WindowCloseRequested
+            RaiseEvent WindowCloseRequested
+        Case ev_ZoomFactorChanged
+            RaiseEvent ZoomFactorChanged
+        Case ev_DOMContentLoaded
+            RaiseEvent DOMContentLoaded
+        Case ev_StatusBarTextChanged
+            RaiseEvent StatusBarTextChanged(CStr(vEvent(1)))
+        Case ev_ContainsFullScreenElementChanged
+            RaiseEvent ContainsFullScreenElementChanged
+        End Select
+    Next
+    Exit Function
+EH:
+    PrintError "TimerProc"
+End Function
+
 '= private ===============================================================
+
+Private Sub pvQueueEvent(ParamArray P() As Variant)
+    Dim vArgs           As Variant
+
+    vArgs = P
+    If m_cEventQueue Is Nothing Then
+        Set m_cEventQueue = New Collection
+    End If
+    m_cEventQueue.Add vArgs
+    If m_pTimer Is Nothing Then
+        Set m_pTimer = InitFireOnceTimerThunk(Me, pvAddressOfTimerProc.TimerProc())
+    End If
+End Sub
 
 Private Function pvCreateWebView2Environment( _
             sBrowserExecutableFolder As String, _
@@ -1756,7 +1925,7 @@ End Function
 Private Function pvEnsureLoader() As Boolean
     Dim sLoader         As String
 
-    If GetModuleHandle(StrPtr("WebView2Loader.dll")) <> 0 Then
+    If GetModuleHandle("WebView2Loader.dll") <> 0 Then
         pvEnsureLoader = True
         Exit Function
     End If
@@ -1813,6 +1982,124 @@ Private Function pvGetProfile7() As IVBCoreWebView2Profile7
     If Not m_oWebView13 Is Nothing Then
         Set pvGetProfile7 = m_oWebView13.Profile
     End If
+End Function
+
+Private Function pvDispatchInvoke(oDisp As IVBDispatch, sName As String, ByVal eCallType As VbCallType, vArgs As Variant, vResult As Variant) As Long
+    Const LOCALE_USER_DEFAULT           As Long = &H400
+    Const DISPID_PROPERTYPUT            As Long = -3
+    Const DISPATCH_PROPERTYPUT          As Long = 4
+    Const DISPATCH_PROPERTYPUTREF       As Long = 8
+    Dim uIIDNull(0 To 3) As Long
+    Dim uParams         As APIDISPPARAMS
+    Dim aRev()          As Variant
+    Dim lNamePtr        As Long
+    Dim lDispId         As Long
+    Dim lNamedPut       As Long
+    Dim lFlags          As Long
+    Dim lCount          As Long
+    Dim lIdx            As Long
+
+    '--- oDisp is the object QI'd to IDispatch by the caller's implicit cast;
+    '--- GetIDsOfNames/Invoke with LOCALE_USER_DEFAULT - JS host-object proxies
+    '--- reject 0 with DISP_E_UNKNOWNLCID. VbCallType maps 1:1 onto DISPATCH_*
+    Call VariantClear(vResult)
+    lNamePtr = StrPtr(sName)
+    pvDispatchInvoke = oDisp.GetIDsOfNames(VarPtr(uIIDNull(0)), VarPtr(lNamePtr), 1, LOCALE_USER_DEFAULT, VarPtr(lDispId))
+    If pvDispatchInvoke < 0 Then
+        Exit Function
+    End If
+    If IsArray(vArgs) Then
+        lCount = UBound(vArgs) - LBound(vArgs) + 1
+    End If
+    If lCount > 0 Then
+        '--- DISPPARAMS wants the args in reverse order
+        ReDim aRev(0 To lCount - 1)
+        For lIdx = 0 To lCount - 1
+            pvAssignVariant aRev(lCount - 1 - lIdx), vArgs(LBound(vArgs) + lIdx)
+        Next
+        uParams.rgvarg = VarPtr(aRev(0))
+        uParams.cArgs = lCount
+    End If
+    lFlags = eCallType
+    If lFlags = DISPATCH_PROPERTYPUT Or lFlags = DISPATCH_PROPERTYPUTREF Then
+        lNamedPut = DISPID_PROPERTYPUT
+        uParams.rgdispidNamedArgs = VarPtr(lNamedPut)
+        uParams.cNamedArgs = 1
+    End If
+    pvDispatchInvoke = oDisp.Invoke(lDispId, VarPtr(uIIDNull(0)), LOCALE_USER_DEFAULT, lFlags, VarPtr(uParams), VarPtr(vResult), 0, 0)
+End Function
+
+Private Function pvBridgeInvoke(sEntry As String, vPre As Variant, vArgs As Variant, vResult As Variant) As Boolean
+    Dim aLogical()      As Variant
+    Dim vRetVal         As Variant
+    Dim cToken          As Currency
+    Dim sKey            As String
+    Dim vItem           As Variant
+    Dim lCount          As Long
+    Dim lIdx            As Long
+    Dim hResult         As Long
+
+    If m_oFuncObj Is Nothing Then
+        Exit Function
+    End If
+    On Error GoTo EH
+    m_sJsLastError = vbNullString
+    cToken = pvNextToken()
+    sKey = "T" & cToken
+    '--- logical call args: pre-args, token, trailing args - so the JS glue
+    '--- sees (funcName, token, arg0, arg1, ...); pvDispatchInvoke reverses
+    '--- them into DISPPARAMS order
+    lCount = UBound(vPre) + UBound(vArgs) + 3
+    ReDim aLogical(0 To lCount - 1)
+    For lIdx = 0 To UBound(vPre)
+        pvAssignVariant aLogical(lIdx), vPre(lIdx)
+    Next
+    aLogical(UBound(vPre) + 1) = CDbl(cToken)
+    For lIdx = 0 To UBound(vArgs)
+        pvAssignVariant aLogical(UBound(vPre) + 2 + lIdx), vArgs(lIdx)
+    Next
+    m_cScriptResults.Add True, "P" & cToken
+    hResult = pvDispatchInvoke(m_oFuncObj, sEntry, VbMethod, aLogical, vRetVal)
+    If hResult < 0 Then
+        Err.Raise hResult
+    End If
+    If Not pvPumpUntilKey(m_cScriptResults, sKey, m_dbljsCallTimeOutSeconds) Then
+        m_sJsLastError = "Timeout waiting for JS bridge result"
+        GoTo QH
+    End If
+    vItem = m_cScriptResults.Item(sKey)
+    m_cScriptResults.Remove sKey
+    If LenB(vItem(2)) <> 0 Then
+        m_sJsLastError = vItem(2)
+    Else
+        pvAssignVariant vResult, vItem(1)
+    End If
+    pvBridgeInvoke = True
+QH:
+    If pvSearchCollection(m_cScriptResults, "P" & cToken) Then
+        m_cScriptResults.Remove "P" & cToken
+    End If
+    Exit Function
+EH:
+    m_sJsLastError = "Error &H" & Hex$(Err.Number) & " invoking JS bridge"
+    PrintError "pvBridgeInvoke"
+    Resume QH
+End Function
+
+Private Function pvIsDottedPath(sPath As String) As Boolean
+    Dim lIdx            As Long
+
+    If LenB(sPath) = 0 Then
+        Exit Function
+    End If
+    For lIdx = 1 To Len(sPath)
+        Select Case AscW(Mid$(sPath, lIdx, 1))
+        Case 48 To 57, 65 To 90, 97 To 122, 95, 36, 46 '--- 0-9 A-Z a-z _ $ .
+        Case Else
+            Exit Function
+        End Select
+    Next
+    pvIsDottedPath = True
 End Function
 
 Private Function pvGetCookieManager() As IVBCoreWebView2CookieManager
@@ -2338,11 +2625,35 @@ Friend Sub OnControllerCreated(ByVal hResult As Long, ByVal oCtrl As IVBCoreWebV
     AddObject "vbHost", m_oEventSink
     AddScriptToExecuteOnDocumentCreated "var vbH_; function vbH() { return vbH_ || (vbH_ = chrome.webview.hostObjects.sync.vbHost); }" & vbCrLf & _
         "window.addEventListener('contextmenu', function(e) { vbH().RaiseContextMenuEvent(e.screenX, e.screenY); });"
+    '--- RC6-style bridge: hand a JS function table to the host so jsRun/jsProp/
+    '--- jsCallByName dispatch into the renderer and report back through
+    '--- RaiseResultEvent, which returns LIVE JS object proxies (not the JSON
+    '--- copies ExecuteScript yields) and is what makes jsCallByName possible
+    AddScriptToExecuteOnDocumentCreated "(function() {" & vbCrLf & _
+        "function _walk(path) { var ctx = window, ns = path.split('.'), name = ns.pop(); for (var i = 0; i < ns.length; i++) { ctx = ctx[ns[i]]; } return [ctx, name]; }" & vbCrLf & _
+        "function _run(funcName, token) { var eMsg = '', res = null, args = Array.prototype.slice.call(arguments, 2);" & vbCrLf & _
+        "  try { var w = _walk(funcName); res = w[0][w[1]].apply(w[0], args); } catch(e) { eMsg = 'Err in ' + funcName + '(): ' + e.message; }" & vbCrLf & _
+        "  try { vbH().RaiseResultEvent(res, token, eMsg); } catch(e) {} }" & vbCrLf & _
+        "function _cbn(obj, callType, methodName, token) { var eMsg = '', res = null;" & vbCrLf & _
+        "  try { switch (callType) {" & vbCrLf & _
+        "  case 1: res = obj[methodName].apply(obj, Array.prototype.slice.call(arguments, 4)); break;" & vbCrLf & _
+        "  case 2: res = obj[methodName]; break;" & vbCrLf & _
+        "  case 4: case 8: res = obj[methodName] = arguments[4]; break;" & vbCrLf & _
+        "  } } catch(e) { eMsg = 'Err in ' + methodName + '(): ' + e.message; }" & vbCrLf & _
+        "  try { vbH().RaiseResultEvent(res, token, eMsg); } catch(e) {} }" & vbCrLf & _
+        "function _propGet(propName, token) { var eMsg = '', res = null;" & vbCrLf & _
+        "  try { var w = _walk(propName); res = w[0][w[1]]; } catch(e) { eMsg = 'Err in ' + propName + '-Get: ' + e.message; }" & vbCrLf & _
+        "  try { vbH().RaiseResultEvent(res, token, eMsg); } catch(e) {} }" & vbCrLf & _
+        "function _propLet(propName, RHS, token) { var eMsg = '', res = true;" & vbCrLf & _
+        "  try { var w = _walk(propName); w[0][w[1]] = RHS; } catch(e) { eMsg = 'Err in ' + propName + '-Let: ' + e.message; }" & vbCrLf & _
+        "  try { vbH().RaiseResultEvent(res, token, eMsg); } catch(e) {} }" & vbCrLf & _
+        "try { vbH().SetFuncObj({ run: _run, cbn: _cbn, propGet: _propGet, propLet: _propLet }); } catch(e) {}" & vbCrLf & _
+        "})();"
     SyncSizeToHostWindow
     m_oController.IsVisible = 1
     m_hInitError = 0
     m_bInitComplete = True
-    RaiseEvent InitComplete
+    pvQueueEvent ev_InitComplete
     Exit Sub
 EH:
     m_hInitError = Err.Number
@@ -2355,21 +2666,23 @@ Friend Sub SinkNavigationStarting(ByVal bIsUserInitiated As Boolean, ByVal bIsRe
 End Sub
 
 Friend Sub SinkNavigationCompleted(ByVal bIsSuccess As Boolean, ByVal lWebErrorStatus As Long)
+    '--- the done-flag stays synchronous so a blocking Navigate returns here;
+    '--- the events are deferred so they fire after Navigate returns (like RC6)
     m_bNavDone = True
     m_bNavSuccess = bIsSuccess
     m_lNavErrorStatus = lWebErrorStatus
-    RaiseEvent NavigationCompleted(bIsSuccess, lWebErrorStatus)
+    pvQueueEvent ev_NavigationCompleted, bIsSuccess, lWebErrorStatus
     If bIsSuccess Then
-        RaiseEvent DocumentComplete
+        pvQueueEvent ev_DocumentComplete
     End If
 End Sub
 
 Friend Sub SinkSourceChanged()
-    RaiseEvent SourceChanged
+    pvQueueEvent ev_SourceChanged
 End Sub
 
 Friend Sub SinkProcessFailed()
-    RaiseEvent ProcessFailed
+    pvQueueEvent ev_ProcessFailed
 End Sub
 
 Friend Sub SinkScriptDialogOpening(ByVal eKind As eWebView2ScriptDialogKind, bAccept As Boolean, sResultText As String, sUri As String, sMessage As String, sDefaultText As String)
@@ -2448,46 +2761,47 @@ Friend Sub SinkWebResourceResponseReceived(oArgs As IVBCoreWebView2WebResourceRe
             Exit Do
         End If
     Loop
-    RaiseEvent WebResourceResponseReceived(pvToString(oRequest.URI), pvToString(oRequest.Method), oResponse.StatusCode, pvToString(oResponse.ReasonPhrase), cHeaders)
+    pvQueueEvent ev_WebResourceResponseReceived, pvToString(oRequest.URI), pvToString(oRequest.Method), oResponse.StatusCode, pvToString(oResponse.ReasonPhrase), cHeaders
     Exit Sub
 EH:
     PrintError "SinkWebResourceResponseReceived"
 End Sub
 
 Friend Sub SinkFrameCreated(sName As String)
-    RaiseEvent FrameCreated(sName)
+    pvQueueEvent ev_FrameCreated, sName
 End Sub
 
 Friend Sub SinkDocumentTitleChanged()
-    RaiseEvent TitleChange(pvToString(m_oWebView.DocumentTitle))
+    '--- read the title synchronously here; the event is deferred
+    pvQueueEvent ev_TitleChanged, pvToString(m_oWebView.DocumentTitle)
 End Sub
 
 Friend Sub SinkContentLoading(ByVal bIsErrorPage As Boolean)
-    RaiseEvent ContentLoading(bIsErrorPage)
+    pvQueueEvent ev_ContentLoading, bIsErrorPage
 End Sub
 
 Friend Sub SinkHistoryChanged()
-    RaiseEvent HistoryChanged
+    pvQueueEvent ev_HistoryChanged
 End Sub
 
 Friend Sub SinkWindowCloseRequested()
-    RaiseEvent WindowCloseRequested
+    pvQueueEvent ev_WindowCloseRequested
 End Sub
 
 Friend Sub SinkDOMContentLoaded()
-    RaiseEvent DOMContentLoaded
+    pvQueueEvent ev_DOMContentLoaded
 End Sub
 
 Friend Sub SinkStatusBarTextChanged()
-    RaiseEvent StatusBarTextChanged(StatusBarText)
+    pvQueueEvent ev_StatusBarTextChanged, StatusBarText
 End Sub
 
 Friend Sub SinkContainsFullScreenElementChanged()
-    RaiseEvent ContainsFullScreenElementChanged
+    pvQueueEvent ev_ContainsFullScreenElementChanged
 End Sub
 
 Friend Sub SinkZoomFactorChanged()
-    RaiseEvent ZoomFactorChanged
+    pvQueueEvent ev_ZoomFactorChanged
 End Sub
 
 Friend Sub SinkMoveFocusRequested(ByVal lReason As Long, bHandled As Boolean)
@@ -2523,10 +2837,10 @@ End Sub
 
 Friend Sub SinkFocusChanged(ByVal bGotFocus As Boolean)
     If bGotFocus Then
-        RaiseEvent GotFocus(m_eLastFocusReason)
+        pvQueueEvent ev_GotFocus, m_eLastFocusReason
         m_eLastFocusReason = FocusReason_PROGRAMMATIC
     Else
-        RaiseEvent LostFocus(FocusReason_PROGRAMMATIC)
+        pvQueueEvent ev_LostFocus, FocusReason_PROGRAMMATIC
     End If
 End Sub
 
@@ -2536,13 +2850,13 @@ Friend Sub SinkWebMessageReceived(ByVal bIsString As Boolean, sMsg As String, sJ
 
     On Error GoTo EH
     If bIsString Then
-        RaiseEvent JSMessage(sMsg, vbNullString, oContent)
+        pvQueueEvent ev_JSMessage, sMsg, vbNullString, oContent
     Else
         pvJsonParseValue sJson, 1, vResult
         If IsObject(vResult) Then
             Set oContent = vResult
         End If
-        RaiseEvent JSMessage(vbNullString, sJson, oContent)
+        pvQueueEvent ev_JSMessage, vbNullString, sJson, oContent
     End If
     Exit Sub
 EH:
@@ -2564,7 +2878,7 @@ Friend Sub OnExecuteScriptCompleted(ByVal hResult As Long, sResultJson As String
         Else
             pvJsonParseValue sResultJson, 1, vResult
         End If
-        RaiseEvent JSAsyncResult(vResult, cToken, sError)
+        pvQueueEvent ev_JSAsyncResult, vResult, cToken, sError
     ElseIf pvSearchCollection(m_cScriptResults, "P" & cToken) Then
         m_cScriptResults.Remove "P" & cToken
         m_cScriptResults.Add Array(hResult, sResultJson), "T" & cToken
@@ -2613,7 +2927,7 @@ Friend Sub SinkBasicAuthenticationRequested(oArgs As IVBCoreWebView2BasicAuthent
 
     On Error GoTo EH
     bCancel = oArgs.Cancel
-    RaiseEvent BasicAuthenticationRequested(pvToString(oArgs.Uri), pvToString(oArgs.Challenge), sUserName, sPassword, bCancel)
+    RaiseEvent BasicAuthenticationRequested(pvToString(oArgs.URI), pvToString(oArgs.Challenge), sUserName, sPassword, bCancel)
     oArgs.Cancel = -bCancel
     If LenB(sUserName) <> 0 Or LenB(sPassword) <> 0 Then
         Set oResponse = oArgs.Response
@@ -2699,6 +3013,146 @@ Friend Sub OnPrintToPdfStream(ByVal hResult As Long, oPdfStream As IVBStream, By
 EH:
     PrintError "OnPrintToPdfStream"
 End Sub
+
+'=========================================================================
+' MST
+'=========================================================================
+
+Public Function InitAddressOfMethod(pObj As Object, ByVal MethodParamCount As Long) As Object
+    Dim STR_THUNK       As String: STR_THUNK = "6AAAAABag+oFV4v6ge9QEMEAgcekEcEAuP9EJAS5+QcAAPOri8LB4AgFuQAAAKuLwsHoGAUAjYEAq7gIAAArq7hEJASLq7hJCIsEq7iBi1Qkq4tEJAzB4AIFCIkCM6uLRCQMweASBcDCCACriTrHQgQBAAAAi0QkCIsAiUIIi0QkEIlCDIHqUBDBAIvCBTwRwQCri8IFUBHBAKuLwgVgEcEAq4vCBYQRwQCri8IFjBHBAKuLwgWUEcEAq4vCBZwRwQCri8IFpBHBALn5BwAAq4PABOL6i8dfgcJQEMEAi0wkEIkRK8LCEAAPHwCLVCQE/0IEi0QkDIkQM8DCDABmkItUJAT/QgSLQgTCBAAPHwCLVCQE/0oEi0IEg/gAfgPCBABZWotCDGgAgAAAagBSUf/gZpC4AUAAgMIIALgBQACAwhAAuAFAAIDCGAC4AUAAgMIkAA==" ' 25.3.2019 14:01:08
+    Const THUNK_SIZE    As Long = 16728
+    Dim hThunk          As Long
+    Dim lSize           As Long
+    
+    hThunk = pvThunkAllocate(STR_THUNK, THUNK_SIZE)
+    If hThunk = 0 Then
+        Exit Function
+    End If
+    lSize = CallWindowProc(hThunk, ObjPtr(pObj), MethodParamCount, GetProcAddress(GetModuleHandle("kernel32"), "VirtualFree"), VarPtr(InitAddressOfMethod))
+    Debug.Assert lSize = THUNK_SIZE
+End Function
+
+Public Function InitFireOnceTimerThunk(pObj As Object, ByVal pfnCallback As Long, Optional Delay As Long) As IUnknown
+    Dim STR_THUNK       As String: STR_THUNK = "6AAAAABag+oFgeogEQUAV1aLdCQUg8YIgz4AdCqL+oHHDBMFAIvCBSgSBQCri8IFZBIFAKuLwgV0EgUAqzPAq7kIAAAA86WBwgwTBQBSahj/UhBai/iLwqu4AQAAAKszwKuri3QkFKWlg+8Yi0IMSCX/AAAAUItKDDsMJHULWIsPV/9RFDP/62P/QgyBYgz/AAAAjQTKjQTIjUyIMIB5EwB101jHAf80JLiJeQTHQQiJRCQEi8ItDBMFAAWgEgUAUMHgCAW4AAAAiUEMWMHoGAUA/+CQiUEQiU8MUf90JBRqAGoAiw//URiJRwiLRCQYiTheX7g8EwUALSARBQAFABQAAMIQAGaQi0QkCIM4AHUqg3gEAHUkgXgIwAAAAHUbgXgMAAAARnUSi1QkBP9CBItEJAyJEDPAwgwAuAJAAIDCDACQi1QkBP9CBItCBMIEAA8fAItUJAT/SgSLQgR1HYtCDMZAEwCLCv9yCGoA/1Eci1QkBIsKUv9RFDPAwgQAi1QkBItCEIXAdFuLCotBKIXAdCdS/9Bag/gBd0mLClL/USxahcB1PosKUmrw/3Eg/1EkWqkAAAAIdSuLClL/cghqAP9RHFr/QgQzwFBU/3IQ/1IUi1QkCMdCCAAAAABS6G////9YwhQADx8AjURAAQ==" ' 13.5.2020 18:59:12
+    Const THUNK_SIZE    As Long = 5660
+    Static hThunk       As Long
+    Dim aParams(0 To 9) As Long
+    Dim lSize           As Long
+    
+    aParams(0) = ObjPtr(pObj)
+    aParams(1) = pfnCallback
+    #If ImplSelfContained Then
+        If hThunk = 0 Then
+            hThunk = pvThunkGlobalData("InitFireOnceTimerThunk")
+        End If
+    #End If
+    If hThunk = 0 Then
+        hThunk = pvThunkAllocate(STR_THUNK, THUNK_SIZE)
+        If hThunk = 0 Then
+            Exit Function
+        End If
+        aParams(2) = GetProcAddress(GetModuleHandle("ole32"), "CoTaskMemAlloc")
+        aParams(3) = GetProcAddress(GetModuleHandle("ole32"), "CoTaskMemFree")
+        aParams(4) = GetProcAddress(GetModuleHandle("user32"), "SetTimer")
+        aParams(5) = GetProcAddress(GetModuleHandle("user32"), "KillTimer")
+        '--- for IDE protection
+        Debug.Assert pvThunkIdeOwner(aParams(6))
+        If aParams(6) <> 0 Then
+            aParams(7) = GetProcAddress(GetModuleHandle("user32"), "GetWindowLongA")
+            aParams(8) = GetProcAddress(GetModuleHandle("vba6"), "EbMode")
+            aParams(9) = GetProcAddress(GetModuleHandle("vba6"), "EbIsResetting")
+        End If
+        #If ImplSelfContained Then
+            pvThunkGlobalData("InitFireOnceTimerThunk") = hThunk
+        #End If
+    End If
+    lSize = CallWindowProc(hThunk, 0, Delay, VarPtr(aParams(0)), VarPtr(InitFireOnceTimerThunk))
+    Debug.Assert lSize = THUNK_SIZE
+End Function
+
+Public Function TerminateFireOnceTimerThunk(pTimer As IUnknown, pObj As Object) As IUnknown
+    If Not pTimer Is Nothing Then
+        Debug.Assert ThunkPrivateData(pTimer, 2) = ObjPtr(pObj)
+        ThunkPrivateData(pTimer, 2) = 0
+        Set pTimer = Nothing
+    End If
+End Function
+
+Public Property Get ThunkPrivateData(pThunk As IUnknown, Optional ByVal Index As Long) As Long
+    Dim lPtr            As Long
+    
+    lPtr = ObjPtr(pThunk)
+    If lPtr <> 0 Then
+        Call CopyMemory(ThunkPrivateData, ByVal (lPtr Xor SIGN_BIT) + 8 + Index * 4 Xor SIGN_BIT, PTR_SIZE)
+    End If
+End Property
+
+Public Property Let ThunkPrivateData(pThunk As IUnknown, Optional ByVal Index As Long, ByVal lValue As Long)
+    Dim lPtr            As Long
+    
+    lPtr = ObjPtr(pThunk)
+    If lPtr <> 0 Then
+        Call CopyMemory(ByVal (lPtr Xor SIGN_BIT) + 8 + Index * 4 Xor SIGN_BIT, lValue, PTR_SIZE)
+    End If
+End Property
+
+Private Function pvThunkIdeOwner(hIdeOwner As Long) As Boolean
+    #If Not ImplNoIdeProtection Then
+        Dim lProcessId      As Long
+        
+        Do
+            hIdeOwner = FindWindowEx(0, hIdeOwner, "IDEOwner", vbNullString)
+            Call GetWindowThreadProcessId(hIdeOwner, lProcessId)
+        Loop While hIdeOwner <> 0 And lProcessId <> GetCurrentProcessId()
+    #End If
+    pvThunkIdeOwner = True
+End Function
+
+Private Function pvThunkAllocate(sText As String, Optional ByVal Size As Long) As Long
+    Const MEM_COMMIT                    As Long = &H1000
+    Const PAGE_EXECUTE_READWRITE        As Long = &H40
+    Static Map(0 To &H3FF) As Long
+    Dim baInput()       As Byte
+    Dim lIdx            As Long
+    Dim lChar           As Long
+    Dim lPtr            As Long
+    
+    pvThunkAllocate = VirtualAlloc(0, IIf(Size > 0, Size, (Len(sText) \ 4) * 3), MEM_COMMIT, PAGE_EXECUTE_READWRITE)
+    If pvThunkAllocate = 0 Then
+        Exit Function
+    End If
+    '--- init decoding maps
+    If Map(65) = 0 Then
+        baInput = StrConv("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", vbFromUnicode)
+        For lIdx = 0 To UBound(baInput)
+            lChar = baInput(lIdx)
+            Map(&H0 + lChar) = lIdx * (2 ^ 2)
+            Map(&H100 + lChar) = (lIdx And &H30) \ (2 ^ 4) Or (lIdx And &HF) * (2 ^ 12)
+            Map(&H200 + lChar) = (lIdx And &H3) * (2 ^ 22) Or (lIdx And &H3C) * (2 ^ 6)
+            Map(&H300 + lChar) = lIdx * (2 ^ 16)
+        Next
+    End If
+    '--- base64 decode loop
+    baInput = StrConv(Replace(Replace(sText, vbCr, vbNullString), vbLf, vbNullString), vbFromUnicode)
+    lPtr = pvThunkAllocate
+    For lIdx = 0 To UBound(baInput) - 3 Step 4
+        lChar = Map(baInput(lIdx + 0)) Or Map(&H100 + baInput(lIdx + 1)) Or Map(&H200 + baInput(lIdx + 2)) Or Map(&H300 + baInput(lIdx + 3))
+        Call CopyMemory(ByVal lPtr, lChar, 3)
+        lPtr = (lPtr Xor SIGN_BIT) + 3 Xor SIGN_BIT
+    Next
+End Function
+
+Private Property Get pvThunkGlobalData(sKey As String) As Long
+    Dim sBuffer     As String
+    
+    sBuffer = String$(50, 0)
+    Call GetEnvironmentVariable("_MST_GLOBAL" & GetCurrentProcessId() & "_" & sKey, sBuffer, Len(sBuffer) - 1)
+    pvThunkGlobalData = Val(Left$(sBuffer, InStr(sBuffer, vbNullChar) - 1))
+End Property
+
+Private Property Let pvThunkGlobalData(sKey As String, ByVal lValue As Long)
+    Call SetEnvironmentVariable("_MST_GLOBAL" & GetCurrentProcessId() & "_" & sKey, lValue)
+End Property
 
 '=========================================================================
 ' Base class events

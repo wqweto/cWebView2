@@ -56,6 +56,33 @@ or timeout) is reproduced by spinning the thread message pump
 async completion fires. Completions are correlated by `Currency` tokens so
 nested and interleaved calls cannot cross wires.
 
+`jsRun`/`jsProp`/`jsCallByName` run over an RC6-style **`SetFuncObj` bridge**: an
+injected script hands a JS function table (`{run, cbn, propGet, propLet}`) to the
+host as a live `IDispatch` proxy; the wrapper resolves and calls those with raw
+`GetIDsOfNames`/`Invoke` (via `IVBDispatch`, LCID `LOCALE_USER_DEFAULT` — JS
+scripting proxies reject LCID 0), and the JS glue reports the result back through
+a nested `RaiseResultEvent`. That result — including **live JS object proxies**,
+not the JSON copies `ExecuteScript` yields — is what makes `jsCallByName` work.
+The nested `RaiseResultEvent` is *not* dispatched reentrantly (WebView2 queues
+the incoming host-object call), so the bridge pumps the message loop for it, with
+the `jsCallTimeOutSeconds` timeout.
+
+Because WebView2 serialises callbacks — no callback (including the bridge's
+result) is delivered while another is on our stack — a blocking `jsRun` from
+*inside* an event handler would otherwise deadlock. So notification events
+(`NavigationCompleted`, `DocumentComplete`, `TitleChanged`, `DOMContentLoaded`,
+`JSMessage`, ...) are **deferred**: their args are captured synchronously and the
+event is raised one message-loop tick later, from a fire-once timer, on a clean
+stack where `jsRun`/`jsProp`/`jsCallByName` work. This matches RC6, where
+`NavigationCompleted`/`DocumentComplete` likewise fire *after* `Navigate` returns
+(the internal done-flag stays synchronous, so blocking `Navigate` is unaffected).
+Cancelable/answerable events (`NavigationStarting`, `PermissionRequested`,
+`ScriptDialogOpening`, `NewWindowRequested`, `AcceleratorKeyPressed`,
+`WebResourceRequested`, `ContextMenuRequested`, `DownloadStarting`,
+`MoveFocusRequested`, `BasicAuthenticationRequested`) are raised inline because
+the native side reads their `ByRef` answer back — `jsRun` cannot be used in those
+(nor can it in RC6), use `jsRunAsync` there instead.
+
 ## RC6 compatibility notes
 
 - The instance registers its `cWebView2Callback` as host object `vbHost` and
@@ -114,25 +141,25 @@ nested and interleaved calls cannot cross wires.
 ## Status
 
 All RC6 `cWebView2` properties, methods and events are implemented and verified
-against live pages (navigation, JS interop incl. blocking/async calls and JSON
-marshaling, host objects, web messages, settings, script dialogs, permissions,
-new-window, accelerator keys, focus, web-resource filtering, response
-introspection, frames, downloads, capture) — except the members below:
+against live pages (navigation, JS interop incl. blocking/async calls, live JS
+object proxies and JSON marshaling, host objects, web messages, settings, script
+dialogs, permissions, new-window, accelerator keys, focus, web-resource
+filtering, response introspection, frames, downloads, capture). Notes:
 
-- `GetMostRecentInstallPath` — resolves the runtime version through the
-  loader, fills the `VersionString` out-param and returns
-  `%ProgramFiles(x86)%\Microsoft\<EdgeChannel>\Application\<version>` when
-  that folder exists (matching live RC6 output), empty string otherwise.
-- `jsCallByName` — raises "not yet implemented"; needs live JS object
-  proxies, which the `ExecuteScript`
-  channel used here cannot provide (results are JSON strings only). RC6 gets
-  them through its `SetFuncObj` bridge: its injected script hands a JS
-  function table (`{run, cbn, propGet, propLet}`) to VB6 as a live `IDispatch`
-  proxy, routes `jsRun`/`jsProp`/`jsCallByName` through it with `CallByName`,
-  and receives results (incl. live JS objects) back via `RaiseResultEvent`
-  token correlation. `SetFuncObj` itself is likewise omitted — it is only
-  ever called by RC6's own injected script, never by user code. Both would
-  come back together if `jsCallByName` parity turns out to matter.
+- `jsRun`/`jsProp`/`jsCallByName` run over the `SetFuncObj` bridge (see *How it
+  works*) and return **live JS object proxies**, so `jsCallByName` dispatches on
+  objects obtained from `jsRun`/`jsProp` exactly as in RC6. Like RC6,
+  `jsProp("window")` returns `Empty` (WebView2 won't marshal the global `window`
+  object) — expose a named object instead; nested objects (`jsProp("window.x")`)
+  come back live and callable. `jsProp` reads dotted property paths only;
+  arbitrary expressions fall back to `ExecuteScript` evaluation.
+- `jsRun`/`jsProp`/`jsCallByName` work inside deferred event handlers (see *How
+  it works*) but not inside cancelable events (`NavigationStarting`, etc.) — use
+  `jsRunAsync` there, same as RC6.
+- `GetMostRecentInstallPath` — resolves the runtime version through the loader,
+  fills the `VersionString` out-param and returns
+  `%ProgramFiles(x86)%\Microsoft\<EdgeChannel>\Application\<version>` when that
+  folder exists (matching live RC6 output), empty string otherwise.
 
 ### Additions beyond RC6 parity
 

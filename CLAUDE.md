@@ -9,7 +9,7 @@
 - One blank line between procedures
 - One blank line between the `Dim` block and the first executable line inside a procedure; no other blank lines inside a procedure body
 - Comments only where the VB6 diverges non-obviously from the C++ (e.g. unsigned workarounds)
-- Use hungarian notation: s - String, l - Long, n - Integer, b - Boolean, o - Object, c - Collection, d - Date, dbl - Double, sng - Single, byt - Byte, u - UDTs, h - Handles (incl. hResult), c - Currency
+- Use hungarian notation: s - String, l - Long, n - Integer, b - Boolean, o - Object, c - Collection, d - Date, dbl - Double, sng - Single, byt - Byte, u - UDTs, h - Handles (incl. hResult), cy - Currency
 - Use `ba` prefix for byte arrays, use `a` only for arrays no matter what type they are
 - Use `m_` prefix for member variables and `g_` for global ones
 - Use `md` prefix for standard modules, `c` for classes, `frm` for forms, `ctx` for user-controls

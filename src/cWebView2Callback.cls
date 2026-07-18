@@ -166,6 +166,20 @@ Public Sub RaiseMessageEvent(sMsg As Variant, sMsgContent As Variant)
     pvOwner.RaiseMessageEvent sMsg, sMsgContent
 End Sub
 
+Public Sub RaiseResultEvent(Res As Variant, ByVal Token As Variant, ByVal ErrMsg As Variant)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.RaiseResultEvent Res, Token, ErrMsg
+End Sub
+
+Public Sub SetFuncObj(FuncObj As Variant)
+    If m_lOwnerWeakRef = 0 Then
+        Exit Sub
+    End If
+    pvOwner.SetFuncObj FuncObj
+End Sub
+
 '= private ===============================================================
 
 Private Function pvToString(ByVal lPtr As Long, Optional ByVal DontFree As Boolean) As String
