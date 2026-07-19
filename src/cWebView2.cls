@@ -203,6 +203,8 @@ Private Declare Function CreateStreamOnHGlobal Lib "ole32" (ByVal hGlobal As Lon
 Private Declare Function GetFileAttributes Lib "kernel32" Alias "GetFileAttributesW" (ByVal lpFileName As Long) As Long
 Private Declare Function CreateEvent Lib "kernel32" Alias "CreateEventW" (ByVal lpEventAttributes As Long, ByVal bManualReset As Long, ByVal bInitialState As Long, ByVal lpName As Long) As Long
 Private Declare Function CloseHandle Lib "kernel32" (ByVal hObject As Long) As Long
+Private Declare Function RegisterWindowMessage Lib "user32" Alias "RegisterWindowMessageW" (ByVal lpString As Long) As Long
+Private Declare Function PostMessage Lib "user32" Alias "PostMessageW" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
 
 Private Type APIMSG
     hWnd                As Long
@@ -273,6 +275,7 @@ Private m_hPumpEvent                As Long
 Private m_oFuncObj                  As Object
 Private m_pTimer                    As IUnknown
 Private m_cEventQueue               As Collection
+Private m_lDeferMsg                 As Long
 
 Private Enum eDeferredEvent
     ev_InitComplete = 1
@@ -1729,6 +1732,10 @@ Public Sub Shutdown()
     End If
     Set m_oSettings = Nothing
     Set m_oSettings6 = Nothing
+    If m_hPumpEvent <> 0 Then
+        Call CloseHandle(m_hPumpEvent)
+        m_hPumpEvent = 0
+    End If
 End Sub
 
 Public Function TimerProc() As Long
@@ -1815,7 +1822,9 @@ Private Sub pvQueueEvent(ParamArray P() As Variant)
         Set m_cEventQueue = New Collection
     End If
     m_cEventQueue.Add vArgs
-    If m_pTimer Is Nothing Then
+    If m_hPumpEvent <> 0 Then
+        Call PostMessage(m_hWndHost, m_lDeferMsg, 0, 0)
+    ElseIf m_pTimer Is Nothing Then
         Set m_pTimer = InitFireOnceTimerThunk(Me, pvAddressOfTimerProc.TimerProc())
     End If
 End Sub
@@ -1881,8 +1890,6 @@ Private Sub SpinThreadMessagePump(Optional ByVal Flush As Boolean, Optional ByVa
     Const WM_MOUSELAST  As Long = &H209
     Dim uMsg            As APIMSG
 
-    '--- CoWaitForMultipleHandles fails with E_INVALIDARG when passed no
-    '--- waitable handles, so wait on a dummy never-signaled event
     If m_hPumpEvent = 0 Then
         m_hPumpEvent = CreateEvent(0, 1, 0, 0)
     End If
@@ -1892,7 +1899,9 @@ Private Sub SpinThreadMessagePump(Optional ByVal Flush As Boolean, Optional ByVa
     Call CoWaitForMultipleHandles(0, 0, 1, m_hPumpEvent, 0)
     Do While PeekMessage(VarPtr(uMsg), hWnd, FromMsg, ToMsg, PM_REMOVE) <> 0
         Call TranslateMessage(VarPtr(uMsg))
-        If Flush And (uMsg.lMessage >= WM_KEYFIRST And uMsg.lMessage <= WM_KEYLAST _
+        If uMsg.lMessage = m_lDeferMsg Then
+            TimerProc
+        ElseIf Flush And (uMsg.lMessage >= WM_KEYFIRST And uMsg.lMessage <= WM_KEYLAST _
                         Or uMsg.lMessage >= WM_MOUSEFIRST And uMsg.lMessage <= WM_MOUSELAST _
                         Or uMsg.lMessage >= WM_NCMOUSEFIRST And uMsg.lMessage <= WM_NCMOUSELAST) Then
             '--- flush
@@ -1901,6 +1910,10 @@ Private Sub SpinThreadMessagePump(Optional ByVal Flush As Boolean, Optional ByVa
         End If
         Call CoWaitForMultipleHandles(0, 0, 1, m_hPumpEvent, 0)
     Loop
+    If m_hPumpEvent <> 0 Then
+        Call CloseHandle(m_hPumpEvent)
+        m_hPumpEvent = 0
+    End If
 End Sub
 
 Private Property Get TimerEx() As Double
@@ -2483,6 +2496,7 @@ End Sub
 Private Function CollectionAllKeys(oCol As Collection, Optional ByVal StartIndex As Long) As String()
     Const o_KeyPtr              As Long = &H10
     Const o_pNextIndexedItem    As Long = &H18
+    Const NULL_PTR              As Long = 0
     Dim lPtr            As Long
     Dim aRetVal()       As String
     Dim lIdx            As Long
@@ -2498,7 +2512,7 @@ Private Function CollectionAllKeys(oCol As Collection, Optional ByVal StartIndex
             Call CopyMemory(ByVal VarPtr(sTemp), ByVal lPtr + o_KeyPtr, 4)
             aRetVal(lIdx) = sTemp
         Next
-        Call CopyMemory(ByVal VarPtr(sTemp), 0&, 4)
+        Call CopyMemory(ByVal VarPtr(sTemp), NULL_PTR, 4)
     End If
     CollectionAllKeys = aRetVal
 End Function
@@ -3161,12 +3175,9 @@ End Property
 Private Sub Class_Initialize()
     m_dbljsCallTimeOutSeconds = 8
     Set m_cScriptResults = New Collection
+    m_lDeferMsg = RegisterWindowMessage(StrPtr("cWebView2 Defer Event"))
 End Sub
 
 Private Sub Class_Terminate()
     Shutdown
-    If m_hPumpEvent <> 0 Then
-        Call CloseHandle(m_hPumpEvent)
-        m_hPumpEvent = 0
-    End If
 End Sub

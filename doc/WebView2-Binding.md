@@ -2,7 +2,7 @@
 
 Source: <https://www.vbforums.com/showthread.php?889202-VB6-WebView2-Binding-(Edge-Chromium)>
 
-Archived: 2026-07-18 (14 pages)
+Archived: 2026-07-19 (14 pages)
 
 ## #1 Schmidt — Nov 1st, 2020, 08:56 AM
 
@@ -25,14 +25,14 @@ Have just finished a Binding to the new WebView2-BrowserControl (based on Edge-C
  - and the successfull installation of the "evergreen-WebView2-runtime" via the MS-download-link above
 
  You should now be able to test this new Edge-Browser-Binding (even on Win7-OSes) via this little VB6-Demo:
- <https://www.vbforums.com/attachment.php?s=9b84d96bf559669a1dc45b4f80d160b8&attachmentid=179166&d=1604238779> WebView2Demo.zip
+ <https://www.vbforums.com/attachment.php?s=590ef57ea31a7b12593e267acfc3f2a6&attachmentid=179166&d=1604238779> WebView2Demo.zip
 
  Please let me know, when something is not working as expected -
  or when you want me to include a certain extra-functionality into the new cWebView2-class.
 
  I want to "finalize" the new RC6-functionality at the end of the year (then switching Binary-Compatibility on).
 
- Happy testing... *[img: Smilie]*
+ Happy testing... :)
 
  Olaf
 
@@ -109,15 +109,11 @@ sMsgContent=22,33
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
+> HOW TO get web page cookie?
 
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-HOW TO get web page cookie?
-
-The WebView2-interfaces do **not **include (other than the old, IE-based WebControl)
+The WebView2-interfaces do **not** include (other than the old, IE-based WebControl)
  a COM-Wrapper-ObjectModel for interaction with the DOM of a loaded document.
 
  So, all the interaction with a currently loaded DOM has to happen via JavaScript.
@@ -150,23 +146,15 @@ As for your BrowserVersion-String - the one you've posted:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-(1) Could you add IndexByItem to RC6.cCollection?
+> (1) Could you add IndexByItem to RC6.cCollection?
 
 This is already implemented (via Optional ByRef Param: FoundItemIndex) in the cCollection.ItemExists(...) method.
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-(2) Can WebView.CapturePreview capture the entire Web page, not just the visible part of the window?
+> (2) Can WebView.CapturePreview capture the entire Web page, not just the visible part of the window?
 
 One could determine (via JavaScript) the "total Height in Pixels" a Document would fit into
  (whilst having a certain PixelWidth) - and then manually resize the WebView (via WV.Movexxx) temporarily,
@@ -174,46 +162,30 @@ One could determine (via JavaScript) the "total Height in Pixels" a Document wou
 
  But this feature-request came up also in the "Issue-tracker" IIRC, so I'd like to wait for the official release.
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-(3) Could you demonstrate the drag operations of WebView, for example: Drag a button or grid from the VB6-Form to WebView, and WebView will generate a Html-Button or a Html-Table in the Web page. Similar to the following: <https://www.layoutit.com/build> https://www.layoutit.com/build
+> (3) Could you demonstrate the drag operations of WebView, for example: Drag a button or grid from the VB6-Form to WebView, and WebView will generate a Html-Button or a Html-Table in the Web page. Similar to the following: <https://www.layoutit.com/build> https://www.layoutit.com/build
 
 As already statet, one has to incorporate ones own js-snippets into the WebView2-Control,
  to address such actions.
  As e.g. shown here: <https://www.w3schools.com/html/html5_draganddrop.asp> https://www.w3schools.com/html/html5_draganddrop.asp
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-(4) Can V8 be integrated into RC6?
+> (4) Can V8 be integrated into RC6?
 
 With the WebView2-Binding, one already has access to the V8-js-engine (it is included via Chromium within this new Edge-based Control).
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-(5) If V8 is too large, can RC6 integrate a small embedded JavaScript engine similar to QuickJS or MuJS?
+> (5) If V8 is too large, can RC6 integrate a small embedded JavaScript engine similar to QuickJS or MuJS?
 
 I'd think that JScript9 (via cActiveScript) is already a "small and relatively fast" js-Engine one can use -
  and as said, for V8-support, one can use the WebView2 (e.g. hosted-in/bound-to an invisible PicBox).
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-(6) When we use VB6 to develop commercial controls, .NET developers are not willing to use VB6 controls, they prefer to use .NET controls. When we use VB6 to develop commercial software, our commercial software can only run on the Windows platform, while our competitors' products can run on multiple platforms (Windows, Web, Android, iOS). In other words, we don't know what we can do with VB6 now? If RC6 could help developers in cross-platform, it would be a very wonderful thing.
+> (6) When we use VB6 to develop commercial controls, .NET developers are not willing to use VB6 controls, they prefer to use .NET controls. When we use VB6 to develop commercial software, our commercial software can only run on the Windows platform, while our competitors' products can run on multiple platforms (Windows, Web, Android, iOS). In other words, we don't know what we can do with VB6 now? If RC6 could help developers in cross-platform, it would be a very wonderful thing.
 
 That depends on, when a VB6-compatible compiler becomes available.
  My spare-time is not sufficient, to drive this side-project of mine along in a decent pace currently.
@@ -240,14 +212,10 @@ Hi Olaf, I couldn't make it run
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **LeandroA**
 >
-
->
-
- *[img: Quote]* Originally Posted by **LeandroA** *[img: View Post]*
-
-what am I doing wrong?
- i think i can't register rc6.dll, but if i can load it to project
+> what am I doing wrong?
+>  i think i can't register rc6.dll, but if i can load it to project
 
 I think, that's what you need to resolve first.
  Just loading the typelib of the RC6 (semiautomatically... via the VB6-IDE),
@@ -267,48 +235,32 @@ I think, that's what you need to resolve first.
 
 (From dm)
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-This is already implemented (via Optional ByRef Param: FoundItemIndex) in the cCollection.ItemExists(...) method.
+> This is already implemented (via Optional ByRef Param: FoundItemIndex) in the cCollection.ItemExists(...) method.
 
 Yes, in many cases, cCollection.ItemExists and FoundItemIndex are more convenient. But IndexByItem is more concise and intuitive, it's very necessary to add IndexByItem to cCollection.
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-I'd think that JScript9 (via cActiveScript) is already a "small and relatively fast" js-Engine one can use -
- and as said, for V8-support, one can use the WebView2 (e.g. hosted-in/bound-to an invisible PicBox).
+> I'd think that JScript9 (via cActiveScript) is already a "small and relatively fast" js-Engine one can use -
+>  and as said, for V8-support, one can use the WebView2 (e.g. hosted-in/bound-to an invisible PicBox).
 
 cActiveScript does not seem to support some of the latest JS syntax and the latest RE parameters.
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-That depends on, when a VB6-compatible compiler becomes available.
- My spare-time is not sufficient, to drive this side-project of mine along in a decent pace currently.
+> That depends on, when a VB6-compatible compiler becomes available.
+>  My spare-time is not sufficient, to drive this side-project of mine along in a decent pace currently.
 
 If a programming language wants to gain long-term vitality, it must have good commercial value, so as to form a stable software ecological chain around this programming language. If RC5/RC6 users can develop some valuable commercial software around RC6, then you will have more resources (funds and teams) to speed up the development of VB6-compatible compiler. I don't know if you have had such a plan.
 
  I can develop some good commercial software with VB6 and RC5/RC6, but the problem is that if a commercial software can only run in a Windows environment, its market demand and market share will be very low. Such softwares cannot form a solid software ecological chain, nor can they provide you with more resources.
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Meanwhile others might come up with "something promising" in this regard -
- but the timeframe will in either case be measured in years, not months.
+> Meanwhile others might come up with "something promising" in this regard -
+>  but the timeframe will in either case be measured in years, not months.
 
 A few years is too long.
  I'm thinking, if we develop a scripting language compatible with the syntax of the BASIC language, and then develop a scripting language runtime environment similar to NodeJS. Is it possible to realize a VB6-like programming language that can be cross-platform? Of course, this scripting language must have a visual IDE similar to VB6.
@@ -324,13 +276,9 @@ Check RadBasic, Mercury VB, B4X
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-A few years is too long..
+> A few years is too long..
 
 Like everyhting in life a new VB compiler will take enough time, patience and disposable income. Judging by the expressed lack of time *and* obvious lack of patience you must be in posession of a lot of disposable income.
 
@@ -357,13 +305,9 @@ A small question about WebView2Demo:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-...every time the computer is restarted, the first initialization (WV.BindTo) always fails, and the second time is normal.
+> ...every time the computer is restarted, the first initialization (WV.BindTo) always fails, and the second time is normal.
 
 The BindTo (as well as the two Navigate-Methods) have a second (optional)TimeOutSeconds-Parameter -
  by default sitting at 5 seconds.
@@ -377,13 +321,9 @@ The BindTo (as well as the two Navigate-Methods) have a second (optional)TimeOut
  - or set it to Zero, to tell the methods to wait for their matching EventHandlers
  .. (WV_InitComplete or WV_NavigationCompleted respectively, to proceed with your own, now async Inits from within those Handlers)
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-In addition, how does IE-WebBrowser achieve a function similar to WebView2.CapturePreview?
+> In addition, how does IE-WebBrowser achieve a function similar to WebView2.CapturePreview?
 
 You still planning on using the IE further???
 
@@ -399,54 +339,38 @@ You still planning on using the IE further???
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> The BindTo (as well as the two Navigate-Methods) have a second (optional)TimeOutSeconds-Parameter -
+>  by default sitting at 5 seconds.
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-The BindTo (as well as the two Navigate-Methods) have a second (optional)TimeOutSeconds-Parameter -
- by default sitting at 5 seconds.
-
- I guess your system is (shortly after booting) still quite busy with delayed loading of other base-stuff like services etc. -
- in addition to loading the quite large Chromium-Runtime, ... so the default of 5sec may be a bit too short -
- (I can imagine, that older magnetic disks might play a role, because I see no larger delay here on my test-OSes on SSDs).
-
- You could:
- - either try to increase that TimeOut-Param (to maybe 10sec or so)
- - or set it to Zero, to tell the methods to wait for their matching EventHandlers
- .. (WV_InitComplete or WV_NavigationCompleted respectively, to proceed with your own, now async Inits from within those Handlers)
+>  I guess your system is (shortly after booting) still quite busy with delayed loading of other base-stuff like services etc. -
+>  in addition to loading the quite large Chromium-Runtime, ... so the default of 5sec may be a bit too short -
+>  (I can imagine, that older magnetic disks might play a role, because I see no larger delay here on my test-OSes on SSDs).
+>
+>  You could:
+>  - either try to increase that TimeOut-Param (to maybe 10sec or so)
+>  - or set it to Zero, to tell the methods to wait for their matching EventHandlers
+>  .. (WV_InitComplete or WV_NavigationCompleted respectively, to proceed with your own, now async Inits from within those Handlers)
 
 Yes, after changing SecondsToWaitForInitComplete from 5 to 10, the problem was solved. Thank you very much.
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-You still planning on using the IE further???
+> You still planning on using the IE further???
 
 I plan to gradually replace IE with WebView2 in the next period of time, but it will take some time. During this period, IE and WebView2 will exist in my system at the same time.
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Well, there's an IHTMLPainter interface one can cast to (IIRC, from an IHTMLWindow2), which offers a Draw-method.
- There's also PrintPreview-interfaces which allow capturing of one (or more) pages.
+> Well, there's an IHTMLPainter interface one can cast to (IIRC, from an IHTMLWindow2), which offers a Draw-method.
+>  There's also PrintPreview-interfaces which allow capturing of one (or more) pages.
 
 Ok. I will try this method.
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-And of course you could try to work via API-calls directly on the hWnd of that Control, to copy its current Render-Output.
+> And of course you could try to work via API-calls directly on the hWnd of that Control, to copy its current Render-Output.
 
 Yes, I know this way. I can use SendMessage(...WM_PRINT...) to capture IE Preview.
 
@@ -485,14 +409,10 @@ Hello Olaf
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-Is there a way to force the localization of the cWebView2 component?
- On my computer, the sub menus are still in English despite an installation on a French Windows 10!
+> Is there a way to force the localization of the cWebView2 component?
+>  On my computer, the sub menus are still in English despite an installation on a French Windows 10!
 
 Ah, yes... sorry.
 
@@ -537,21 +457,17 @@ Another question, Olaf!
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
-Thanks Olaf, this is really superb work. My VB6 app can finally be HTML5 compatible. *[img: Smilie]*
+Thanks Olaf, this is really superb work. My VB6 app can finally be HTML5 compatible. :)
 
 ## #22 Schmidt — Nov 22nd, 2020, 08:44 PM
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-Another question, Olaf!
- Is there a way to intercept the URL when opening a new window after clicking on the "Open in new tab" submenu?
- This would allow programming the display of the new page in a new cWebView2
+> Another question, Olaf!
+>  Is there a way to intercept the URL when opening a new window after clicking on the "Open in new tab" submenu?
+>  This would allow programming the display of the new page in a new cWebView2
 
 Right, the old Param-amount in that Event was only allowing "suppression of the built-in NewWindow-Handling"
  (though did not give much info about "what to construct, in case one wants to create his own thing").
@@ -618,38 +534,26 @@ Hello Olaf
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-... can you make a dll only support cWebView2?(Like 100kb?)
+> ... can you make a dll only support cWebView2?(Like 100kb?)
 
 I could, but I won't...
  It doesn't make much sense to save 1 or 2 MB in deployment-size, when "the other needed part" -
  (the "evergreen WebView-runtime" from MS) is about 50MB already.
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-... how to call WebView2Loader.dll without rc6.dll?
+> ... how to call WebView2Loader.dll without rc6.dll?
 
 Basically by writing your own binding:
- - first, by reworking the SDKs WebView2.**tlb **(making its COM-interfaces more "VB-friendly")
+ - first, by reworking the SDKs WebView2.**tlb** (making its COM-interfaces more "VB-friendly")
  - and then writing your own wrapper-class against the interfaces of this typelib (without exposing the typelib-types on the VB6-Class-interface)
- - the finally resulting VB6-Class then usually placed within your own VB6-AX-Dll, to avoid separate delivery of the WebView2.**tlb **
+ - the finally resulting VB6-Class then usually placed within your own VB6-AX-Dll, to avoid separate delivery of the WebView2.**tlb**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-RC6.dll is too large ... 4MB.
+> RC6.dll is too large ... 4MB.
 
 The current deployment-size of the RC6 is about:
  - 3.4MB (in a *.zip archive ... with current inet-speeds, downloadable in about 0.3 seconds)
@@ -672,16 +576,12 @@ The current deployment-size of the RC6 is about:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-Hello Olaf
- If I am using WebView2-BrowserControl on an MDIChild window, I have some issues.
- For example, the DocumentComplete event is not fired and the component is very slow
- What is the problem ? Do you have an idea ?
+> Hello Olaf
+>  If I am using WebView2-BrowserControl on an MDIChild window, I have some issues.
+>  For example, the DocumentComplete event is not fired and the component is very slow
+>  What is the problem ? Do you have an idea ?
 
 What OS is that scenario running on?
  And could you post a little "mockup.zip" which includes the basic-setup (with the MDI-ChildWindows and the Bindings on them) -
@@ -699,27 +599,19 @@ What OS is that scenario running on?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-V8Engine.dll 1.34M, BY 2018
- stdcall OR CDECL,Quickjs also is good for test
+> V8Engine.dll 1.34M, BY 2018
+>  stdcall OR CDECL,Quickjs also is good for test
 
 As already stated in my reply to dreammanor (dm) here:
  You can already make use of "V8" via the WebView2-Binding
  (which will then include a proper "window-object" for your V8-scripts already).
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-can test fastdb.dll for vb6?
- a memory db lib
+> can test fastdb.dll for vb6?
+>  a memory db lib
 
 I've already done such a test-comparison (in a former reply to you).
  And the result was, that the RC5/RC6-wrapper for SQLite performs better than "fastdb".
@@ -752,25 +644,21 @@ I found !
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
+> I found !
+>  I have misused the properties of cWebview!
 >
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-I found !
- I have misused the properties of cWebview!
-
- 'WV.AreDefaultContextMenusEnabled = True
- 'WV.AreDefaultScriptDialogsEnabled = True
- 'WV.AreDevToolsEnabled = True
- 'WV.AreHostObjectsAllowed = True
- 'WV.IsScriptEnabled = True
- 'WV.IsWebMessageEnabled = True
-
- WV.IsStatusBarEnabled = True
-
- If I uncomment this whole block of code, it doesn't work! Otherwise everything works fine (just with WV.IsStatusBarEnabled = True )
+>  'WV.AreDefaultContextMenusEnabled = True
+>  'WV.AreDefaultScriptDialogsEnabled = True
+>  'WV.AreDevToolsEnabled = True
+>  'WV.AreHostObjectsAllowed = True
+>  'WV.IsScriptEnabled = True
+>  'WV.IsWebMessageEnabled = True
+>
+>  WV.IsStatusBarEnabled = True
+>
+>  If I uncomment this whole block of code, it doesn't work! Otherwise everything works fine (just with WV.IsStatusBarEnabled = True )
 
 That's a bit surprising, because all of these Props are (by default, after initialization) already "On" (at C++ Boolean-Value = 1).
 
@@ -828,16 +716,12 @@ by vfb maybe no need rc6.dll,WebView2Loader.dll
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> So, thanks for your testing, which made this behaviour apparent in this still "early stage"
+>  (where the RC6-interfaces for its new Class-Additions are not yet "finalized").
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-So, thanks for your testing, which made this behaviour apparent in this still "early stage"
- (where the RC6-interfaces for its new Class-Additions are not yet "finalized").
-
- Olaf
+>  Olaf
 
 This is nothing compared to the fabulous work you do for the community !
  Thanks again, Olaf
@@ -855,13 +739,9 @@ This is nothing compared to the fabulous work you do for the community !
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-Other thing : the URLs "chrome://flags", "chrome://history", "chrome://downloads",... work but do not trigger the DocumentComplete event, which sometimes causes the Webview component to lag for several tens of seconds! I don't know why !
+> Other thing : the URLs "chrome://flags", "chrome://history", "chrome://downloads",... work but do not trigger the DocumentComplete event, which sometimes causes the Webview component to lag for several tens of seconds! I don't know why !
 
 Perhaps these "internal URLs" do not really "manifest" themselves in a true document...
  Did you try to use the NavigationCompleted-event for these URLs instead?
@@ -913,15 +793,11 @@ The third question:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Did you try to use the NavigationCompleted-event for these URLs instead?
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Did you try to use the NavigationCompleted-event for these URLs instead?
-
- Olaf
+>  Olaf
 
 Hello Olaf
 
@@ -960,13 +836,9 @@ Thanks a lot Olaf !
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Thierry76**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Thierry76** *[img: View Post]*
-
-PS I dream of your webviev2 with diagrams.net (drawio-desktop)....
+> PS I dream of your webviev2 with diagrams.net (drawio-desktop)....
 
 Why not just load a js-based charting-lib into the WebView (instead of a plugin)?
 
@@ -989,20 +861,16 @@ Why not just load a js-based charting-lib into the WebView (instead of a plugin)
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **wqweto**
 >
-
+> @xiaoyao: Does VFB have bindings for the WebView2 built-in?
 >
-
- *[img: Quote]* Originally Posted by **wqweto** *[img: View Post]*
-
-@xiaoyao: Does VFB have bindings for the WebView2 built-in?
-
- What's the point spamming every thread with links to it?
-
- @admins: Do cleanup my reply too, please.
-
- cheers,
- </wqw>
+>  What's the point spamming every thread with links to it?
+>
+>  @admins: Do cleanup my reply too, please.
+>
+>  cheers,
+>  </wqw>
 
 YES VFB WITH MINIBLINK webbrowser,chrome core ,node.dll
 
@@ -1010,37 +878,33 @@ YES VFB WITH MINIBLINK webbrowser,chrome core ,node.dll
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> I could, but I won't...
+>  It doesn't make much sense to save 1 or 2 MB in deployment-size, when "the other needed part" -
+>  (the "evergreen WebView-runtime" from MS) is about 50MB already.
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-I could, but I won't...
- It doesn't make much sense to save 1 or 2 MB in deployment-size, when "the other needed part" -
- (the "evergreen WebView-runtime" from MS) is about 50MB already.
-
- Basically by writing your own binding:
- - first, by reworking the SDKs WebView2.**tlb **(making its COM-interfaces more "VB-friendly")
- - and then writing your own wrapper-class against the interfaces of this typelib (without exposing the typelib-types on the VB6-Class-interface)
- - the finally resulting VB6-Class then usually placed within your own VB6-AX-Dll, to avoid separate delivery of the WebView2.**tlb **
-
- The current deployment-size of the RC6 is about:
- - 3.4MB (in a *.zip archive ... with current inet-speeds, downloadable in about 0.3 seconds)
- - 2.5MB (in a *.7z archive ... with current inet-speeds, downloadable in about 0.2 seconds)
-
- And that makes it the smallest "DB- and GUI-including" Desktop-App-Framework on the planet ...
- (it is significantly smaller than e.g. GTK3, QT, Electron or "Avalonia+.NET-Core5")
-
- For most "non Hello-World-Apps" (which do something useful), you will have to deploy "a set of Dlls/OCXes alongside your Exe" anyways.
-
- So, when you develop and later deploy your App based on a dozen of smaller libs (Dlls and OCXes) - this will sum up to typically:
- - about 2-4MB in your deployment-zip (or perhaps 5-8MB, when you include Icon+ Image-Resources and maybe a Font or two).
-
- So no, I cannot see where the big "burden" from introducing the RC6 will come in
- (which would allow you, to replace most of your other COM-dependencies with a single one in your App).
-
- Olaf
+>  Basically by writing your own binding:
+>  - first, by reworking the SDKs WebView2.**tlb** (making its COM-interfaces more "VB-friendly")
+>  - and then writing your own wrapper-class against the interfaces of this typelib (without exposing the typelib-types on the VB6-Class-interface)
+>  - the finally resulting VB6-Class then usually placed within your own VB6-AX-Dll, to avoid separate delivery of the WebView2.**tlb**
+>
+>  The current deployment-size of the RC6 is about:
+>  - 3.4MB (in a *.zip archive ... with current inet-speeds, downloadable in about 0.3 seconds)
+>  - 2.5MB (in a *.7z archive ... with current inet-speeds, downloadable in about 0.2 seconds)
+>
+>  And that makes it the smallest "DB- and GUI-including" Desktop-App-Framework on the planet ...
+>  (it is significantly smaller than e.g. GTK3, QT, Electron or "Avalonia+.NET-Core5")
+>
+>  For most "non Hello-World-Apps" (which do something useful), you will have to deploy "a set of Dlls/OCXes alongside your Exe" anyways.
+>
+>  So, when you develop and later deploy your App based on a dozen of smaller libs (Dlls and OCXes) - this will sum up to typically:
+>  - about 2-4MB in your deployment-zip (or perhaps 5-8MB, when you include Icon+ Image-Resources and maybe a Font or two).
+>
+>  So no, I cannot see where the big "burden" from introducing the RC6 will come in
+>  (which would allow you, to replace most of your other COM-dependencies with a single one in your App).
+>
+>  Olaf
 
 more times,i no need rc6.dll.
  but i need Chromium or edge ,or miniblink (by Chromium),so if only one dll vbedgeCom.dll or stdcall_edge.dll,
@@ -1052,13 +916,9 @@ more times,i no need rc6.dll.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-...more times,i no need rc6.dll.
+> ...more times,i no need rc6.dll.
 
 Then this thread is not for suitable for you.
  <shrug/>
@@ -1086,14 +946,10 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **rameshpatel9**
 >
-
->
-
- *[img: Quote]* Originally Posted by **rameshpatel9** *[img: View Post]*
-
-Is there a way to implement late-binding for WebView2?
- This is to handle a scenario where user has not yet installed pre-requisites (WebView2 Runtime and RC6).
+> Is there a way to implement late-binding for WebView2?
+>  This is to handle a scenario where user has not yet installed pre-requisites (WebView2 Runtime and RC6).
 
 To make use of the WebView2-EdgeChromium-BrowserControl,
  you have to "bind it to a normal hWnd" (in the Demo, this is provided by a VB6.PictureBox).
@@ -1144,13 +1000,9 @@ Unfortunately, it looks like MS might have broken something: <https://www.vbforu
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
->
-
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-Unfortunately, it looks like MS might have broken something: <https://www.vbforums.com/showthread.php?890812-RC6-and-WebView2-Error-in-compiled-exe> https://www.vbforums.com/showthread....n-compiled-exe.
+> Unfortunately, it looks like MS might have broken something: <https://www.vbforums.com/showthread.php?890812-RC6-and-WebView2-Error-in-compiled-exe> https://www.vbforums.com/showthread....n-compiled-exe.
 
 wow, I was getting crazy. Fortunatly, I have followed the instructions of "saturnian" and now works perfectly.
 
@@ -1164,7 +1016,7 @@ First of all, many thanks to Olaf for this great work.
 
  Meanwhile a newer version od WebView2 has been released, 89.0.774.50 is working with IDE and compiled programs.
 
- To avoid such problems in future i tried to use a fixed version, with no success. *[img: Frown]*
+ To avoid such problems in future i tried to use a fixed version, with no success. :(
 
 Code:
 
@@ -1190,39 +1042,27 @@ how to call by vc++ for show edge like a ocx on wpf(window,or put to hwnd)
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **WZabel**
 >
-
->
-
- *[img: Quote]* Originally Posted by **WZabel** *[img: View Post]*
-
-Meanwhile a newer version od WebView2 has been released, 89.0.774.50 is working with IDE and compiled programs.
+> Meanwhile a newer version od WebView2 has been released, 89.0.774.50 is working with IDE and compiled programs.
 
 Yep, I've described that here: <https://www.vbforums.com/showthread.php?890812-RC6-and-WebView2-Error-in-compiled-exe&p=5513856&viewfull=1#post5513856> https://www.vbforums.com/showthread....=1#post5513856
 
+>   Originally Posted by **WZabel**
 >
-
->
-
- *[img: Quote]* Originally Posted by **WZabel** *[img: View Post]*
-
-To avoid such problems in future i tried to use a fixed version, with no success. *[img: Frown]*
+> To avoid such problems in future i tried to use a fixed version, with no success. :(
 
 I've made a few comments about that in the above link as well...
 
+>   Originally Posted by **WZabel**
 >
-
+> Code:
 >
-
- *[img: Quote]* Originally Posted by **WZabel** *[img: View Post]*
-
-Code:
-
-```
-BindTo(HosthWnd As Long, [SecondsToWaitForInitComplete As Double = 8], [browserInstallPath As String], [userDataFolder As String], [additionalBrowserArguments As String]) As Long
-```
-
-is not binding when setting the second argument.
+> ```
+> BindTo(HosthWnd As Long, [SecondsToWaitForInitComplete As Double = 8], [browserInstallPath As String], [userDataFolder As String], [additionalBrowserArguments As String]) As Long
+> ```
+>
+> is not binding when setting the second argument.
 
 The second argument is the timeout you plan to wait for the Init-Process to finish...
 
@@ -1257,13 +1097,9 @@ HTH
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-... I don't want use ocx or com dll
+> ... I don't want use ocx or com dll
 
 Then you are out of luck - because the WebView2Loader.dll from MS *is* a COM-dll.
  (providing it's COM-Objects over "flat-API-entry-call" - and later on "building on that" via a matching typelib)
@@ -1283,18 +1119,14 @@ Then you are out of luck - because the WebView2Loader.dll from MS *is* a COM-dll
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **wqweto**
 >
-
+> @xiaoyao: Does VFB have bindings for the WebView2 built-in?
 >
-
- *[img: Quote]* Originally Posted by **wqweto** *[img: View Post]*
-
-@xiaoyao: Does VFB have bindings for the WebView2 built-in?
-
- What's the point spamming every thread with links to it?
-
- cheers,
- </wqw>
+>  What's the point spamming every thread with links to it?
+>
+>  cheers,
+>  </wqw>
 
 I didn't fully express my problem. I'm sorry.
  vfb support miniblink,chrome core only one DLL.
@@ -1307,25 +1139,17 @@ I didn't fully express my problem. I'm sorry.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-vfb support miniblink,chrome core only one DLL.
- ... running speed and Lesser memory, there are many advantages.
+> vfb support miniblink,chrome core only one DLL.
+>  ... running speed and Lesser memory, there are many advantages.
 
 That is not true, because in the end there's always separate Chromium-Processes which will be spawned.
  (and those ChildProcesses will have the basically same performance and mem-consumption).
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-So I would like to ask VfB how to call the edge...
+> So I would like to ask VfB how to call the edge...
 
 You contradict yourself.
 
@@ -1334,14 +1158,10 @@ You contradict yourself.
  But as already said, stop spamming these threads with unrelated things like FreeBasic
  (I consider FB a great tool - but it has no place in this VB6-related Forum-Thread).
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-You know a lot about com OCX.
- It would be more convenient if you could increase the build to OCX.
+> You know a lot about com OCX.
+>  It would be more convenient if you could increase the build to OCX.
 
 I don't really know, what exactly you are talking about here - but for your information,
  a COM-library which exists as a Dll, is far more versatile (and much easier to use) -
@@ -1389,19 +1209,15 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **byomi1**
 >
-
+> Hi Olaf,
 >
-
- *[img: Quote]* Originally Posted by **byomi1** *[img: View Post]*
-
-Hi Olaf,
-
- a shameless semi-offtopic question related VBA / MSAccess:
-
- Any chance I can get Webview2 working in MS Access / VBA???
-
- Greets from Germany
+>  a shameless semi-offtopic question related VBA / MSAccess:
+>
+>  Any chance I can get Webview2 working in MS Access / VBA???
+>
+>  Greets from Germany
 
 Edge-Binding,Microsoft's new version of WIN10 may have a built-in Google kernel EDGE browser. In addition, the COM interface provided by Microsoft has been generally used for several years and is relatively stable and perfect.
  You can also use VB6 to develop an OCX control （put WebView2-Binding on usercontrol）, and then load the user-defined control to the EXCEL, ACCESS VBA form
@@ -1424,15 +1240,11 @@ Hi,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SteveMB**
 >
-
+> When I try to compile the WebView2Demo, I'm getting the following error message when it reaches the event handlers (with parameters) in fMain.frm
 >
-
- *[img: Quote]* Originally Posted by **SteveMB** *[img: View Post]*
-
-When I try to compile the WebView2Demo, I'm getting the following error message when it reaches the event handlers (with parameters) in fMain.frm
-
- Compile error: Procedure declaration does not match description of event or procedure having the same name
+>  Compile error: Procedure declaration does not match description of event or procedure having the same name
 
 It looks like some of the RC6 cWebView2 procedure declarations have changed. If you modify the declarations for the following 2 events, it should work:
 
@@ -1450,23 +1262,19 @@ Private Sub WV_NavigationCompleted(ByVal IsSuccess As Boolean, ByVal WebErrorSta
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
+> It looks like some of the RC6 cWebView2 procedure declarations have changed. If you modify the declarations for the following 2 events, it should work:
 >
-
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-It looks like some of the RC6 cWebView2 procedure declarations have changed. If you modify the declarations for the following 2 events, it should work:
-
-Code:
-
-```
-Private Sub WV_AcceleratorKeyPressed(ByVal KeyState As eWebView2AccKeyState, ByVal IsExtendedKey As Boolean, ByVal WasKeyDown As Boolean, ByVal IsKeyReleased As Boolean, ByVal IsMenuKeyDown As Boolean, ByVal RepeatCount As Long, ByVal ScanCode As Long, IsHandled As Boolean)
-
-Private Sub WV_NavigationCompleted(ByVal IsSuccess As Boolean, ByVal WebErrorStatus As Long)
-```
-
- Some "Longs" were changed to be more sensible "Booleans".
+> Code:
+>
+> ```
+> Private Sub WV_AcceleratorKeyPressed(ByVal KeyState As eWebView2AccKeyState, ByVal IsExtendedKey As Boolean, ByVal WasKeyDown As Boolean, ByVal IsKeyReleased As Boolean, ByVal IsMenuKeyDown As Boolean, ByVal RepeatCount As Long, ByVal ScanCode As Long, IsHandled As Boolean)
+>
+> Private Sub WV_NavigationCompleted(ByVal IsSuccess As Boolean, ByVal WebErrorStatus As Long)
+> ```
+>
+>  Some "Longs" were changed to be more sensible "Booleans".
 
 Thanks jpbro, nice to see it was something relatively simple to fix. I've got the demo compiling and running now. Now I'll have to work out how best to build it into my application and see how it runs there.
 
@@ -1474,13 +1282,9 @@ Thanks jpbro, nice to see it was something relatively simple to fix. I've got th
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SteveMB**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SteveMB** *[img: View Post]*
-
-Thanks jpbro, nice to see it was something relatively simple to fix. I've got the demo compiling and running now. Now I'll have to work out how best to build it into my application and see how it runs there.
+> Thanks jpbro, nice to see it was something relatively simple to fix. I've got the demo compiling and running now. Now I'll have to work out how best to build it into my application and see how it runs there.
 
 Maybe the following example is useful to you:
  <https://www.vbforums.com/showthread.php?892809-RC6-WebView2-Demo> https://www.vbforums.com/showthread....-WebView2-Demo
@@ -1507,17 +1311,13 @@ one question:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jackr**
 >
-
+> Hi Olaf,
 >
-
- *[img: Quote]* Originally Posted by **jackr** *[img: View Post]*
-
-Hi Olaf,
-
- I'm trying to install Webview2Demo. I followed the instructions but I get the error:"Procedure declaration does not match description of event or procedure having the same name". Any ideas why. Thank you very much!
-
- -Jack
+>  I'm trying to install Webview2Demo. I followed the instructions but I get the error:"Procedure declaration does not match description of event or procedure having the same name". Any ideas why. Thank you very much!
+>
+>  -Jack
 
 The answer you want is in post#62
 
@@ -1525,13 +1325,9 @@ The answer you want is in post#62
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-The answer you want is in post#62
+> The answer you want is in post#62
 
 thanks that works!
 
@@ -1549,14 +1345,10 @@ Is there a way to invoke a js click such as
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jackr**
 >
-
->
-
- *[img: Quote]* Originally Posted by **jackr** *[img: View Post]*
-
-Is there a way to invoke a js click such as
- WV.jsRun("document.getElementById('Somebutton')".click()")
+> Is there a way to invoke a js click such as
+>  WV.jsRun("document.getElementById('Somebutton')".click()")
 
 WV.jsRun is thought for simple (for the most part, self-defined) functions...
 
@@ -1644,7 +1436,7 @@ end function
 install used 32 seconds, occupying 444mb of hard disk space
  I don’t know if there is a silent installation parameter to prevent him from displaying the download and installation interface
 
- **MicrosoftEdgeWebview2Setup.exe /silent /install **
+ **MicrosoftEdgeWebview2Setup.exe /silent /install**
 
  check Registry information：
  Microsoft Edge WebView2 Runtim(92.0.902.8)
@@ -1655,17 +1447,13 @@ install used 32 seconds, occupying 444mb of hard disk space
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-I could, but I won't...
- It doesn't make much sense to save 1 or 2 MB in deployment-size, when "the other needed part" -
- (the "evergreen WebView-runtime" from MS) is about 50MB already.
- ... .. .
- Olaf
+> I could, but I won't...
+>  It doesn't make much sense to save 1 or 2 MB in deployment-size, when "the other needed part" -
+>  (the "evergreen WebView-runtime" from MS) is about 50MB already.
+>  ... .. .
+>  Olaf
 
 Is there a necessity that the end-user systems (where my application is installed) also should have "evergreen WebView-runtime" installed in them (if not already installed)?
 
@@ -1683,13 +1471,9 @@ You can keep it updated automatically. It's also very convenient. Ie is very rub
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
->
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
-Is there a necessity that the end-user systems (where my application is installed) also should have "evergreen WebView-runtime" installed in them (if not already installed)?
+> Is there a necessity that the end-user systems (where my application is installed) also should have "evergreen WebView-runtime" installed in them (if not already installed)?
 
 Yes, of course - but on each of the target-systems, this "base-runtime-installation" will only have to be done once
  (as the "evergreen" suggests, this chromium-runtime will from this point on, be updated by the system).
@@ -1726,13 +1510,9 @@ The little 1.7MB MS-Executable from that download above, will then determine whi
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-But if you want to take up less memory, take up less hard disk space, install a fixed old version, this is a better choice.
+> But if you want to take up less memory, take up less hard disk space, install a fixed old version, this is a better choice.
 
 Please stop giving misleading advice here in this thread.
 
@@ -1770,15 +1550,11 @@ Thank you for your contribution to the highly encapsulated Google kernel.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **rameshpatel9**
 >
-
+> Hi Olaf,
 >
-
- *[img: Quote]* Originally Posted by **rameshpatel9** *[img: View Post]*
-
-Hi Olaf,
-
- Is there a way to implement late-binding for WebView2? This is to handle a scenario where user has not yet installed pre-requisites (WebView2 Runtime and RC6).
+>  Is there a way to implement late-binding for WebView2? This is to handle a scenario where user has not yet installed pre-requisites (WebView2 Runtime and RC6).
 
 After my test. The new computer is not installed with WebView Runtime, nor will it be wrong. This is a creating an object, I will be snatched 10 seconds, then the prompt fails. In this case, the automatic download of the runtime installer will be successfully created after the installation is complete.
 
@@ -1847,29 +1623,25 @@ Hello Olaf
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Have just finished a Binding to the new WebView2-BrowserControl (based on Edge-Chromium).
+>  ... .. .
+>  ... .. .
+>  The new BaseDll-package of the RC6 now includes the official WebView2Loader.dll (version 1.0.674),
+>  which the cWebView2-class then works against.
+>  ... .. .
+>  ... .. .
+>  You should now be able to test this new Edge-Browser-Binding (even on Win7-OSes) via this little VB6-Demo:
+>  ... .. .
+>  Please let me know, when something is not working as expected -
+>  or when you want me to include a certain extra-functionality into the new cWebView2-class.
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Have just finished a Binding to the new WebView2-BrowserControl (based on Edge-Chromium).
- ... .. .
- ... .. .
- The new BaseDll-package of the RC6 now includes the official WebView2Loader.dll (version 1.0.674),
- which the cWebView2-class then works against.
- ... .. .
- ... .. .
- You should now be able to test this new Edge-Browser-Binding (even on Win7-OSes) via this little VB6-Demo:
- ... .. .
- Please let me know, when something is not working as expected -
- or when you want me to include a certain extra-functionality into the new cWebView2-class.
-
- I want to "finalize" the new RC6-functionality at the end of the year (then switching Binary-Compatibility on).
-
- Happy testing... *[img: Smilie]*
-
- Olaf
+>  I want to "finalize" the new RC6-functionality at the end of the year (then switching Binary-Compatibility on).
+>
+>  Happy testing... :)
+>
+>  Olaf
 
  Dear Olaf,
 
@@ -1907,13 +1679,9 @@ End Sub
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
->
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
-Well, why did the compile error pop up for the abovementioned two procedures? Have they to be redeclared with different number/types of parameters? If so, kindly let me know how. In case the Compile error was due to some other reason, then **kindly educate me** on the same too.
+> Well, why did the compile error pop up for the abovementioned two procedures? Have they to be redeclared with different number/types of parameters? If so, kindly let me know how. In case the Compile error was due to some other reason, then **kindly educate me** on the same too.
 
 See <https://www.vbforums.com/showthread.php?889202-VB6-WebView2-Binding-(Edge-Chromium)&p=5530453&viewfull=1#post5530453> https://www.vbforums.com/showthread....=1#post5530453. Short-answer RC6 is still in a development phase and the method signatures are not yet finalized.
 
@@ -1921,33 +1689,29 @@ See <https://www.vbforums.com/showthread.php?889202-VB6-WebView2-Binding-(Edge-C
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+>  ... .. .
+>  As for detection, whether a given target-system already contains this runtime, ... .. .
+>  ... .. .
+>  If you ask your user beforehand like this:
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
- ... .. .
- As for detection, whether a given target-system already contains this runtime, ... .. .
- ... .. .
- If you ask your user beforehand like this:
-
-Code:
-
-```
-  If Len(WV.GetMostRecentInstallPath) = 0 Then 'Edge-Chromium-Webview is missing on this system
-     If MsgBox("The needed MS-WebView2-runtime is missing," & vbLf & "Do you want to download the installer now?", vbYesNo) = vbYes Then
-        New_c.FSO.ShellExecute "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
-     End If
-  End If
-```
-
-The little 1.7MB MS-Executable from that download above, will then determine which system the User actually runs (Win7, Win8, Win10) -
- and then download and install the larger (about 50MB-80MB) and properly matching evergreen-runtime which will work best on the given system.
-
- HTH
-
- Olaf
+> Code:
+>
+> ```
+>   If Len(WV.GetMostRecentInstallPath) = 0 Then 'Edge-Chromium-Webview is missing on this system
+>      If MsgBox("The needed MS-WebView2-runtime is missing," & vbLf & "Do you want to download the installer now?", vbYesNo) = vbYes Then
+>         New_c.FSO.ShellExecute "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
+>      End If
+>   End If
+> ```
+>
+> The little 1.7MB MS-Executable from that download above, will then determine which system the User actually runs (Win7, Win8, Win10) -
+>  and then download and install the larger (about 50MB-80MB) and properly matching evergreen-runtime which will work best on the given system.
+>
+>  HTH
+>
+>  Olaf
 
 Thanks a LOT, Olaf! I was thinking of doing the detection myself via a tiny function but then I also thought some function must be already existing. And, there it is! Thanks.
 
@@ -1979,18 +1743,14 @@ Hello,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
+> Hello,
 >
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-Hello,
-
- Using RC6 cWebView2 with the latest Evergreen version of Webview2, on some sites (especially Google sites: Google News, Google Play Store ...) the DocumentURL and DocumentTitle properties remain an empty string once the page is completely displayed.
- This does not happen with old fixed versions of webview2 !
- Have you encountered this problem?
- Is this a Microsoft regression or an RC6-Webview interface problem or Google sites issues ?
+>  Using RC6 cWebView2 with the latest Evergreen version of Webview2, on some sites (especially Google sites: Google News, Google Play Store ...) the DocumentURL and DocumentTitle properties remain an empty string once the page is completely displayed.
+>  This does not happen with old fixed versions of webview2 !
+>  Have you encountered this problem?
+>  Is this a Microsoft regression or an RC6-Webview interface problem or Google sites issues ?
 
 I was able to reproduce that, and the reason is, that Google since a few weeks apparently insists (on some of their Sites) on "higher security" for the eval-function (when called from "self-assigned scripts" - which I use so far, to resolve window-Properties via jsProp Get/Let - as e.g. jsProp("document.title").
 
@@ -2003,18 +1763,14 @@ I was able to reproduce that, and the reason is, that Google since a few weeks a
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> I was able to reproduce that, and the reason is, that Google since a few weeks apparently insists (on some of their Sites) on "higher security" for the eval-function (when called from "self-assigned scripts" - which I use so far, to resolve window-Properties via jsProp Get/Let - as e.g. jsProp("document.title").
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-I was able to reproduce that, and the reason is, that Google since a few weeks apparently insists (on some of their Sites) on "higher security" for the eval-function (when called from "self-assigned scripts" - which I use so far, to resolve window-Properties via jsProp Get/Let - as e.g. jsProp("document.title").
-
- Came up with a workaround for the Eval-Function (which formerly worked behind WV.jsProp Get/Let) -
- and it will be present in the next Release 6.0.10... (want to wait until SQLite 3.37 gets released at december 1'th)
-
- Olaf
+>  Came up with a workaround for the Eval-Function (which formerly worked behind WV.jsProp Get/Let) -
+>  and it will be present in the next Release 6.0.10... (want to wait until SQLite 3.37 gets released at december 1'th)
+>
+>  Olaf
 
 thank you for these details, Olaf
  I will wait for RC6 version 6.0.10.
@@ -2054,9 +1810,7 @@ vb6+cwebview2 is good thing
 
  but did somebody know why could not upload file in vb6 cwebview2 edge browser?
 
- some web could, but most important web could not use web file upload system. What a pity.*[img: Name:  fcff.jpg
-Views: 6465
-Size:  12.9 KB]*
+ some web could, but most important web could not use web file upload system. What a pity.![fcff.jpg](https://www.vbforums.com/attachment.php?attachmentid=183090&d=1637519115)
 
 ## #93 talatoncu — Nov 27th, 2021, 02:34 PM
 
@@ -2085,13 +1839,9 @@ In WebViewInit
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **talatoncu**
 >
-
->
-
- *[img: Quote]* Originally Posted by **talatoncu** *[img: View Post]*
-
- WV.jsRun ("document.getElementById('btnSubmit').click")
+>  WV.jsRun ("document.getElementById('btnSubmit').click")
 
 jsRun is thought for function-calls, which allow you to pass parameters as normal VB-Vars.
 
@@ -2106,20 +1856,16 @@ jsRun is thought for function-calls, which allow you to pass parameters as norma
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> jsRun is thought for function-calls, which allow you to pass parameters as normal VB-Vars.
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-jsRun is thought for function-calls, which allow you to pass parameters as normal VB-Vars.
-
- For such longer "multi-dotted-expressions" (with "inner, literal-arguments"), you are better advised to use:
- WV.ExecuteScript "document.getElementById('btnSubmit').click()"
-
- Please note the trailing parentheses behind the last methodname "click".
-
- Olaf
+>  For such longer "multi-dotted-expressions" (with "inner, literal-arguments"), you are better advised to use:
+>  WV.ExecuteScript "document.getElementById('btnSubmit').click()"
+>
+>  Please note the trailing parentheses behind the last methodname "click".
+>
+>  Olaf
 
 Perfect!
 
@@ -2145,17 +1891,13 @@ Hi.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **EasyOneX**
 >
-
+> Unfortunately, due to the security feature of the Edge Browser, I cannot access local files, e.g. something like this: file: /// C: /Pictures/loading.gif
 >
-
- *[img: Quote]* Originally Posted by **EasyOneX** *[img: View Post]*
-
-Unfortunately, due to the security feature of the Edge Browser, I cannot access local files, e.g. something like this: file: /// C: /Pictures/loading.gif
-
- Error message in the console: Not allowed to load local resource
-
- How can I change the security settings to allow local resources?
+>  Error message in the console: Not allowed to load local resource
+>
+>  How can I change the security settings to allow local resources?
 
 There's a huge deal of influence possible, via the CommandLine-Parameter of the intial Binding-Call...
 
@@ -2172,22 +1914,18 @@ There's a huge deal of influence possible, via the CommandLine-Parameter of the 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> There's a huge deal of influence possible, via the CommandLine-Parameter of the intial Binding-Call...
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-There's a huge deal of influence possible, via the CommandLine-Parameter of the intial Binding-Call...
-
- I've posted a Link to it already in an earlier posting here in this thread,
- but here is it again (already jumping to a setting which might work for you):
- <https://peter.sh/experiments/chromium-command-line-switches/#allow-file-access-from-files> https://peter.sh/experiments/chromiu...ess-from-files
-
- If this specific one doesn't, other flags might do the job (perhaps google a bit about it,
- using the term CEF in your searches).
-
- Olaf
+>  I've posted a Link to it already in an earlier posting here in this thread,
+>  but here is it again (already jumping to a setting which might work for you):
+>  <https://peter.sh/experiments/chromium-command-line-switches/#allow-file-access-from-files> https://peter.sh/experiments/chromiu...ess-from-files
+>
+>  If this specific one doesn't, other flags might do the job (perhaps google a bit about it,
+>  using the term CEF in your searches).
+>
+>  Olaf
 
 Perfect. I hadn't seen the page with the commandlines yet. That's great. Thank you very much and happy holidays I wish you...
 
@@ -2207,14 +1945,11 @@ I know that using chromedirver. can intercept the image of the specified element
  By the following command
  /session/" & m_StrSessionId & "/element/" & m_StrElementId & "/screenshot.
 
->
-
->
- Private Sub cmdCaptureWV_Click()
- Dim Srf As cCairoSurface
- Set Srf = WV.CapturePreview(CaptureAs_PNG) 'capture the current WV-Window as a Cairo-Image-Surface
- Srf.WriteContentToPngFile App.Path & "\WV_Capture.png" 'which we can now visualize, or just write out as a PNG-file
- End Sub
+>  Private Sub cmdCaptureWV_Click()
+>  Dim Srf As cCairoSurface
+>  Set Srf = WV.CapturePreview(CaptureAs_PNG) 'capture the current WV-Window as a Cairo-Image-Surface
+>  Srf.WriteContentToPngFile App.Path & "\WV_Capture.png" 'which we can now visualize, or just write out as a PNG-file
+>  End Sub
 
 Do you support this function?
 
@@ -2222,17 +1957,13 @@ Do you support this function?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xxdoc123**
 >
-
+> I know that using chromedirver. can intercept the image of the specified element
+>  By the following command
+>  /session/" & m_StrSessionId & "/element/" & m_StrElementId & "/screenshot.
 >
-
- *[img: Quote]* Originally Posted by **xxdoc123** *[img: View Post]*
-
-I know that using chromedirver. can intercept the image of the specified element
- By the following command
- /session/" & m_StrSessionId & "/element/" & m_StrElementId & "/screenshot.
-
- Do you support this function?
+>  Do you support this function?
 
 No, there's no Element-based ScreenShot-feature (what's built-in, is working Window-based).
  One could get around making that "bigger ScreenShot" -
@@ -2270,13 +2001,9 @@ We know that Edge-Chromium can set the capabilities parameter to customize the f
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xxdoc123**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xxdoc123** *[img: View Post]*
-
-I don’t know if you have this setting.For example: disable camera ...
+> I don’t know if you have this setting.For example: disable camera ...
 
 As already said a few posting further above - there is a ton of startup-settings,
  you can set and combine via the commandline-parameter of the initial Bind-Call.
@@ -2299,7 +2026,7 @@ thanks.
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
 Hi Olaf and thanks for your great work!
- I have a "stupid issue" to report regarding UserContextMenu event: the ScreenY argument declaration is spelled wrong: "SreenY" *[img: Smilie]*
+ I have a "stupid issue" to report regarding UserContextMenu event: the ScreenY argument declaration is spelled wrong: "SreenY" :)
  Someting more serious: are you planning to map the NavigationStarting Event in the vb6 wrapper so that is possible to detect the destination url before the navigation effectively occurs?
 
  Ciao,
@@ -2352,34 +2079,30 @@ with the following error message:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **C--E**
 >
-
+> Hello,
 >
-
- *[img: Quote]* Originally Posted by **C--E** *[img: View Post]*
-
-Hello,
-
- I downladed RC6 a few days ago from vbRichClient.com and I registered RC6.dll with the aid of RegisterRC6inPlace.vbs.
- Then I installed the "evergreen-WebView2-runtime" via the MS-download-link.
-
- I tried to run WebView2Demo.vbp, got the error "Procedure declaration does not match description ..." and corrected the code as explained in post #60.
-
- Now I expected the demo to run, but it always stops in the following line:
-
-Code:
-
-```
-If WV.BindTo(picWV.hWnd) = 0 Then MsgBox "couldn't initialize WebView-Binding": Exit Sub
-```
-
-with the following error message:
- **"Runtime Error 53:
- Error in FindFirstFile: ErrNum: 3, The system cannot find the path specified."**
-
- (I'm using VB6 Version 8176 under Win10Pro).
-
- Any ideas what is wrong or what I did wrong?
+>  I downladed RC6 a few days ago from vbRichClient.com and I registered RC6.dll with the aid of RegisterRC6inPlace.vbs.
+>  Then I installed the "evergreen-WebView2-runtime" via the MS-download-link.
+>
+>  I tried to run WebView2Demo.vbp, got the error "Procedure declaration does not match description ..." and corrected the code as explained in post #60.
+>
+>  Now I expected the demo to run, but it always stops in the following line:
+>
+> Code:
+>
+> ```
+> If WV.BindTo(picWV.hWnd) = 0 Then MsgBox "couldn't initialize WebView-Binding": Exit Sub
+> ```
+>
+> with the following error message:
+>  **"Runtime Error 53:
+>  Error in FindFirstFile: ErrNum: 3, The system cannot find the path specified."**
+>
+>  (I'm using VB6 Version 8176 under Win10Pro).
+>
+>  Any ideas what is wrong or what I did wrong?
 
 There seems to be a problem with the installation of the WebView-Runtime...
 
@@ -2423,13 +2146,9 @@ Save As is not available in web pages
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xxdoc123**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xxdoc123** *[img: View Post]*
-
-Save As is not available in web pages
+> Save As is not available in web pages
 
 "Save As..." is available in the Default-Context-menu...
  and it will work, when you do not run elevated as an Administrator (as is the case e.g. in the IDE)...
@@ -2463,14 +2182,10 @@ Once again thanks to Olaf for his help and generally for his great work!
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **C--E**
 >
-
->
-
- *[img: Quote]* Originally Posted by **C--E** *[img: View Post]*
-
-PChart.Picture = picWV.Image
- but obviously that doesn't work.
+> PChart.Picture = picWV.Image
+>  but obviously that doesn't work.
 
 The PictureBox picWV which is used in the Demo, is only providing "a Container-hWnd" for the Browser-instance,
  (which places its own Browser-hWnd as a Child inside the picWV.hWnd).
@@ -2503,15 +2218,11 @@ I saw the following part in the demo:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **C--E**
 >
-
->
-
- *[img: Quote]* Originally Posted by **C--E** *[img: View Post]*
-
-I saw the following part in the demo:
- ...was not able to transform this into the syntax:
- Set PChart.Picture = WV.CapturePreview(CaptureAs_PNG).Picture
+> I saw the following part in the demo:
+>  ...was not able to transform this into the syntax:
+>  Set PChart.Picture = WV.CapturePreview(CaptureAs_PNG).Picture
 
 The above "one-liner" is just making use of a compiler-feature,
  which creates a (hidden) temporary cCairoSurface-instance under the covers,
@@ -2596,39 +2307,27 @@ Hi again,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Bearfot**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bearfot** *[img: View Post]*
-
-what is the difference between providing arguments in the New_c.WebView2(...) compared to BindTo(...)?
+> what is the difference between providing arguments in the New_c.WebView2(...) compared to BindTo(...)?
 
 None ...
  The only difference is, that the optional timeout-param is a bit shorter (5sec) behind New_c, than in BindTo (8sec) -
  though this might exactly be the difference on some older (slower) machines between the two calls.
  I have corrected that timeout-difference in the cConstructor-call to 8sec now (to match with BindTo).
 
+>   Originally Posted by **Bearfot**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bearfot** *[img: View Post]*
-
-I.e. adding userDataFolder and additionalBrowserArguments seems only have to affect in BindTo(),
+> I.e. adding userDataFolder and additionalBrowserArguments seems only have to affect in BindTo(),
 
 All the Params are just "routed through" to BindTo, as they come in via New_c.WebView2 -
  (the only exception - as said - being a different timeout, when you leave this param-slot free).
 
+>   Originally Posted by **Bearfot**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bearfot** *[img: View Post]*
-
-and also it seems ...
- I can't just provide the additionalBrowserArguments without also specifying a userDataFolder.
- If userDataFolder is left empty or as an empty string, BindTo will fail.
+> and also it seems ...
+>  I can't just provide the additionalBrowserArguments without also specifying a userDataFolder.
+>  If userDataFolder is left empty or as an empty string, BindTo will fail.
 
 If userData is left empty, the BindTo-call will internally not "leave it that way", but initialize it to:
  If Len(userDataFolder) = 0 Then userDataFolder = New_c.FSO.GetLocalAppDataPath
@@ -2651,15 +2350,11 @@ If userData is left empty, the BindTo-call will internally not "leave it that wa
 
 @Olaf, thanks for reply!
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-As for your earlier question... I think "finding the right HTML5" (and Css- or style-attributes)
- is in the responsibility of the Users of this control-binding (to not blow this thread here "out of proportion") -
- and would suggest to post your HTML-questions in a better matching Forum (or SubForum on this site).
+> As for your earlier question... I think "finding the right HTML5" (and Css- or style-attributes)
+>  is in the responsibility of the Users of this control-binding (to not blow this thread here "out of proportion") -
+>  and would suggest to post your HTML-questions in a better matching Forum (or SubForum on this site).
 
 My earlier question was regarding basic authentication. If it was possible to get a callback from cWebView2 and provide user name and password in order to prevent the Sign in prompt (if a site uses basic authentication). E.g. something like GetCredentials(ByVal Url As String, UserName As String, Password As String, Cancel As Boolean).
 
@@ -2670,23 +2365,15 @@ My earlier question was regarding basic authentication. If it was possible to ge
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Bearfot**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bearfot** *[img: View Post]*
-
-My earlier question was regarding basic authentication.
+> My earlier question was regarding basic authentication.
 
 Oops, my bad (interchanged your post with that from Andrew/EasyOneX)...
 
+>   Originally Posted by **Bearfot**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bearfot** *[img: View Post]*
-
-If it was possible to get a callback from cWebView2 and provide user name and password in order to prevent the Sign in prompt (if a site uses basic authentication). E.g. something like GetCredentials(ByVal Url As String, UserName As String, Password As String, Cancel As Boolean).
+> If it was possible to get a callback from cWebView2 and provide user name and password in order to prevent the Sign in prompt (if a site uses basic authentication). E.g. something like GetCredentials(ByVal Url As String, UserName As String, Password As String, Cancel As Boolean).
 
 I don't know what exact behaviour you relate to, when you talk about "WinInet-usage" in conjunction with the old IE-Control.
 
@@ -2713,7 +2400,7 @@ There's also a lot of different "auth"-related params for the commandline... you
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
-Yes, passing username*[img: Stick Out Tongue]*assword in the url is how I now currently solved it, but that is not a preferable solution from a security perspective.
+Yes, passing username:Password in the url is how I now currently solved it, but that is not a preferable solution from a security perspective.
  Instead username/password should not be provided unless the site requests for it, and with a callback I can check if I have the proper credentials for the url, and in that case provide them or otherwise set cancel = true which will bring up the default Sign in prompt. Just a proposal for a nice feature for the future :-)
 
  Thanks again
@@ -2804,7 +2491,7 @@ Hello avinash7 and Bearfot
 
  Olaf seems to rarely respond to requests to add functionality to RC6. It's probably to avoid putting pressure on himself. The task he has set himself is indeed hudge.
  In a recent conversation, he told me he hoped to integrate Webview2 download management in version 6.0.10 of RC6. I look forward to this version to continue my developments. I even check every day if the new version is posted on his site!
- We'll have to be patient *[img: Smilie]*
+ We'll have to be patient :)
  Thanks again to Olaf for his fantastic work !
 
 ## #131 Bearfot — Feb 18th, 2022, 06:54 AM
@@ -2819,13 +2506,9 @@ The AddHostObjectToScript issue is confirmed bug in webview2 (issue #2185) so th
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
- It's probably to avoid putting pressure on himself
+>  It's probably to avoid putting pressure on himself
 
 Sorry Olaf and saturnian if it looked like creating pressure. I posted here to see if there is anything already available and can be leveraged to achieve what I wanted to do. This is because I see that Olaf has surfed breadth and depth of this area!
 
@@ -2833,39 +2516,35 @@ Sorry Olaf and saturnian if it looked like creating pressure. I posted here to s
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Have just finished a Binding to the new WebView2-BrowserControl (based on Edge-Chromium).
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Have just finished a Binding to the new WebView2-BrowserControl (based on Edge-Chromium).
-
- I've included this Binding (all in a single Class, named cWebView2) in the new RC6-version of the RichClient-lib
- (please download this new version 6 from its usual place, at vbRichClient.com first).
-
- The new BaseDll-package of the RC6 now includes the official WebView2Loader.dll (version 1.0.674),
- which the cWebView2-class then works against.
-
- Please note, that the above Binding will currently require, that you install the larger:
- "Evergreeen WebView2-Runtime" (not included in the RC6-BasePackage).
- Here the official MS-DownloadLink for the evergreen-installer: <https://go.microsoft.com/fwlink/p/?LinkId=2124703> https://go.microsoft.com/fwlink/p/?LinkId=2124703
-
- So, after ensuring the mentioned two prerequisites:
- - the Dlls of the new RC6-package in a folder of your choice + a registered RC6.dll
- - and the successfull installation of the "evergreen-WebView2-runtime" via the MS-download-link above
-
- You should now be able to test this new Edge-Browser-Binding (even on Win7-OSes) via this little VB6-Demo:
- <https://www.vbforums.com/attachment.php?s=9b84d96bf559669a1dc45b4f80d160b8&attachmentid=179166> Attachment 179166
-
- Please let me know, when something is not working as expected -
- or when you want me to include a certain extra-functionality into the new cWebView2-class.
-
- I want to "finalize" the new RC6-functionality at the end of the year (then switching Binary-Compatibility on).
-
- Happy testing... *[img: Smilie]*
-
- Olaf
+>  I've included this Binding (all in a single Class, named cWebView2) in the new RC6-version of the RichClient-lib
+>  (please download this new version 6 from its usual place, at vbRichClient.com first).
+>
+>  The new BaseDll-package of the RC6 now includes the official WebView2Loader.dll (version 1.0.674),
+>  which the cWebView2-class then works against.
+>
+>  Please note, that the above Binding will currently require, that you install the larger:
+>  "Evergreeen WebView2-Runtime" (not included in the RC6-BasePackage).
+>  Here the official MS-DownloadLink for the evergreen-installer: <https://go.microsoft.com/fwlink/p/?LinkId=2124703> https://go.microsoft.com/fwlink/p/?LinkId=2124703
+>
+>  So, after ensuring the mentioned two prerequisites:
+>  - the Dlls of the new RC6-package in a folder of your choice + a registered RC6.dll
+>  - and the successfull installation of the "evergreen-WebView2-runtime" via the MS-download-link above
+>
+>  You should now be able to test this new Edge-Browser-Binding (even on Win7-OSes) via this little VB6-Demo:
+>  <https://www.vbforums.com/attachment.php?s=590ef57ea31a7b12593e267acfc3f2a6&attachmentid=179166> Attachment 179166
+>
+>  Please let me know, when something is not working as expected -
+>  or when you want me to include a certain extra-functionality into the new cWebView2-class.
+>
+>  I want to "finalize" the new RC6-functionality at the end of the year (then switching Binary-Compatibility on).
+>
+>  Happy testing... :)
+>
+>  Olaf
 
 Hi Schmidt,
  I tired WebView2Demo it is really great. I wanted to know if we can integrate events of webbrowser1 with its replacements in WebView2.
@@ -2896,7 +2575,7 @@ with IE this worked, should I think about it differently?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
-I'm new to all this, so take it easy on me, please *[img: Smilie]*
+I'm new to all this, so take it easy on me, please :)
 
  I have successfully used the WebView2 in the VB6 IDE without issues... BUT, when I go to MAKE my project, it fails to compile with the following error:
 
@@ -2905,13 +2584,13 @@ I'm new to all this, so take it easy on me, please *[img: Smilie]*
  I click on Yes and get a text tmp file that contains this error:
 
  C:\<MYFOLDER>\<MYFORM>.frm(6624) : **fatal error C1001: INTERNAL COMPILER ERROR**
- ** (compiler file 'e:\work\utc2\src\P2\main.c', line 495)**
- ** Please choose the Technical Support command on the Visual C++**
- ** Help menu, or open the Technical Support help file for more information**
+  **(compiler file 'e:\work\utc2\src\P2\main.c', line 495)**
+  **Please choose the Technical Support command on the Visual C++**
+  **Help menu, or open the Technical Support help file for more information**
 
  If I comment out any lines where I'm doing this:
 
- **Set wv5 = New_c.WebView2 **
+ **Set wv5 = New_c.WebView2**
 
  or this:
 
@@ -2927,38 +2606,34 @@ I'm new to all this, so take it easy on me, please *[img: Smilie]*
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
+> I'm new to all this, so take it easy on me, please :)
 >
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-I'm new to all this, so take it easy on me, please *[img: Smilie]*
-
- I have successfully used the WebView2 in the VB6 IDE without issues... BUT, when I go to MAKE my project, it fails to compile with the following error:
-
- **Unexpected error occurred in code generator or linker. --View error messages?**
-
- I click on Yes and get a text tmp file that contains this error:
-
- C:\<MYFOLDER>\<MYFORM>.frm(6624) : **fatal error C1001: INTERNAL COMPILER ERROR**
- ** (compiler file 'e:\work\utc2\src\P2\main.c', line 495)**
- ** Please choose the Technical Support command on the Visual C++**
- ** Help menu, or open the Technical Support help file for more information**
-
- If I comment out any lines where I'm doing this:
-
- **Set wv5 = New_c.WebView2 **
-
- or this:
-
- **If wv5.BindTo(... blah, blah... ) then**
-
- Then the program compiles fine. Obviously, it doesn't *work* correctly because these lines are commented out.
-
- Again, if I just Run the program in the VB6 IDE, then it works great.
-
- Please help.
+>  I have successfully used the WebView2 in the VB6 IDE without issues... BUT, when I go to MAKE my project, it fails to compile with the following error:
+>
+>  **Unexpected error occurred in code generator or linker. --View error messages?**
+>
+>  I click on Yes and get a text tmp file that contains this error:
+>
+>  C:\<MYFOLDER>\<MYFORM>.frm(6624) : **fatal error C1001: INTERNAL COMPILER ERROR**
+>   **(compiler file 'e:\work\utc2\src\P2\main.c', line 495)**
+>   **Please choose the Technical Support command on the Visual C++**
+>   **Help menu, or open the Technical Support help file for more information**
+>
+>  If I comment out any lines where I'm doing this:
+>
+>  **Set wv5 = New_c.WebView2**
+>
+>  or this:
+>
+>  **If wv5.BindTo(... blah, blah... ) then**
+>
+>  Then the program compiles fine. Obviously, it doesn't *work* correctly because these lines are commented out.
+>
+>  Again, if I just Run the program in the VB6 IDE, then it works great.
+>
+>  Please help.
 
 Maybe it's a question about the RC6 path.
  <https://www.vbforums.com/showthread.php?882171-Multi-Process-RPC-Listener-Host-System-for-RC5&p=5443031&viewfull=1#post5443031> https://www.vbforums.com/showthread....=1#post5443031
@@ -2967,14 +2642,10 @@ Maybe it's a question about the RC6 path.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-Maybe it's a question about the RC6 path.
- <https://www.vbforums.com/showthread.php?882171-Multi-Process-RPC-Listener-Host-System-for-RC5&p=5443031&viewfull=1#post5443031> https://www.vbforums.com/showthread....=1#post5443031
+> Maybe it's a question about the RC6 path.
+>  <https://www.vbforums.com/showthread.php?882171-Multi-Process-RPC-Listener-Host-System-for-RC5&p=5443031&viewfull=1#post5443031> https://www.vbforums.com/showthread....=1#post5443031
 
  I used the included RegisterRC6inPlace.vbs to register RC6 on my dev PC, directly inside my App folder, in hopes that nothing would be confused as to where anything was.
 
@@ -2986,17 +2657,13 @@ Maybe it's a question about the RC6 path.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
+> I used the included RegisterRC6inPlace.vbs to register RC6 on my dev PC, directly inside my App folder, in hopes that nothing would be confused as to where anything was.
 >
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-I used the included RegisterRC6inPlace.vbs to register RC6 on my dev PC, directly inside my App folder, in hopes that nothing would be confused as to where anything was.
-
- I did extract all the DLL files into this same folder. Does any of the other DLLs need to be registered just so the VB6 can compile an EXE that uses RC6?
-
- Thanks!
+>  I did extract all the DLL files into this same folder. Does any of the other DLLs need to be registered just so the VB6 can compile an EXE that uses RC6?
+>
+>  Thanks!
 
 If it runs in the IDE, then there is nothing wrong with the registration of RC6 -
  so the compiler-error you see has to have other reasons - like e.g.:
@@ -3018,27 +2685,23 @@ If it runs in the IDE, then there is nothing wrong with the registration of RC6 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> If it runs in the IDE, then there is nothing wrong with the registration of RC6 -
+>  so the compiler-error you see has to have other reasons - like e.g.:
+>  - you're not running the IDE "as Admin" (when compiling)
+>  - you're not using the most recent ServicePack for the VB6-IDE
+>  - you've registered the RC6 on a Network-Path, or a "mapped Network-Drive"
+>  - you've opened your VB-Project from a Network-Path or a "mapped Network-Drive"
+>  - you're trying to compile the Binary "into a Network-Path or a mapped Network-Drive"
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-If it runs in the IDE, then there is nothing wrong with the registration of RC6 -
- so the compiler-error you see has to have other reasons - like e.g.:
- - you're not running the IDE "as Admin" (when compiling)
- - you're not using the most recent ServicePack for the VB6-IDE
- - you've registered the RC6 on a Network-Path, or a "mapped Network-Drive"
- - you've opened your VB-Project from a Network-Path or a "mapped Network-Drive"
- - you're trying to compile the Binary "into a Network-Path or a mapped Network-Drive"
-
- I'd start trying to fix this, by ensuring Admin-Mode for the IDE -
- and try to "open, and compile to" from/to local Folders on local Disks...
- (also making sure, that "compiling Debug-info into your Executable" is deactivated in the IDEs compiler-settings)
-
- HTH
-
- Olaf
+>  I'd start trying to fix this, by ensuring Admin-Mode for the IDE -
+>  and try to "open, and compile to" from/to local Folders on local Disks...
+>  (also making sure, that "compiling Debug-info into your Executable" is deactivated in the IDEs compiler-settings)
+>
+>  HTH
+>
+>  Olaf
 
  First, I want to say a big THANKS to Olaf, for all your hard work on all of these tools! Also, for your time to jump in and try to help me out. Right away, *none* of the suggestions you have apply, I double-checked them all.
 
@@ -3060,10 +2723,7 @@ If it runs in the IDE, then there is nothing wrong with the registration of RC6 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
->
-
->
- Perhaps, this is because the PicBox isn't really visible YET in the Form_Load event? Does the PicBox actually *have* to be Visible in order for the BindTo to work correctly? The main form isn't yet visible in the load event, it's busy loading... AND the user has yet to actually do anything that will make the WV/PicBox visible in the program, as this is an option for the user to turn this on or off.
+>  Perhaps, this is because the PicBox isn't really visible YET in the Form_Load event? Does the PicBox actually *have* to be Visible in order for the BindTo to work correctly? The main form isn't yet visible in the load event, it's busy loading... AND the user has yet to actually do anything that will make the WV/PicBox visible in the program, as this is an option for the user to turn this on or off.
 
 That's right! The window to whose hwnd the WebView is bound must be visible. This can be quite tricky with modal windows.
 
@@ -3073,15 +2733,11 @@ That's right! The window to whose hwnd the WebView is bound must be visible. Thi
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **wwolf**
 >
-
+> That's right! The window to whose hwnd the WebView is bound must be visible. This can be quite tricky with modal windows.
 >
-
- *[img: Quote]* Originally Posted by **wwolf** *[img: View Post]*
-
-That's right! The window to whose hwnd the WebView is bound must be visible. This can be quite tricky with modal windows.
-
- In my sample code, I do something like this: <https://www.vbforums.com/showthread.php?895441-Liquidity-planner-new-WebView2-demo-application> https://www.vbforums.com/showthread....mo-application
+>  In my sample code, I do something like this: <https://www.vbforums.com/showthread.php?895441-Liquidity-planner-new-WebView2-demo-application> https://www.vbforums.com/showthread....mo-application
 
 It appears that the entire project is not based on normal VB6 forms. Without a total rewrite, are there some snippets of code that I could possibly use to get passed the Visible requirement, or to trick it into working?
 
@@ -3091,13 +2747,9 @@ It appears that the entire project is not based on normal VB6 forms. Without a t
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Perhaps, this is because the PicBox isn't really visible YET in the Form_Load event?
+> Perhaps, this is because the PicBox isn't really visible YET in the Form_Load event?
 
 Yes, the PicBox.hWnd (any hWnd) you bind to,
  has to be visible at the point you call WV.BindTo...
@@ -3113,21 +2765,17 @@ Yes, the PicBox.hWnd (any hWnd) you bind to,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Yes, the PicBox.hWnd (any hWnd) you bind to,
+>  has to be visible at the point you call WV.BindTo...
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Yes, the PicBox.hWnd (any hWnd) you bind to,
- has to be visible at the point you call WV.BindTo...
-
- And any hWnd-based Child-Control will report False (regarding its visibility),
- as long as its hosting TopLevel-Parent is still invisible (in your case, your Form).
-
- Please take another look at the first line in my original Demo-Codes Form_Load (and the comments I made there).
-
- Olaf
+>  And any hWnd-based Child-Control will report False (regarding its visibility),
+>  as long as its hosting TopLevel-Parent is still invisible (in your case, your Form).
+>
+>  Please take another look at the first line in my original Demo-Codes Form_Load (and the comments I made there).
+>
+>  Olaf
 
  Thanks again, Olaf. I spent alot of time trying different things, but I feel like I'm spinning my wheels because I was getting away from the *real* problem. I can live within the parameters of when to be Visible and when to SET & BINDTO, as the program is actually *working*.
 
@@ -3137,27 +2785,23 @@ Yes, the PicBox.hWnd (any hWnd) you bind to,
 
  Thanks again for helping me out. If there's anything else I can provide that might help solve the issue, just let me know.
 
- *[img: Smilie]*
+ :)
 
 ## #144 BooksRUs — Mar 15th, 2022, 08:57 AM
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> WV.jsRun is thought for simple (for the most part, self-defined) functions...
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-WV.jsRun is thought for simple (for the most part, self-defined) functions...
-
- For more complex "actions" like yours above, try it with:
- WV.ExecuteScript "document.getElementById('Somebutton').click()"
- instead.
-
- HTH
-
- Olaf
+>  For more complex "actions" like yours above, try it with:
+>  WV.ExecuteScript "document.getElementById('Somebutton').click()"
+>  instead.
+>
+>  HTH
+>
+>  Olaf
 
  I'm trying to simply automatically login to a website. I'm replacing a VB6 webbrowser control. I have already analyzed the login page and I know the fields I want to fill in are "user_name" and "user_password". The login button is on the first (0) form on the page. So, I used to do this:
 
@@ -3176,13 +2820,9 @@ WV.jsRun is thought for simple (for the most part, self-defined) functions...
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-My question is, how do I do this with the new WebView since the DOM is not there...
+> My question is, how do I do this with the new WebView since the DOM is not there...
 
 The DOM is there, but you have to interact with it in js now...
  (cWebView2 is making this easy via AddScriptToExecuteOnDocumentCreated)
@@ -3216,39 +2856,35 @@ Such an "extension-function" can be added before you navigate to a certain page.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> The DOM is there, but you have to interact with it in js now...
+>  (cWebView2 is making this easy via AddScriptToExecuteOnDocumentCreated)
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-The DOM is there, but you have to interact with it in js now...
- (cWebView2 is making this easy via AddScriptToExecuteOnDocumentCreated)
-
-Code:
-
-```
-With New_c.StringBuilder
-
-    .AddNL "function submitLoginForm(usr, pwd){"
-    .AddNL "   var f = document.forms[0]"
-    .AddNL "       f.elements['user_name'].value     = usr"
-    .AddNL "       f.elements['user_password'].value = pwd"
-    .AddNL "       f.submit()"
-    .AddNL "}"
-
-    wv.AddScriptToExecuteOnDocumentCreated .ToString
-  End With
-```
-
-Such an "extension-function" can be added before you navigate to a certain page.
-
- Only the usage of this function - e.g. via:
- wv.jsRun "submitLoginForm", "myUsrID", "myPwd"
-
- has to be done after the document was loaded (e.g. from within Navigation_Complete or Document_Complete)
-
- Olaf
+> Code:
+>
+> ```
+> With New_c.StringBuilder
+>
+>     .AddNL "function submitLoginForm(usr, pwd){"
+>     .AddNL "   var f = document.forms[0]"
+>     .AddNL "       f.elements['user_name'].value     = usr"
+>     .AddNL "       f.elements['user_password'].value = pwd"
+>     .AddNL "       f.submit()"
+>     .AddNL "}"
+>
+>     wv.AddScriptToExecuteOnDocumentCreated .ToString
+>   End With
+> ```
+>
+> Such an "extension-function" can be added before you navigate to a certain page.
+>
+>  Only the usage of this function - e.g. via:
+>  wv.jsRun "submitLoginForm", "myUsrID", "myPwd"
+>
+>  has to be done after the document was loaded (e.g. from within Navigation_Complete or Document_Complete)
+>
+>  Olaf
 
  Cool, thanks for the info. A few questions:
 
@@ -3262,13 +2898,9 @@ Such an "extension-function" can be added before you navigate to a certain page.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-1. Once I inject this function, is it "persistent" upon each subsequent Navigate event, or is it just good for *one* Navigate, then it goes away?
+> 1. Once I inject this function, is it "persistent" upon each subsequent Navigate event, or is it just good for *one* Navigate, then it goes away?
 
 It is persistent (on that bound wv-instance) for all subsequent navigations -
  basically ensuring "your own set of global js-helper-functions"... -
@@ -3276,24 +2908,16 @@ It is persistent (on that bound wv-instance) for all subsequent navigations -
  and then added in one go like this:
  wv.AddScriptToExecuteOnDocumentCreated New_c.FSO.ReadTextContent(App.Path & "\myGlobaHelpers.js")
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-2. Is there a way to "peruse" the DOM with WV?
+> 2. Is there a way to "peruse" the DOM with WV?
 
 Sure, you can even get "visual assistance" on a loaded DOM, by opening the "Chrome-Inspector" via:
  wv.OpenDevToolsWindow
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-3. How do I "click" a button that doesn't seem to have a name?
+> 3. How do I "click" a button that doesn't seem to have a name?
 
 You could learn to use "selector-string-expressions" via e.g.:
  - document.querySelector("<your selector string>") <https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector> https://developer.mozilla.org/en-US/.../querySelector
@@ -3310,13 +2934,9 @@ You could learn to use "selector-string-expressions" via e.g.:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
- 1. Once I inject this function, is it "persistent" upon each subsequent Navigate event, or is it just good for *one* Navigate, then it goes away?
+>  1. Once I inject this function, is it "persistent" upon each subsequent Navigate event, or is it just good for *one* Navigate, then it goes away?
 
 Click on different links on the Google page and watch out for the alert window:
 
@@ -3342,13 +2962,9 @@ Private Sub WV_DocumentComplete()
 End Sub
 ```
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-2. Is there a way to "peruse" the DOM with WV? Sometimes I have to basically "dump" all of the forms and elements of a page in order to find/pick out the particular form, element or field that I need to match, fill in, check, or click.
+> 2. Is there a way to "peruse" the DOM with WV? Sometimes I have to basically "dump" all of the forms and elements of a page in order to find/pick out the particular form, element or field that I need to match, fill in, check, or click.
 
 Code:
 
@@ -3371,13 +2987,9 @@ Private Sub WV_DocumentComplete()
 End Sub
 ```
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-3. How do I "click" a button that doesn't seem to have a name?
+> 3. How do I "click" a button that doesn't seem to have a name?
 
 <https://stackoverflow.com/questions/2705583/how-to-simulate-a-click-with-javascript/2706236#2706236> https://stackoverflow.com/questions/...706236#2706236
 
@@ -3385,13 +2997,9 @@ End Sub
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
- The particular form I'm adding this to is the "main" form for a pretty large program that has been my project for the last 13 years. It is on the edge of having more controls than VB6 allows, so I thought perhaps having to declare WV (with events) was pushing it over the limit. I don't know if it's possible, but **it would be wonderful if we could have an ARRAY of WV (with events)**. I'm not sure if these declarations "count" towards the VB6 limits or not, but either way, this would allow an array of WV that match an array of PicBoxes that "host" the WVs that I want to use the in program (there are several). This is exactly how I'm implementing this with the Webbrowser controls that I'm trying to replace.
+>  The particular form I'm adding this to is the "main" form for a pretty large program that has been my project for the last 13 years. It is on the edge of having more controls than VB6 allows, so I thought perhaps having to declare WV (with events) was pushing it over the limit. I don't know if it's possible, but **it would be wonderful if we could have an ARRAY of WV (with events)**. I'm not sure if these declarations "count" towards the VB6 limits or not, but either way, this would allow an array of WV that match an array of PicBoxes that "host" the WVs that I want to use the in program (there are several). This is exactly how I'm implementing this with the Webbrowser controls that I'm trying to replace.
 
  I wanted to highlight the above, as I believe I have hit the VB6 maximum number of controls for a form. I was able to save the code (for a while), but then randomly, VB6 started kicking me out of the IDE without warning -- no Save, no nothing.
 
@@ -3405,17 +3013,13 @@ End Sub
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-It would be wonderful if we could have an ARRAY of WV (with events)
+> It would be wonderful if we could have an ARRAY of WV (with events)
 
 The RC6.cEventCollection might be what you are looking for. I've adapted Olaf's original demo to show how you can use the cEventCollection with cWebView2 bound to a control array of PictureBoxes:
 
- <https://www.vbforums.com/attachment.php?s=9b84d96bf559669a1dc45b4f80d160b8&attachmentid=184364&d=1647652735> WebViewEventCollection.zip
+ <https://www.vbforums.com/attachment.php?s=590ef57ea31a7b12593e267acfc3f2a6&attachmentid=184364&d=1647652735> WebViewEventCollection.zip
 
  The code should be fairly easy to understand on it's own - it's only slightly more complicated that it would be if we the cEventCollection had an Item property, but I've made do with a separate cArrayList to hold WV references that we can access via the cEventCollection Key property). Let me know if you have any questions though.
 
@@ -3423,17 +3027,13 @@ The RC6.cEventCollection might be what you are looking for. I've adapted Olaf's 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
+> The RC6.cEventCollection might be what you are looking for. I've adapted Olaf's original demo to show how you can use the cEventCollection with cWebView2 bound to a control array of PictureBoxes:
 >
-
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-The RC6.cEventCollection might be what you are looking for. I've adapted Olaf's original demo to show how you can use the cEventCollection with cWebView2 bound to a control array of PictureBoxes:
-
- <https://www.vbforums.com/attachment.php?s=9b84d96bf559669a1dc45b4f80d160b8&attachmentid=184364&d=1647652735> WebViewEventCollection.zip
-
- The code should be fairly easy to understand on it's own - it's only slightly more complicated that it would be if we the cEventCollection had an Item property, but I've made do with a separate cArrayList to hold WV references that we can access via the cEventCollection Key property). Let me know if you have any questions though.
+>  <https://www.vbforums.com/attachment.php?s=590ef57ea31a7b12593e267acfc3f2a6&attachmentid=184364&d=1647652735> WebViewEventCollection.zip
+>
+>  The code should be fairly easy to understand on it's own - it's only slightly more complicated that it would be if we the cEventCollection had an Item property, but I've made do with a separate cArrayList to hold WV references that we can access via the cEventCollection Key property). Let me know if you have any questions though.
 
 Cool!
 
@@ -3445,14 +3045,10 @@ Cool!
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-I currently need 10 WebView controls to replace the webbrowser controls in the form.
- They are an array, ...
+> I currently need 10 WebView controls to replace the webbrowser controls in the form.
+>  They are an array, ...
 
 Then the easiest way to keep up with the existing "scheme" would be,
  to implement a little "Project-Private-UserControl" for your WebView2-Binding.
@@ -3522,77 +3118,73 @@ So it just boils down to a bit of work inside the UC (for the Event-Definition a
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Then the easiest way to keep up with the existing "scheme" would be,
+>  to implement a little "Project-Private-UserControl" for your WebView2-Binding.
 >
+>  E.g. something like that into a UserControl, named **ucWV**:
+>
+> Code:
+>
+> ```
+> Option Explicit
+>
+> Event DocumentComplete() 'redefine all the Events you need externally in this place...
+>
+> Private WithEvents mWV As cWebView2, InitDone As Boolean
+>
+> Public Property Get WV() As cWebView2
+>   EnsureBinding
+>   Set WV = mWV
+> End Property
+>
+> Private Sub EnsureBinding()
+>   If Not Ambient.UserMode Then Exit Sub
+>   If mWV Is Nothing And Not InitDone And Extender.Visible Then
+>      InitDone = True: Set mWV = New_c.WebView2(UserControl.hWnd)
+>      UserControl_Resize
+>   End If
+> End Sub
+>
+> Private Sub UserControl_Resize()
+>   If Not mWV Is Nothing Then mWV.SyncSizeToHostWindow
+> End Sub
+>
+> '*** Event-ReDelegation of internal Events (only those which are needed externally)...
+> Private Sub mWV_DocumentComplete()
+>   RaiseEvent DocumentComplete 're-raise the internal Event to the outside
+> End Sub
+> ```
+>
+> After your Private UC was defined, you can now place two of them on a Form (as a Ctl-Array), then using this Code:
+>
+> Code:
+>
+> ```
+> Option Explicit
+>
+> Private Sub Form_Load()
+>   Visible = True 'always ensure Visibility of the TopLevel-Window first
+>
+>   ucWV(0).WV.NavigateToString "<h1>Hello World</h1>" 'Ctl at Index 0 navigates to a String
+>   ucWV(1).WV.Navigate "https://google.com" 'Ctl at Index 1 navigates to Google
+> End Sub
+>
+> Private Sub ucWV_DocumentComplete(Index As Integer) 'example for Ctl-Array-based Event-Handling
+>   With ucWV(Index).WV
+>     Debug.Print .jsProp("Array.from(document.getElementsByTagName('h1')).map(e=>e.innerText).join(',')")
+>   End With
+> End Sub
+> ```
+>
+> So it just boils down to a bit of work inside the UC (for the Event-Definition and -ReDelegation).
+>
+>  Though in the end this should be quite elegant and robust.
+>
+>  Olaf
 
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Then the easiest way to keep up with the existing "scheme" would be,
- to implement a little "Project-Private-UserControl" for your WebView2-Binding.
-
- E.g. something like that into a UserControl, named **ucWV**:
-
-Code:
-
-```
-Option Explicit
-
-Event DocumentComplete() 'redefine all the Events you need externally in this place...
-
-Private WithEvents mWV As cWebView2, InitDone As Boolean
-
-Public Property Get WV() As cWebView2
-  EnsureBinding
-  Set WV = mWV
-End Property
-
-Private Sub EnsureBinding()
-  If Not Ambient.UserMode Then Exit Sub
-  If mWV Is Nothing And Not InitDone And Extender.Visible Then
-     InitDone = True: Set mWV = New_c.WebView2(UserControl.hWnd)
-     UserControl_Resize
-  End If
-End Sub
-
-Private Sub UserControl_Resize()
-  If Not mWV Is Nothing Then mWV.SyncSizeToHostWindow
-End Sub
-
-'*** Event-ReDelegation of internal Events (only those which are needed externally)...
-Private Sub mWV_DocumentComplete()
-  RaiseEvent DocumentComplete 're-raise the internal Event to the outside
-End Sub
-```
-
-After your Private UC was defined, you can now place two of them on a Form (as a Ctl-Array), then using this Code:
-
-Code:
-
-```
-Option Explicit
-
-Private Sub Form_Load()
-  Visible = True 'always ensure Visibility of the TopLevel-Window first
-
-  ucWV(0).WV.NavigateToString "<h1>Hello World</h1>" 'Ctl at Index 0 navigates to a String
-  ucWV(1).WV.Navigate "https://google.com" 'Ctl at Index 1 navigates to Google
-End Sub
-
-Private Sub ucWV_DocumentComplete(Index As Integer) 'example for Ctl-Array-based Event-Handling
-  With ucWV(Index).WV
-    Debug.Print .jsProp("Array.from(document.getElementsByTagName('h1')).map(e=>e.innerText).join(',')")
-  End With
-End Sub
-```
-
-So it just boils down to a bit of work inside the UC (for the Event-Definition and -ReDelegation).
-
- Though in the end this should be quite elegant and robust.
-
- Olaf
-
-Ok, Newbie alert! *[img: Duck]*
+Ok, Newbie alert! :duck:
 
  I know this will sound crazy, but I have never created my own control... but, I'm willing to give it a try.
 
@@ -3615,7 +3207,7 @@ Ok, Newbie alert! *[img: Duck]*
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
-I programmed an ocx encapsulating the RC6's Webview2 for my own purposes. It is available** <https://www.ordoconcept.net/ordoWebview2/en/> here**, for those interested.
+I programmed an ocx encapsulating the RC6's Webview2 for my own purposes. It is available **<https://www.ordoconcept.net/ordoWebview2/en/> here**, for those interested.
 
  It is a version which will evolve with the improvements of the RC6 and which is delivered as it is, without any guarantee. But in my software, it works perfectly. Thanks again to Olaf!
 
@@ -3643,29 +3235,21 @@ While opening the application for the 1st time after starting computer, applicat
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
+> Ok, Newbie alert! :duck:
 >
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Ok, Newbie alert! *[img: Duck]*
-
- I know this will sound crazy, but I have never created my own control... but, I'm willing to give it a try.
-
- To start, is this an ActiveX DLL, EXE, OCX?
+>  I know this will sound crazy, but I have never created my own control... but, I'm willing to give it a try.
+>
+>  To start, is this an ActiveX DLL, EXE, OCX?
 
 A "Project-Private-UserControl" is "just another module" (in your normal Std-Exe-Project)
  You add it in the same way as an additional Form (*.frm), Module (*.bas), Class (*.cls)...
  via Context-Menu in your Project-Tree as a UserControl (ending up with a *.ctl -File in your ProjectTree when saving).
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-For the events that have parameters, do I have to declare the same parameters in the Event declaration...?
+> For the events that have parameters, do I have to declare the same parameters in the Event declaration...?
 
 Yes - and since you have to "Re-Delegate them" anyways (see the last section of my Demo),
  you will have to receive them first in the internal EventSink-Handler of the WV.
@@ -3675,16 +3259,12 @@ Yes - and since you have to "Re-Delegate them" anyways (see the last section of 
 
  Re-Delegating 10 Events or so, should not take more than 5 minutes of "Copy&Paste-work".
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Also, I was trying to add a "Busy" flag, as I didn't see how I can do this:
- 1. Navigate somewhere
- 2. wait until WV is actually there and complete
- 3. continue
+> Also, I was trying to add a "Busy" flag, as I didn't see how I can do this:
+>  1. Navigate somewhere
+>  2. wait until WV is actually there and complete
+>  3. continue
 
 Actually, you don't need to implement your own "Wait-Handling" for Navigation... since this is already built-in.
  (please look at the optional TimeOut-Param in the Navigate-Methods).
@@ -3697,13 +3277,9 @@ Actually, you don't need to implement your own "Wait-Handling" for Navigation...
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **avinash7**
 >
-
->
-
- *[img: Quote]* Originally Posted by **avinash7** *[img: View Post]*
-
-While opening the application for the 1st time after starting computer, application crashes
+> While opening the application for the 1st time after starting computer, application crashes
 
 Are you sure that this crash is caused by the WebView2?
 
@@ -3743,17 +3319,13 @@ Put this into a virginal StdExe-Project(-Form) and compile.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
+> I programmed an ocx encapsulating the RC6's Webview2 for my own purposes. It is available **<https://www.ordoconcept.net/ordoWebview2/en/> here**, for those interested.
 >
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-I programmed an ocx encapsulating the RC6's Webview2 for my own purposes. It is available** <https://www.ordoconcept.net/ordoWebview2/en/> here**, for those interested.
-
- It is a version which will evolve with the improvements of the RC6 and which is delivered as it is, without any guarantee. But in my software, it works perfectly. Thanks again to Olaf!
-
- François
+>  It is a version which will evolve with the improvements of the RC6 and which is delivered as it is, without any guarantee. But in my software, it works perfectly. Thanks again to Olaf!
+>
+>  François
 
 Thanks for this!! I have downloaded and I'm trying it out. My first problem is how to set it up to call the .JSrun with Parameters? I'm converting the code from using the WebView2 directly and it's complaining:
 
@@ -3767,13 +3339,9 @@ Thanks for this!! I have downloaded and I'm trying it out. My first problem is h
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
- Re-Delegating 10 Events or so, should not take more than 5 minutes of "Copy&Paste-work".
+>  Re-Delegating 10 Events or so, should not take more than 5 minutes of "Copy&Paste-work".
 
 While this exercise seemed trivial enough, it appears that to provide a true "wrapper" around this with Indexes, I must re-create/declare *ALL* the other Let/Get and Methods for *each* of the properties/methods of the actual WV object.
 
@@ -3783,17 +3351,13 @@ While this exercise seemed trivial enough, it appears that to provide a true "wr
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
+> Thanks for this!! I have downloaded and I'm trying it out. My first problem is how to set it up to call the .JSrun with Parameters? I'm converting the code from using the WebView2 directly and it's complaining:
 >
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Thanks for this!! I have downloaded and I'm trying it out. My first problem is how to set it up to call the .JSrun with Parameters? I'm converting the code from using the WebView2 directly and it's complaining:
-
- **Type Mismatch: array or user-defined type expected**
-
- I have injected a small JS with 2 parameters (user and password), so that I can auto-login to a website.
+>  **Type Mismatch: array or user-defined type expected**
+>
+>  I have injected a small JS with 2 parameters (user and password), so that I can auto-login to a website.
 
 Have you tried : (where FLogin is the Javascript procedure)
 
@@ -3815,9 +3379,9 @@ I All,
  I am not able to use the RC6 WebView2 from outside VB6. In VB6 (in the IDE and compiled) everything works correctly. The same if I use the "saturnian" control (an ocx encapsulating the RC6 WebView2). The problem is when I want to use the WebView2 from, for example, PowerBuilder. I've been using RC without problems in PB for a long time, but I can't get the WebView2 to work. When I call BindTo , the PB IDE crashes (the same in a compiled version) with the same error it gives to "avinash7" (error in ntdll.dll").
  I have tested the AntView control (<https://antview.dev/downloads/> https://antview.dev/downloads/) which I believe uses the same mechanism (WebView2Loader.dll) and everything works correctly, both in VB6, PowerBuilder, even in an Excel userForm.
  If I use the saturnian control in PowerBuilder, I get the error (just instantiate the control):
- <https://www.vbforums.com/attachment.php?s=9b84d96bf559669a1dc45b4f80d160b8&attachmentid=184685> Attachment 184685
+ <https://www.vbforums.com/attachment.php?s=590ef57ea31a7b12593e267acfc3f2a6&attachmentid=184685> Attachment 184685
  For what it's worth, in PowerBuilder's object browser, I can see all RC6 classes except "cWebView2":
- <https://www.vbforums.com/attachment.php?s=9b84d96bf559669a1dc45b4f80d160b8&attachmentid=184686> Attachment 184686
+ <https://www.vbforums.com/attachment.php?s=590ef57ea31a7b12593e267acfc3f2a6&attachmentid=184686> Attachment 184686
  However, the error does not occur when creating the cWebView2 object, but when calling BindTo (or when creating it by passing the hWnd parameter).
  Any ideas?
 
@@ -3838,18 +3402,14 @@ I All,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **carl039**
 >
-
+> @saturnian
 >
-
- *[img: Quote]* Originally Posted by **carl039** *[img: View Post]*
-
-@saturnian
-
- Does your ActiveX control allow the setting of the userDataFolder ?
- Can't seem to find it in VB6 Object Browser.
-
- Thanks
+>  Does your ActiveX control allow the setting of the userDataFolder ?
+>  Can't seem to find it in VB6 Object Browser.
+>
+>  Thanks
 
 For the moment no. But if you are using a Fixed Version of WebView2, the user directory data is in the installation folder of this version (by default: C:\ProgramData\OrdoWebView2\Microsoft.WebView2.FixedVersionRuntime\Data\EBWebView)
  You can copy the contents of the C:\ProgramData\OrdoWebView2\Microsoft.WebView2.FixedVersionRuntime folder several times and assign a version of the webview2 control to each user by setting the EdgeFixedPath property.
@@ -3861,17 +3421,13 @@ For the moment no. But if you are using a Fixed Version of WebView2, the user di
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
+> For the moment no. But if you are using a Fixed Version of WebView2, the user directory data is in the installation folder of this version (by default: C:\ProgramData\OrdoWebView2\Microsoft.WebView2.FixedVersionRuntime\Data\EBWebView)
+>  You can copy the contents of the C:\ProgramData\OrdoWebView2\Microsoft.WebView2.FixedVersionRuntime folder several times and assign a version of the webview2 control to each user by setting the EdgeFixedPath property.
+>  But this cannot be changed on the fly. You must use one OrdoWebView2 control per user, modify the EdgeFixedPath property and launch the Init method.
 >
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-For the moment no. But if you are using a Fixed Version of WebView2, the user directory data is in the installation folder of this version (by default: C:\ProgramData\OrdoWebView2\Microsoft.WebView2.FixedVersionRuntime\Data\EBWebView)
- You can copy the contents of the C:\ProgramData\OrdoWebView2\Microsoft.WebView2.FixedVersionRuntime folder several times and assign a version of the webview2 control to each user by setting the EdgeFixedPath property.
- But this cannot be changed on the fly. You must use one OrdoWebView2 control per user, modify the EdgeFixedPath property and launch the Init method.
-
- Best regards
+>  Best regards
 
  Thanks, great job on your control btw.
 
@@ -3918,13 +3474,9 @@ just ran across this, it's exactly what i've been looking for, so thank you.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **inspace**
 >
-
->
-
- *[img: Quote]* Originally Posted by **inspace** *[img: View Post]*
-
-2) scan entire page for elements such as ID, NAME, HREF, and display them in a textbox.
+> 2) scan entire page for elements such as ID, NAME, HREF, and display them in a textbox.
 
 With the WebView2 you should get more familiar with its JS-interface ...
  (doing all of the more complex stuff, by adding js-Functions beforehand - and then calling these from VB)
@@ -3992,10 +3544,7 @@ Hi everyone
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
->
-
->
- suppose mdocDocument is declared as an HTMLDocument
+>  suppose mdocDocument is declared as an HTMLDocument
 
 The HTMLDocument and the corresponding interface do not exist here. You have to program this code (a function) in JavaScript and either integrate it statically into the page or add it dynamically via VB. You can call the function from your programme at any time (also parameterised). See also: AddScriptToExecuteOnDocumentCreated, jsRun, jsRunAsync and ExecuteScript.
 
@@ -4042,13 +3591,9 @@ Hi !
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **lodep**
 >
-
->
-
- *[img: Quote]* Originally Posted by **lodep** *[img: View Post]*
-
-I need that all the resources of the page are loaded with the same User Agent...
+> I need that all the resources of the page are loaded with the same User Agent...
 
 There's a ton of settings possible via optional commandline-string (which you can pass along in the Bind-Method) -
  "--user-agent ..." just being one of them...
@@ -4064,25 +3609,21 @@ There's a ton of settings possible via optional commandline-string (which you ca
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> There's a ton of settings possible via optional commandline-string (which you can pass along in the Bind-Method) -
+>  "--user-agent ..." just being one of them...
+>  <https://peter.sh/experiments/chromium-command-line-switches/#user-agent> https://peter.sh/experiments/chromiu...es/#user-agent
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-There's a ton of settings possible via optional commandline-string (which you can pass along in the Bind-Method) -
- "--user-agent ..." just being one of them...
- <https://peter.sh/experiments/chromium-command-line-switches/#user-agent> https://peter.sh/experiments/chromiu...es/#user-agent
-
- I'd try it this way first...
-
- HTH
-
- Olaf
+>  I'd try it this way first...
+>
+>  HTH
+>
+>  Olaf
 
 How can I say... JUST A HUGE **THANK YOU** !!!
  This is just amazing, it works !
- Thank you *[img: Smilie]*
+ Thank you :)
 
 ## #176 lodep — Jul 27th, 2022, 03:01 AM
 
@@ -4106,13 +3647,9 @@ can anybody share with me how to get webview2 cookies vb6
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jenniger9**
 >
-
->
-
- *[img: Quote]* Originally Posted by **jenniger9** *[img: View Post]*
-
-can anybody share with me how to get webview2 cookies vb6
+> can anybody share with me how to get webview2 cookies vb6
 
 Please study (or at least search through) the postings of the discussion-thread you're currently in...
  Cookie-retrieval was already a topic here in: <https://www.vbforums.com/showthread.php?889202-VB6-WebView2-Binding-(Edge-Chromium)&p=5498591&viewfull=1#post5498591> https://www.vbforums.com/showthread....=1#post5498591
@@ -4129,13 +3666,9 @@ Can this tool(webview2) replace selenium to emulate user behavior on the webpage
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **sergeos**
 >
-
->
-
- *[img: Quote]* Originally Posted by **sergeos** *[img: View Post]*
-
-Can this tool(webview2) replace selenium to emulate user behavior on the webpage?
+> Can this tool(webview2) replace selenium to emulate user behavior on the webpage?
 
 In my understanding, Selenium was written as a generic Test-Tool which can "work against multiple Browser-engines".
 
@@ -4160,23 +3693,19 @@ Hello!
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> In my understanding, Selenium was written as a generic Test-Tool which can "work against multiple Browser-engines".
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-In my understanding, Selenium was written as a generic Test-Tool which can "work against multiple Browser-engines".
-
- The WebView2 is just an encapsulation of a single Browser-engine (chromium) -
- minus the additional "generic Automation- and Test-interfaces".
-
- So, if you currently use Selenium for your own testing-purposes with success,
- why change it to something "less capable" and "less generic".
-
- Just my $0.02...
-
- Olaf
+>  The WebView2 is just an encapsulation of a single Browser-engine (chromium) -
+>  minus the additional "generic Automation- and Test-interfaces".
+>
+>  So, if you currently use Selenium for your own testing-purposes with success,
+>  why change it to something "less capable" and "less generic".
+>
+>  Just my $0.02...
+>
+>  Olaf
 
 no, I don't use selenium. but I have seen how it works. The problem is that with every update of firefox, you need to change the version of the woking executable to connect firefox to the web page.
  I also join the question above regarding use cases.
@@ -4185,14 +3714,10 @@ no, I don't use selenium. but I have seen how it works. The problem is that with
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jangle**
 >
-
->
-
- *[img: Quote]* Originally Posted by **jangle** *[img: View Post]*
-
-Hello!
- Can you explain how to save downloaded web page to local disk?
+> Hello!
+>  Can you explain how to save downloaded web page to local disk?
 
 Not sure, what is meant here...
  (there is an interactive right-mouseclick-context-menu in the chromium-engine,
@@ -4207,19 +3732,15 @@ Not sure, what is meant here...
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Not sure, what is meant here...
+>  (there is an interactive right-mouseclick-context-menu in the chromium-engine,
+>  which allows to trigger "Save as..."-commands).
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Not sure, what is meant here...
- (there is an interactive right-mouseclick-context-menu in the chromium-engine,
- which allows to trigger "Save as..."-commands).
-
- If it's only "plain-text-" or "plain-binary"-saving of a given URL -
- then a better suited (more lightweight) helper-object is available via the winhttp 5.1 reference...
- Olaf
+>  If it's only "plain-text-" or "plain-binary"-saving of a given URL -
+>  then a better suited (more lightweight) helper-object is available via the winhttp 5.1 reference...
+>  Olaf
 
 I have a list of about 100 web pages. I need to automatically download them and save them along with the pictures to a local disk.
  Can I use this component for this task or should I use something else?
@@ -4249,26 +3770,22 @@ I have to switch back to 6.0.0.9 and my program works again.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Resurrected**
 >
-
+> Olaf:
 >
-
- *[img: Quote]* Originally Posted by **Resurrected** *[img: View Post]*
-
-Olaf:
-
- I was using RC6 version: 6.0.0.9, everything is fine.
- Then I upgraded to RC6 version: 6.0.0.10, my program broke.
-
- It was broken when this line of code stopped returning anything:
-
-Code:
-
-```
-WV.jsProp("document.querySelector('input').value")
-```
-
-I have to switch back to 6.0.0.9 and my program works again.
+>  I was using RC6 version: 6.0.0.9, everything is fine.
+>  Then I upgraded to RC6 version: 6.0.0.10, my program broke.
+>
+>  It was broken when this line of code stopped returning anything:
+>
+> Code:
+>
+> ```
+> WV.jsProp("document.querySelector('input').value")
+> ```
+>
+> I have to switch back to 6.0.0.9 and my program works again.
 
 Had to adapt the jsProp-Resolver Method internally (in 6.0.10) due to "security-reasons" -
  (the old version was using eval(...) to resolve the jsProp-expression, and that does not work in all cases).
@@ -4294,23 +3811,15 @@ Had to adapt the jsProp-Resolver Method internally (in 6.0.10) due to "security-
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
+>  Re-Delegating 10 Events or so, should not take more than 5 minutes of "Copy&Paste-work".
 
+>   Originally Posted by **BooksRUs**
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
- Re-Delegating 10 Events or so, should not take more than 5 minutes of "Copy&Paste-work".
-
+> While this exercise seemed trivial enough, it appears that to provide a true "wrapper" around this with Indexes, I must re-create/declare *ALL* the other Let/Get and Methods for *each* of the properties/methods of the actual WV object.
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-While this exercise seemed trivial enough, it appears that to provide a true "wrapper" around this with Indexes, I must re-create/declare *ALL* the other Let/Get and Methods for *each* of the properties/methods of the actual WV object.
-
- I did try to do this, but the .jsProp was a little confusing, while most others were straightforward. I only tried to do the ones that I'm using to change your Demo program to work with 2 of my own ucWV objects (I dynamically Load a 2nd one, just to make sure that I can dynamically Load the object).
+>  I did try to do this, but the .jsProp was a little confusing, while most others were straightforward. I only tried to do the ones that I'm using to change your Demo program to work with 2 of my own ucWV objects (I dynamically Load a 2nd one, just to make sure that I can dynamically Load the object).
 
  I just wanted to BUMP this response again to see if anyone else has successfully tried/done this (making a User Control with WV so that we can have indexed UC with multiple on one form)?
 
@@ -4326,31 +3835,27 @@ While this exercise seemed trivial enough, it appears that to provide a true "wr
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Had to adapt the jsProp-Resolver Method internally (in 6.0.10) due to "security-reasons" -
+>  (the old version was using eval(...) to resolve the jsProp-expression, and that does not work in all cases).
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Had to adapt the jsProp-Resolver Method internally (in 6.0.10) due to "security-reasons" -
- (the old version was using eval(...) to resolve the jsProp-expression, and that does not work in all cases).
-
- What the new version still supports, is "nested Prop-Expressions" - as for example:
- Debug.Print WV.jsProp("window.document.title")
-
- But please note, that the above "nested expression" does not contain any parentheses (which indicate function-calls).
- So, it has to be "pure properties" now (since I'm not using eval anymore for jsProp-evaluation internally).
-
- To solve your problem, just add a little helper-function like e.g:
- WV.AddScriptToExecuteOnDocumentCreated "function getQSValue(qsExpr){return document.querySelector(qsExpr).value}"
- ...before loading a document.
-
- This will allow you, to use WV.jsRun(...) instead, to get your values:
- Debug.Print WV.jsRun("getQSValue", "input")
-
- HTH
-
- Olaf
+>  What the new version still supports, is "nested Prop-Expressions" - as for example:
+>  Debug.Print WV.jsProp("window.document.title")
+>
+>  But please note, that the above "nested expression" does not contain any parentheses (which indicate function-calls).
+>  So, it has to be "pure properties" now (since I'm not using eval anymore for jsProp-evaluation internally).
+>
+>  To solve your problem, just add a little helper-function like e.g:
+>  WV.AddScriptToExecuteOnDocumentCreated "function getQSValue(qsExpr){return document.querySelector(qsExpr).value}"
+>  ...before loading a document.
+>
+>  This will allow you, to use WV.jsRun(...) instead, to get your values:
+>  Debug.Print WV.jsRun("getQSValue", "input")
+>
+>  HTH
+>
+>  Olaf
 
 Olaf, thanks for the reply. I will make changes to my code.
 
@@ -4382,21 +3887,17 @@ Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Resurrected**
 >
-
+> It seems that .jsRun returns the previous result if the current result is undefined?
 >
-
- *[img: Quote]* Originally Posted by **Resurrected** *[img: View Post]*
-
-It seems that .jsRun returns the previous result if the current result is undefined?
-
- For example,
-
- .jsRun(js1) returns 'result of js1' if js1 works.
- .jsRun(js2) returns also 'result of js1' if js2 failed.
- .jsRun(js3) returns 'result of js3' if js3 works.
-
- I was assuming that .jsRun would return something like NULL when the script fails.
+>  For example,
+>
+>  .jsRun(js1) returns 'result of js1' if js1 works.
+>  .jsRun(js2) returns also 'result of js1' if js2 failed.
+>  .jsRun(js3) returns 'result of js3' if js3 works.
+>
+>  I was assuming that .jsRun would return something like NULL when the script fails.
 
 I've fixed that now - returning Empty in case of a js-error (a returned js-**null**-value maps to VT_Empty in the COM-world).
  Have not compiled and re-uploaded yet, but it will come in the next release...
@@ -4418,7 +3919,7 @@ I've fixed that now - returning Empty in case of a js-error (a returned js-**nul
 
 I Olaf.
  Do you know why I can't see (and use) the cWebView2 class in Excel?
- <https://www.vbforums.com/attachment.php?s=9b84d96bf559669a1dc45b4f80d160b8&attachmentid=185944> Attachment 185944
+ <https://www.vbforums.com/attachment.php?s=590ef57ea31a7b12593e267acfc3f2a6&attachmentid=185944> Attachment 185944
  The same happens in other languages (powerbuilder for example), where I have had no problems using other RC6 classes
 
  Regards
@@ -4493,17 +3994,13 @@ Dear Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **talatoncu**
 >
-
+> After I have downloaded and installed "The vbRichClient-Framework (currently at Version 6.0.10", I am in great trouble.
 >
-
- *[img: Quote]* Originally Posted by **talatoncu** *[img: View Post]*
-
-After I have downloaded and installed "The vbRichClient-Framework (currently at Version 6.0.10", I am in great trouble.
-
- Although Webview2 perfectly loads the document in the picturebox, in the NavigationCompleted event, IsSuccess is always false while WebErrorStatus=0.
-
- Am I doing something wrong or something has been chaned that I don't know.
+>  Although Webview2 perfectly loads the document in the picturebox, in the NavigationCompleted event, IsSuccess is always false while WebErrorStatus=0.
+>
+>  Am I doing something wrong or something has been chaned that I don't know.
 
 Have just tested this with a WV.Navigate to "https://google.com" -
  and the incoming NavigationCompleted-EventParams are: IsSuccess=True, WebErrorStatus=0
@@ -4530,21 +4027,17 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Have just tested this with a WV.Navigate to "https://google.com" -
+>  and the incoming NavigationCompleted-EventParams are: IsSuccess=True, WebErrorStatus=0
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Have just tested this with a WV.Navigate to "https://google.com" -
- and the incoming NavigationCompleted-EventParams are: IsSuccess=True, WebErrorStatus=0
-
- In the MS-documentation for the IsSuccess-Param is stated:
- ...Note that WebView2 will report the navigation as 'unsuccessful' if the load for the navigation did not reach the expected completion for any reason. Such reasons include potentially catastrophic issues such network and certificate issues, but can also be the result of intended actions such as the app canceling a navigation or navigating away before the original navigation completed. Applications should not just rely on this flag, but also consider the reported WebErrorStatus to determine whether the failure is indeed catastrophic in their context.
-
- So, maybe the site you navigate to has an outdated certificate - or undergoes several redirects?
-
- Olaf
+>  In the MS-documentation for the IsSuccess-Param is stated:
+>  ...Note that WebView2 will report the navigation as 'unsuccessful' if the load for the navigation did not reach the expected completion for any reason. Such reasons include potentially catastrophic issues such network and certificate issues, but can also be the result of intended actions such as the app canceling a navigation or navigating away before the original navigation completed. Applications should not just rely on this flag, but also consider the reported WebErrorStatus to determine whether the failure is indeed catastrophic in their context.
+>
+>  So, maybe the site you navigate to has an outdated certificate - or undergoes several redirects?
+>
+>  Olaf
 
 Dear Olaf,
 
@@ -4556,14 +4049,10 @@ Dear Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **shamiur**
 >
-
->
-
- *[img: Quote]* Originally Posted by **shamiur** *[img: View Post]*
-
-RC6 Version 6.0.10 does not return values for html textbox on vb form. It does the same thing for WebView2Demo example as well.
- MsgBox WV.jsProp("document.getElementById('txt1').value")
+> RC6 Version 6.0.10 does not return values for html textbox on vb form. It does the same thing for WebView2Demo example as well.
+>  MsgBox WV.jsProp("document.getElementById('txt1').value")
 
 I've explained why this happens - and also a workaround for it - in post #186 above.
 
@@ -4593,15 +4082,11 @@ Olaf
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Resurrected**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Resurrected** *[img: View Post]*
-
-Today, out of nowhere my program suddenly ran into "couldn't initialize Webview2 binding" on startup.
- The problem remains after I tried rebooting my pc, recompliling the exe,
- reinstalling webview2 runtime, running in the IDE, or reresgistering RC6 binaries.
+> Today, out of nowhere my program suddenly ran into "couldn't initialize Webview2 binding" on startup.
+>  The problem remains after I tried rebooting my pc, recompliling the exe,
+>  reinstalling webview2 runtime, running in the IDE, or reresgistering RC6 binaries.
 
 Cannot reproduce the behaviour on my machine -
  but nevertheless have uploaded a new RC6-BaseLibs-package -
@@ -4645,13 +4130,9 @@ There is a fixed version Webview2 for downloading. Is it possible to test agains
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Resurrected**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Resurrected** *[img: View Post]*
-
-There is a fixed version Webview2 for downloading. Is it possible to test against this?
+> There is a fixed version Webview2 for downloading. Is it possible to test against this?
 
 Sure, the first optional Param of the BindTo-Method allows that.
 
@@ -4687,14 +4168,10 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Bob17**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bob17** *[img: View Post]*
-
-Hi Olaf,
- Calling a vb6 COM dll that has RC6 WebView2 from a .NET application crashes the process...
+> Hi Olaf,
+>  Calling a vb6 COM dll that has RC6 WebView2 from a .NET application crashes the process...
 
 I'm aware of that problem -
  and .NET-compiled (32Bit-x86) Host-Processes are not the only ones who cause it...
@@ -4727,20 +4204,16 @@ Well, I need to support such scenario where web browsing is in the COM dll and t
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Bob17**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bob17** *[img: View Post]*
-
-Well, I need to support such scenario where web browsing is in the COM dll and the caller is arbitrary application, possibly .NET-based. One interesting detail, if .NET app is based on Framework 3.5 or 4 then the app is not crashing!
+> Well, I need to support such scenario where web browsing is in the COM dll and the caller is arbitrary application, possibly .NET-based. One interesting detail, if .NET app is based on Framework 3.5 or 4 then the app is not crashing!
 
 A VB6-Host-Exe might help (which encapsulates the whole thing - including the VB6-Form you "BindTo").
 
  You can even make this VB6-Executable an ActiveX-Exe-Project -
  with your current "Dll-based Public COM-Class" exposed as a Public Class of the AciveX-Exe -
  which is BTW one of the few ways, to make a VB6-Class "consumable" also by **64Bit**-Host-Processes.
- (remember, you cannot load a VB6-compiled 32Bit COM-Dll into a 64Bit-Process **directly **-
+ (remember, you cannot load a VB6-compiled 32Bit COM-Dll into a 64Bit-Process **directly** -
  only **Cross**-**Process**-COM-calls between 64Bit-Consumer-Process and a 32Bit-ClassHost-Process allow that feat)
 
  Olaf
@@ -4749,32 +4222,28 @@ A VB6-Host-Exe might help (which encapsulates the whole thing - including the VB
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> I'm aware of that problem -
+>  and .NET-compiled (32Bit-x86) Host-Processes are not the only ones who cause it...
+>  There's also VBA (when run from within 32Bit Excel or Access.exe Processes) which has that problem.
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-I'm aware of that problem -
- and .NET-compiled (32Bit-x86) Host-Processes are not the only ones who cause it...
- There's also VBA (when run from within 32Bit Excel or Access.exe Processes) which has that problem.
-
- I have currently not investigated this deeply - but my assumption is,
- that a VB6-compiled 32Bit Host-Exe is initializing the vb6-runtime-dll differently on startup -
- (compared to an "isolatedly loaded" VB6-COM-Dll - like the RC6 on different "Host-Exes").
-
- In case of a VB6-compiled Host-exe the RC6-Dll "meets an already initialized vb6-runtime" (on the MainThread) -
- and in case of differently compiled Host-exes, the RC6-Dll "has to initialize the vb6-runtime itself".
-
- There is all sorts of other (threading-related things) to consider along with that -
- it might be that the hosting Executables where it fails, have initialized their COM(Threads) to "MTA-mode" and not "STA-Mode".
-
- I hesitate to invest much of my time into it - because TwinBasic offers a WebView2-Binding as well (also for VBA).
- And ".NETers" have also their own "WebView2-Binding" available in a .NET-based Class-wrapper.
-
- Is there a reason, why you want to use (32Bit only!)-VB6-compiled-COM-Dlls in a .NET-App?
-
- Olaf
+>  I have currently not investigated this deeply - but my assumption is,
+>  that a VB6-compiled 32Bit Host-Exe is initializing the vb6-runtime-dll differently on startup -
+>  (compared to an "isolatedly loaded" VB6-COM-Dll - like the RC6 on different "Host-Exes").
+>
+>  In case of a VB6-compiled Host-exe the RC6-Dll "meets an already initialized vb6-runtime" (on the MainThread) -
+>  and in case of differently compiled Host-exes, the RC6-Dll "has to initialize the vb6-runtime itself".
+>
+>  There is all sorts of other (threading-related things) to consider along with that -
+>  it might be that the hosting Executables where it fails, have initialized their COM(Threads) to "MTA-mode" and not "STA-Mode".
+>
+>  I hesitate to invest much of my time into it - because TwinBasic offers a WebView2-Binding as well (also for VBA).
+>  And ".NETers" have also their own "WebView2-Binding" available in a .NET-based Class-wrapper.
+>
+>  Is there a reason, why you want to use (32Bit only!)-VB6-compiled-COM-Dlls in a .NET-App?
+>
+>  Olaf
 
 Hello Olaf. You are right. By creating an ActiveX-Exe and exposing a cWebView2 wrapper as a public class of the ActiveX-exe I can use WebView2 in my PowerBuilder application without problems (something that directly using RC6 I have not achieved). Not ideal, but at least I have a choice.
 
@@ -4811,13 +4280,9 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **darjeeling**
 >
-
->
-
- *[img: Quote]* Originally Posted by **darjeeling** *[img: View Post]*
-
-...but it is a CAB.
+> ...but it is a CAB.
 
 Win10 has direct support for unpacking of *.cab-Archives -
  otherwise use 7zip?
@@ -4854,13 +4319,9 @@ Hello.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **EasyOneX**
 >
-
->
-
- *[img: Quote]* Originally Posted by **EasyOneX** *[img: View Post]*
-
-Is there a project / template for this so that the WebView2 can also be used as an HTML editor?
+> Is there a project / template for this so that the WebView2 can also be used as an HTML editor?
 
 Sure ... did you ever try-out:
  WV.OpenDevToolsWindow
@@ -4907,13 +4368,9 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **darjeeling**
 >
-
->
-
- *[img: Quote]* Originally Posted by **darjeeling** *[img: View Post]*
-
-P = WV.GetMostRecentInstallPath
+> P = WV.GetMostRecentInstallPath
 
 GetMostRecentInstallPath gives the path to the "Evergreen-Version" (which the "normal" MS-installer is for).
 
@@ -4941,25 +4398,17 @@ Hi Olaf,
 
 Hello
  I tested the demo under w7 but I'm getting this error
- *[img: Name:  29-12-2022 15-46-44.jpg
-Views: 2300
-Size:  19.5 KB]*
+ ![29-12-2022 15-46-44.jpg](https://www.vbforums.com/attachment.php?attachmentid=186547&d=1672325368)
 
 ## #222 Schmidt — Dec 29th, 2022, 10:20 AM
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Adebiyi24**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Adebiyi24** *[img: View Post]*
-
-Hello
- I tested the demo under w7 but I'm getting this error
- *[img: Name:  29-12-2022 15-46-44.jpg
-Views: 2300
-Size:  19.5 KB]*
+> Hello
+>  I tested the demo under w7 but I'm getting this error
+>  ![29-12-2022 15-46-44.jpg](https://www.vbforums.com/attachment.php?attachmentid=186547&d=1672325368)
 
 The reason for this was mentioned a few times already in this Codebank-Thread.
  (the Event-interface was changed slightly in newer RC6-versions).
@@ -5001,15 +4450,11 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **darjeeling**
 >
-
->
-
- *[img: Quote]* Originally Posted by **darjeeling** *[img: View Post]*
-
-Hi Olaf,
- RC6 version 6.0.12:
- RC6BaseDlls.zip -> HTTP Error 404.0 - Not Found
+> Hi Olaf,
+>  RC6 version 6.0.12:
+>  RC6BaseDlls.zip -> HTTP Error 404.0 - Not Found
 
 Oops, messed up my FTP-Upload - please try again...
 
@@ -5043,13 +4488,9 @@ Hi again,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **darjeeling**
 >
-
->
-
- *[img: Quote]* Originally Posted by **darjeeling** *[img: View Post]*
-
-...the source code of Wolf (<http://www.ww-a.de/download/WebView2-Demo.zip> http://www.ww-a.de/download/WebView2-Demo.zip) works perfectly on Windows 7.
+> ...the source code of Wolf (<http://www.ww-a.de/download/WebView2-Demo.zip> http://www.ww-a.de/download/WebView2-Demo.zip) works perfectly on Windows 7.
 
 If Wolfgangs code is working (in your VB6-**IDE **on **Win7**) -
  then you're doing something wrong in your "init-sequence"...
@@ -5146,14 +4587,10 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Bob17**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bob17** *[img: View Post]*
-
-Hi Olaf,
- I wanted to test your BindTo improvements but the vbrichclient.com is having some error 500 problems.
+> Hi Olaf,
+>  I wanted to test your BindTo improvements but the vbrichclient.com is having some error 500 problems.
 
 Microsoft seems to be forcing everything related to **IE **to be removed from the browser, and I don't know if the recent frequent failures (inability to download files) of vbrichclient.com are related to Olaf's use of **IIS**.
 
@@ -5161,13 +4598,9 @@ Microsoft seems to be forcing everything related to **IE **to be removed from th
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-Microsoft seems to be forcing everything related to **IE **to be removed from the browser, and I don't know if the recent frequent failures (inability to download files) of vbrichclient.com are related to Olaf's use of **IIS**.
+> Microsoft seems to be forcing everything related to **IE **to be removed from the browser, and I don't know if the recent frequent failures (inability to download files) of vbrichclient.com are related to Olaf's use of **IIS**.
 
 Site was just down due to mystery server reasons....it looks like it's back up now. Maybe Olaf should have used Nginx :P
 
@@ -5175,13 +4608,9 @@ Site was just down due to mystery server reasons....it looks like it's back up n
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
->
-
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-Maybe Olaf should have used Nginx :P
+> Maybe Olaf should have used Nginx :P
 
 Yes, Nginx + VbFcgi is much better than IIS.
 
@@ -5200,13 +4629,9 @@ hello Olaf
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-WV.BindTo(picWV.hWnd, 8, **EdgePath, DataEdgePath**, TmpLang)
+> WV.BindTo(picWV.hWnd, 8, **EdgePath, DataEdgePath**, TmpLang)
 
 On what OS do you encounter this?
 
@@ -5222,17 +4647,11 @@ On what OS do you encounter this?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
->
-
->
- =Schmidt;5592174]On what OS do you encounter this?
+>  =Schmidt;5592174]On what OS do you encounter this?
 
 OS is Windows 10 an Windows 11 (tested on 4 computers and on several VMs)
 
->
-
->
- Where does EdgePath point to? (a "fixed version")?
+>  Where does EdgePath point to? (a "fixed version")?
 
 C:\ProgramData\OrdoWebView2\Microsoft.WebView2.FixedVersionRuntime
 
@@ -5240,46 +4659,32 @@ C:\ProgramData\OrdoWebView2\Microsoft.WebView2.FixedVersionRuntime
 
  If in these directories I put version 103.x.x.x of the Webview 2 component, it works perfectly. Newer versions 108.x.x.x and 109.x.x.x do not work
 
->
-
->
- Where does DataEdgePath point to? (a truly writable location for this User)?
+>  Where does DataEdgePath point to? (a truly writable location for this User)?
 
 C:\ProgramData\OrdoWebView2\Microsoft.WebView2.FixedVersionRuntime\Data
  or
  C:\Microsoft.WebView2.FixedVersionRuntime\Data
 
->
-
->
- What happens on this machine, when you call it without any "Extra-Params":
- WV.BindTo(picWV.hWnd)
+>  What happens on this machine, when you call it without any "Extra-Params":
+>  WV.BindTo(picWV.hWnd)
 
 it works perfectly because it uses the Evergreen version which works perfectly (and it's a 109.x.x.x version !!!)
 
- Does the latest **fixed **version 109.x.x.x available from MS work on your computers?
+ Does the latest **fixed** version 109.x.x.x available from MS work on your computers?
 
 ## #239 Schmidt — Jan 19th, 2023, 10:40 AM
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-...the Evergreen version which works perfectly (and it's a 109.x.x.x version !!!)
+> ...the Evergreen version which works perfectly (and it's a 109.x.x.x version !!!)
 
 At least that's then something to "automatically fall back to" (when a fixed-version-folder-param doesn't work).
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-Does the latest **fixed **version 109.x.x.x available from MS work on your computers?
+> Does the latest **fixed** version 109.x.x.x available from MS work on your computers?
 
 Will check it out (probably this weekend) - and report back, when an easy fix was possible...
 
@@ -5289,14 +4694,10 @@ Will check it out (probably this weekend) - and report back, when an easy fix wa
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-At least that's then something to "automatically fall back to" (when a fixed-version-folder-param doesn't work).
- Olaf
+> At least that's then something to "automatically fall back to" (when a fixed-version-folder-param doesn't work).
+>  Olaf
 
 the issue is that there is no trappable error.
 
@@ -5338,14 +4739,10 @@ Error, this page says I receive
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Mojtaba**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Mojtaba** *[img: View Post]*
-
-excellent
- ...don't have permission to access and read files from the hard drive...
+> excellent
+>  ...don't have permission to access and read files from the hard drive...
 
 The code below works for me (playing a local *.mp4 file):
 
@@ -5391,13 +4788,9 @@ hello Olaf
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-...have you had time to investigate the issue with the latest fixed versions of webview2?
+> ...have you had time to investigate the issue with the latest fixed versions of webview2?
 
 Yes, have done that just now ...
  and I'm not able to reproduce the problems (here on a Win10 with all Updates).
@@ -5437,44 +4830,36 @@ Like you, I've used an explicitly given "fixed-runtime-path" as well as a "local
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+>  What I took care of was the following:
+>  - I've downloaded the **x86**-flagged, fixed runtime from the MS-site (it comes in a *.cab-file)
+>  - FWIW, I've unpacked this *.cab with 7zip (and not the built-in Win10-CabViewer)
+>  - placed the unpacked Folder in a Parent-Folder I have **full write-rights** on ("c:\temp\...")
+>  - created a new, empty UserDirectory in "c:\temp\WV2UserData" (before trying the Bind-call)
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
- What I took care of was the following:
- - I've downloaded the **x86**-flagged, fixed runtime from the MS-site (it comes in a *.cab-file)
- - FWIW, I've unpacked this *.cab with 7zip (and not the built-in Win10-CabViewer)
- - placed the unpacked Folder in a Parent-Folder I have **full write-rights** on ("c:\temp\...")
- - created a new, empty UserDirectory in "c:\temp\WV2UserData" (before trying the Bind-call)
-
- Things to note (things of importance, regarding the error on your side):
- - already mentioned, but make sure to use the 32bit-(x86)version of the fixed-runtime
- - my "User-Directory" is not a sub-directory of the "fixed-runtime-folder"
- - neither Directory is causing "potential File-Virtualization-issues" (due to placement in the C:\Programs\-Folder)
- - neither Directory is provocing "treatment as an x64-Program" (due to placement in the C:\Programs\-Folder)
- - Me.Caption = New_c.Version ...shows "6.0.12" (just make sure to report this "live", to rule out regfree-loading of older versions)
-
- HTH
-
- Olaf
+>  Things to note (things of importance, regarding the error on your side):
+>  - already mentioned, but make sure to use the 32bit-(x86)version of the fixed-runtime
+>  - my "User-Directory" is not a sub-directory of the "fixed-runtime-folder"
+>  - neither Directory is causing "potential File-Virtualization-issues" (due to placement in the C:\Programs\-Folder)
+>  - neither Directory is provocing "treatment as an x64-Program" (due to placement in the C:\Programs\-Folder)
+>  - Me.Caption = New_c.Version ...shows "6.0.12" (just make sure to report this "live", to rule out regfree-loading of older versions)
+>
+>  HTH
+>
+>  Olaf
 
 I checked all the previous items except:
  Me.Caption = New_c.Version ...shows... ... ... "6.0.10" !
 
  Because, on the site <http://vbrichclient.com/> http://vbrichclient.com/ it is displayed:
 
->
-
->
-
- Downloads
- The Base-Dlls of the current toolset (version 6) are contained in this minimum-package:
- <http://vbrichclient.com/downloads/RC6BaseDlls.zip> RC6BaseDlls.zip (~ 3.5MB, **current version: 6.0.10**, **last updated: 2022-07-31** ... including SQLite-version: 3.39.2)
+>  Downloads
+>  The Base-Dlls of the current toolset (version 6) are contained in this minimum-package:
+>  <http://vbrichclient.com/downloads/RC6BaseDlls.zip> RC6BaseDlls.zip (~ 3.5MB, **current version: 6.0.10**, **last updated: 2022-07-31** ... including SQLite-version: 3.39.2)
 
 so I didn't think to download RC6BaseDlls.zip again ! I remained convinced that the current version was 6.0.10 !
- I won't be fooled now ! *[img: Wink]*
+ I won't be fooled now ! ;)
 
  Version 6.0.12 fixes all issues ! Thanks
 
@@ -5494,15 +4879,11 @@ Hi have nice day thanks for this complemente,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **astronald**
 >
-
->
-
- *[img: Quote]* Originally Posted by **astronald** *[img: View Post]*
-
-i am try navigate to <http://jsfiddle.net/qqzxtk67/> http://jsfiddle.net/qqzxtk67/
- this fire new window
- How i can manipulate this thanks?
+> i am try navigate to <http://jsfiddle.net/qqzxtk67/> http://jsfiddle.net/qqzxtk67/
+>  this fire new window
+>  How i can manipulate this thanks?
 
 Not sure, what you mean exactly (with "manipulate this")...
 
@@ -5521,19 +4902,15 @@ Can your control make use of OnFrameLoad event?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Can your control make use of OnFrameLoad event?
- I need to inject JS at this point of time.
+> Can your control make use of OnFrameLoad event?
+>  I need to inject JS at this point of time.
 
 Have not played around with iFrames so far (in the context of WV2 and the stuff i use it for currently) -
  but the documentation says (about the AddScriptToExecuteOnDocumentCreated-method):
 
- The injected script will apply to all future top level document **and **child frame navigations...
+ The injected script will apply to all future top level document **and** child frame navigations...
 
  With that, you should be able to place dedicated js-functions and -variables (for use from within an iFrame),
  without the need of "waiting for a FrameLoad-event".
@@ -5553,13 +4930,9 @@ I need to inject scripts to change the pages colors for handicapped users, and t
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-I need to inject scripts to change the pages colors for handicapped users, and this is the only event where I can do it.
+> I need to inject scripts to change the pages colors for handicapped users, and this is the only event where I can do it.
 
 I'm quite sure, that AddScriptToExecuteOnDocumentCreated can accomplish what you want
  (without using that event).
@@ -5580,7 +4953,7 @@ Dear Olaf,
 
  Just thought of letting you know that some of the links (to the 'Open Source' libraries) in the aforesaid text file are not working now. For e.g., for LZ4, "http://cyan4973.github.io/lz4/" does not work now. As far as I have explored, "https://github.com/lz4/lz4" looks to be the correct page now. Similarly, "https://zlib.net/zlib_license.html" works for the latest license page of 'zlib' (and not <http://www.gzip.org/zlib/zlib_license.html> http://www.gzip.org/zlib/zlib_license.html). You may anyway double-check on this from your side too because I am quite new to using "Open Source" libraries. I just felt that I should let you know my findings so that you can replace the non-working links with the right ones in the '_Library-Licenses.txt' file in the next release of vbRichClient-Framework, if at all my findings are correct. If my findings are not correct, kindly bear with me.
 
- Well, the **WebView2Loader.dll** found in your latest "RC6BaseDlls.zip" package is 112KB (115, 128 bytes) with version number of **1.0.1462.37**.
+ Well, the **WebView2Loader.dll **found in your latest "RC6BaseDlls.zip" package is 112KB (115, 128 bytes) with version number of** 1.0.1462.37**.
 
  Specifically, with respect to the deployment of one's compiled application in a different system
  --
@@ -5588,7 +4961,7 @@ Dear Olaf,
  (OR)
  **Can I** use the latest WebView2Loader.dll also? The version number of the latest WebView2Loader.dll is "1.0.1587.40" as of today, as per <https://www.nuget.org/packages/Microsoft.Web.WebView2> https://www.nuget.org/packages/Microsoft.Web.WebView2, if I am right.
  (OR)
- **Should I always use the latest WebView2Loader.dll only? **
+ **Should I always use the latest WebView2Loader.dll only?**
  --
 
  Thanks in TONs once again. I sometimes go silent thinking of the immense magnitude/depth of your work for this world society. **God Bless you, olaf! God Bless All!**
@@ -5617,7 +4990,7 @@ And, while I await with patience your answer to my query regarding 'WebView2Load
 
  I do remember reading (a week back or so) about '**Gaussian blur**' in your 'Cairo' tutorials AND/OR in some of your forum messages but I saw 'Gaussian blur' applied to images only, if my understanding was right.
 
- Honestly, I have not found time yet to go through all your **excellent** 'Cairo' tutorials. But, I do have "sincerely" gone through some of them and learnt a good lot about text rendering on paths. If indeed 'blur on text shadow' is already covered by you in any of your tutorials OR in any of your forum messages, then kindly intimate me the same and I shall go through them. Or, if such tutorials/messages do not exist yet, then, if at all and when your time permits, **kindly provide me a code snippet** which would "exactly" mimic what the following CSS would achieve when applied for any text.
+ Honestly, I have not found time yet to go through all your **excellent **'Cairo' tutorials. But, I do have "sincerely" gone through some of them and learnt a good lot about text rendering on paths. If indeed 'blur on text shadow' is already covered by you in any of your tutorials OR in any of your forum messages, then kindly intimate me the same and I shall go through them. Or, if such tutorials/messages do not exist yet, then, if at all and when your time permits,** kindly provide me a code snippet** which would "exactly" mimic what the following CSS would achieve when applied for any text.
  --
  "text-shadow: h-offset v-offset blur-radius color;"
  --
@@ -5630,17 +5003,13 @@ And, while I await with patience your answer to my query regarding 'WebView2Load
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Not sure, what you mean exactly (with "manipulate this")...
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Not sure, what you mean exactly (with "manipulate this")...
-
- What do you want to achieve in the end?
-
- Olaf
+>  What do you want to achieve in the end?
+>
+>  Olaf
 
 Thanks i want Execute javascript on new windows and read elements
 
@@ -5648,13 +5017,9 @@ Thanks i want Execute javascript on new windows and read elements
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
->
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
-**Can I** use the latest WebView2Loader.dll also?
+> **Can I** use the latest WebView2Loader.dll also?
 
 You can, but you don't have to...
 
@@ -5720,24 +5085,20 @@ As for upgrading to new(er) Cairo-Releases... the current Cairo.Version 1.17.02
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> You can, but you don't have to...
+>  ... .. .
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-You can, but you don't have to...
- ... .. .
-
- But here's a little helper-function for "shadowed text-output":
- .. .. .
- Olaf
+>  But here's a little helper-function for "shadowed text-output":
+>  .. .. .
+>  Olaf
 
 Thanks a LOT, Olaf. As ever, you are so helpful with all the detailed information regarding WebView2Loader.dll, etc.
 
  The helper function worked like a charm to create "text shadows with blur"! The best way to see its beauty in action was to change the various parameters (color, offsets, etc.) and see the corresponding effects. It was wonderful. Really. I will now try to take time to understand more of Gaussian Blur.
 
- And, I am **really sorry** about posting my cairo-related query in this "RC6 cWebView2"-related thread. Only 5 minutes after posting it, I suddenly realised my mistake. I **will be careful in the future**. Sorry again.
+ And, I am **really sorry **about posting my cairo-related query in this "RC6 cWebView2"-related thread. Only 5 minutes after posting it, I suddenly realised my mistake. I** will be careful in the future**. Sorry again.
 
  Kindest Regards.
 
@@ -5813,13 +5174,9 @@ But that doesn't work. The chat should highlighted with blue color, but it's not
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-...calling the JS functions that I added does not work.
+> ...calling the JS functions that I added does not work.
 
 There is an error in your larger js-Code-File:
 
@@ -5854,13 +5211,9 @@ Cannot further play around with this myself, because I have no "whatsapp"-accoun
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **astronald**
 >
-
->
-
- *[img: Quote]* Originally Posted by **astronald** *[img: View Post]*
-
-...i want Execute javascript on new windows and read elements
+> ...i want Execute javascript on new windows and read elements
 
 Not sure, whether the following example does what you had in mind -
  but the demo below will suppress the "WV2-built-in default-BrowserWindow-Popups",
@@ -5953,21 +5306,17 @@ And I have to say Congralatutions and thank you. I use your dhRichClient in all 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> How could I call this js function using WV2?
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-How could I call this js function using WV2?
-
- Dim c As cStringBuilder
- Set c = New cStringBuilder
-
- c.Append "function GetScrollPosX()"
- c.Append "{"
- c.Append " return (Math.max(document.body.scrollLeft,document.documentElement.scrollLeft));"
- c.Append "}"
+>  Dim c As cStringBuilder
+>  Set c = New cStringBuilder
+>
+>  c.Append "function GetScrollPosX()"
+>  c.Append "{"
+>  c.Append " return (Math.max(document.body.scrollLeft,document.documentElement.scrollLeft));"
+>  c.Append "}"
 
 I'd use the StringBuilder via New_c constructor (for better "regfree-mode-compatibility"):
 
@@ -6020,17 +5369,13 @@ I am trying to run this JS code to scroll the window down:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> WV.jsRunAsync "window.scrollBy({ top: 300, behavior: "smooth" });"
 >
+>  It does not work. What am I doing wrong?
 
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-WV.jsRunAsync "window.scrollBy({ top: 300, behavior: "smooth" });"
-
- It does not work. What am I doing wrong?
-
-What you're doing wrong is, to not read the Parameter-Names in the Intellisense-Popups... *[img: Wink]*
+What you're doing wrong is, to not read the Parameter-Names in the Intellisense-Popups... ;)
 
  Both, WV.jsRun and WV.jsRunAsync expect a "function-name" in the first argument.
 
@@ -6137,23 +5482,19 @@ It doesn't have any effect.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> Then, when I want to set the focus to the first input element, I call:
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Then, when I want to set the focus to the first input element, I call:
-
-Code:
-
-```
-    WV.SetFocus FocusReason_PROGRAMMATIC
-    WV.jsRunAsync "pSetFocus();"
-```
-
-It doesn't have any effect.
- What am I doing wrong?
+> Code:
+>
+> ```
+>     WV.SetFocus FocusReason_PROGRAMMATIC
+>     WV.jsRunAsync "pSetFocus();"
+> ```
+>
+> It doesn't have any effect.
+>  What am I doing wrong?
 
 Olaf just said that it expects a function name so I'd expect that your code should be this instead:-
 
@@ -6186,13 +5527,9 @@ I was stupid. My JS code was faulty. I've been using a different browser before,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Would you recommend to add all the functions that I need for example at program start up, correct?
+> Would you recommend to add all the functions that I need for example at program start up, correct?
 
 Of course... and you don't have to call: WV.AddScriptToExecuteOnDocumentCreated
  for every little function-snippet separately (after the Bind-call was successful).
@@ -6249,37 +5586,33 @@ End Function
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Not sure, whether the following example does what you had in mind -
+>  but the demo below will suppress the "WV2-built-in default-BrowserWindow-Popups",
+>  and will simply create additional VB-Form-instances instead (each using their own internal WV-Instance of course).
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Not sure, whether the following example does what you had in mind -
- but the demo below will suppress the "WV2-built-in default-BrowserWindow-Popups",
- and will simply create additional VB-Form-instances instead (each using their own internal WV-Instance of course).
-
-Code:
-
-```
-Option Explicit
-
-Public WithEvents WV As cWebView2, WithEvents tmrNewWindow As cTimer
-
-Public Sub ShowNewWindow(NewWindowFeatures As cCollection)
-  Set tmrNewWindow = Nothing 'we can safely destroy the "one-shot"-timerInstance now (since it delivered its Tag-Data)
-  *
-     F.Caption = .Prop("URI")
-     F.WV.Navigate .Prop("URI")
-
-     Debug.Print .SerializeToJSONString '(just to show, what else is contained in the features-collection)
-  End With
-End Sub
-```
-
-HTH
-
- Olaf
+> Code:
+>
+> ```
+> Option Explicit
+>
+> Public WithEvents WV As cWebView2, WithEvents tmrNewWindow As cTimer
+>
+> Public Sub ShowNewWindow(NewWindowFeatures As cCollection)
+>   Set tmrNewWindow = Nothing 'we can safely destroy the "one-shot"-timerInstance now (since it delivered its Tag-Data)
+>   *
+>      F.Caption = .Prop("URI")
+>      F.WV.Navigate .Prop("URI")
+>
+>      Debug.Print .SerializeToJSONString '(just to show, what else is contained in the features-collection)
+>   End With
+> End Sub
+> ```
+>
+> HTH
+>
+>  Olaf
 
 if new webview by post, how to do?not only by url
  F.WV.Navigate .Prop("URI")
@@ -6316,23 +5649,19 @@ End Function
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Win10 has direct support for unpacking of *.cab-Archives -
+>  otherwise use 7zip?
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Win10 has direct support for unpacking of *.cab-Archives -
- otherwise use 7zip?
-
- In any case, you should end up with an unpacked Folder, named:
- ..\Microsoft.WebView2.FixedVersionRuntime.107.0.1418.62.x86
- somewhere on your local harddisk.
-
- Now move that whole Folder to a place you prefer in your filesystem -
- and then point the 3rd Param of the BindTo-method to that Directory-Path-(String).
-
- Olaf
+>  In any case, you should end up with an unpacked Folder, named:
+>  ..\Microsoft.WebView2.FixedVersionRuntime.107.0.1418.62.x86
+>  somewhere on your local harddisk.
+>
+>  Now move that whole Folder to a place you prefer in your filesystem -
+>  and then point the 3rd Param of the BindTo-method to that Directory-Path-(String).
+>
+>  Olaf
 
 Code:
 
@@ -6369,9 +5698,7 @@ If have a such website, everybody can add modify complement perfect knowledge ba
 
  Do you have a help file? If you can control OCX or COM DLL, Windows API as a database knowledge base, list all properties, methods, events, constant values, optional parameters, meaning. An example call for each method. Then automatically generated HTM format help file is very convenient, you need a tool like this. Rc6. CWEBVIEW2, there are 70 or so method properties, if you can make a complete example, including all the method calls is perfect, in the code marked: ' 1/AcceleratorKeyPressed/event' 2/AddObject/method' 3/AddScriptToExecuteOnDocumentCreated such a workload is undoubtedly very large, most people use only a small amount of functionality. If do a such general control knowledge base software, Windows API, SQLITE3.0. DLL, VBA Excel. Application and other uses of the knowledge base management, use should be very convenient.
 
- *[img: Name:  2241RC6.cWebView2谷歌内核浏览器控件&#30340.jpg
-Views: 3371
-Size:  73.9 KB]*
+ ![2241RC6.cWebView2谷歌内核浏览器控件&#30340.jpg](https://www.vbforums.com/attachment.php?attachmentid=187121&d=1678146818)
 
 ## #282 tmighty2 — Mar 10th, 2023, 08:08 AM
 
@@ -6391,14 +5718,10 @@ Size:  73.9 KB]*
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-3)
- How could I disable that users can right-click the browser to invoke for example "Save as...", "Inspect", etc.?
+> 3)
+>  How could I disable that users can right-click the browser to invoke for example "Save as...", "Inspect", etc.?
 
 Does setting the WebView2 AreDefaultContextMenusEnabled property to False prevent the menu from appearing?
 
@@ -6406,14 +5729,10 @@ Does setting the WebView2 AreDefaultContextMenusEnabled property to False preven
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-2)
- How could I disable opening new windows?
+> 2)
+>  How could I disable opening new windows?
 
 Does this work?
 
@@ -6431,17 +5750,13 @@ See this post: <https://www.vbforums.com/showthread.php?889202-VB6-WebView2-Bind
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-1) How would I do this in WebView2, please?
- cefSetting.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
+> 1) How would I do this in WebView2, please?
+>  cefSetting.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
 
 Chromium CommandLine-switches can be passed in one of the optional Arguments of the "Bind-call"...
- (and were discussed more than once in this threads history)... *[img: Wink]*
+ (and were discussed more than once in this threads history)... ;)
  WV.BindTo(hWnd, , , ,"--autoplay-policy=no-user-gesture-required")
 
  Here's the Link again, which describes them:
@@ -6453,23 +5768,19 @@ Chromium CommandLine-switches can be passed in one of the optional Arguments of 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Chromium CommandLine-switches can be passed in one of the optional Arguments of the "Bind-call"...
+>  (and were discussed more than once in this threads history)... ;)
+>  WV.BindTo(hWnd, , , ,"--autoplay-policy=no-user-gesture-required")
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Chromium CommandLine-switches can be passed in one of the optional Arguments of the "Bind-call"...
- (and were discussed more than once in this threads history)... *[img: Wink]*
- WV.BindTo(hWnd, , , ,"--autoplay-policy=no-user-gesture-required")
-
- Here's the Link again, which describes them:
- <https://peter.sh/experiments/chromium-command-line-switches/#autoplay-policy> https://peter.sh/experiments/chromiu...utoplay-policy
-
- Olaf
+>  Here's the Link again, which describes them:
+>  <https://peter.sh/experiments/chromium-command-line-switches/#autoplay-policy> https://peter.sh/experiments/chromiu...utoplay-policy
+>
+>  Olaf
 
 // and were discussed more than once in this thread's history //
- Yes indeed, My Dear Olaf. And using this particular tip led me to have moments of great joy once I discovered that **Spell-Checker** (for languages other than the default English) can also be invoked via the Bind-Call. I had to try for quite some time to get it right (I almost decided to write here and ask you) but eventually when I got it working, that was such a joy (**Word suggestions** for misspelt words are also shown!!!). The joy you are giving to so many (few known to you, millions unknown to you) in this world society must be getting registered constantly in the Divine books, I firmly believe. May be it is possible to invoke the translator too! I am yet to explore. If possible and if you know the argument(s) for the same already, kindly let me know. Thanks in advance.
+ Yes indeed, My Dear Olaf. And using this particular tip led me to have moments of great joy once I discovered that **Spell-Checker **(for languages other than the default English) can also be invoked via the Bind-Call. I had to try for quite some time to get it right (I almost decided to write here and ask you) but eventually when I got it working, that was such a joy (**Word suggestions** for misspelt words are also shown!!!). The joy you are giving to so many (few known to you, millions unknown to you) in this world society must be getting registered constantly in the Divine books, I firmly believe. May be it is possible to invoke the translator too! I am yet to explore. If possible and if you know the argument(s) for the same already, kindly let me know. Thanks in advance.
 
  Well, coming to the Bind-Call (e.g. "--accept-lang=en-US,en,fr" wherein I have included 'fr' also to be considered for spellchecking), I wish to know the following:
 
@@ -6477,9 +5788,8 @@ Chromium CommandLine-switches can be passed in one of the optional Arguments of 
 
  2. Is it possible to access the word suggestions programmatically and show it in my own separate list?. For instance, when I typed "SpellChecker", the spellchecker engine identifies it as misspelt and when I right click on it, the resultant context menu is as in the picture below. **Is it possible for me to programmatically access these three word suggestions** (Spellchecker, Spellcheckers, Spell-checker) and show them alone in my own list on right-clicking (OR any other way, so that the default right-click menu gets displayed as usual)?
 
- *[img: Name:  SpellChecker.png
-Views: 2957
-Size:  4.2 KB]*
+ ![](data:image/png;base64,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)
+ ![SpellChecker.png](https://www.vbforums.com/attachment.php?attachmentid=187181&d=1679054121)
 
  3. I noticed that if I use more than one reference (say WV and WV2) to cWebView2 in my program, then while binding, I needed to "exactly" give the same "--accept-lang" argument in both Bindings. i.e. it had to be as follows:
  --
@@ -6511,13 +5821,9 @@ I would like to access certain elements of a webpage like links, buttons, etc.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-...I need to call grid_ensureHotSpotIds to create these elements.
+> ...I need to call grid_ensureHotSpotIds to create these elements.
 
 From what's defined in your js-code, I only see 3 Functions, defined on the (global) window-object:
  window.**_**grid_ensureHotSpotIds
@@ -6547,13 +5853,9 @@ Private Sub Form_Load()
 End Sub
 ```
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-...how I would then access these hotspots from VB6?
+> ...how I would then access these hotspots from VB6?
 
 Just call the functions directly via WV.jsRun (if they are directly callable, due to definition on the Window-Object)...
  Or add little wrapper-functions via WV.AddScriptToExec... (to indirectly call stuff which is deeper hidden behind other objects)
@@ -6574,7 +5876,7 @@ Just call the functions directly via WV.jsRun (if they are directly callable, du
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
-The following **global EventListener** on the document **works** perfectly for the target element 'abc'.
+The following **global EventListener **on the document** works** perfectly for the target element 'abc'.
 
 Code:
 
@@ -6590,7 +5892,7 @@ With New_c.StringBuilder
 End With
 ```
 
-But, the same EventListener when **applied specifically to the target element** 'abc' (as follows) **does not work** (i.e. the 'abcChange' event is not raised).
+But, the same EventListener when **applied specifically to the target element **'abc' (as follows)** does not work** (i.e. the 'abcChange' event is not raised).
 
 Code:
 
@@ -6600,7 +5902,7 @@ WV.AddScriptToExecuteOnDocumentCreated "var abc = document.getElementById('abc')
 
 I think the 'abc' element is not yet loaded when the above script is added. **Am I right?**
 
- Of course the above line (modified suitably as follows) and included **in the <script> section** of the html file **works** perfectly.
+ Of course the above line (modified suitably as follows) and included **in the <script> section **of the html file** works** perfectly.
 
 Code:
 
@@ -6624,7 +5926,7 @@ So, what is the right way to proceed if I need to add an EventListener to a spec
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
-In order that the **scripts added to** a WV (via functions like AddScriptToExecuteOnDocumentCreated, etc.) for the **1st page** I load (e.g. God.html) do **not get effected in a 2nd** and different **page** (e.g. Compassion.html) loaded in the same WV, I am right now loading the 2nd page in the manner below. **Is that correct?** If not, what is the correct method?
+In order that the **scripts added to **a WV (via functions like AddScriptToExecuteOnDocumentCreated, etc.) for the** 1st page **I load (e.g. God.html) do** not get effected in a 2nd **and different** page **(e.g. Compassion.html) loaded in the same WV, I am right now loading the 2nd page in the manner below.** Is that correct?** If not, what is the correct method?
 
 Code:
 
@@ -6652,10 +5954,7 @@ Note: I looked for any 'RemoveScript' methods so that by executing them I can re
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
->
-
->
- So, what is the right way to proceed if I need to add an EventListener to a specific target element alone?
+>  So, what is the right way to proceed if I need to add an EventListener to a specific target element alone?
 
 Why not use the global Listener, when it works nicely already?
 
@@ -6698,18 +5997,14 @@ Olaf
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Why not use the global Listener, when it works nicely already?
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Why not use the global Listener, when it works nicely already?
-
- I'd make it even more generic, so that it works for any Widget which raises a change-event:
- (this way you can filter on the VB-side)...
- ... .. . ... .. .
- Olaf
+>  I'd make it even more generic, so that it works for any Widget which raises a change-event:
+>  (this way you can filter on the VB-side)...
+>  ... .. . ... .. .
+>  Olaf
 
 // Why not use the global Listener, when it works nicely already? //
  **Yes, I definitely shall, olaf**. I needed such a confirmation from you. Because, otherwise, I was somewhat concerned whether listening to events at the document level would increase the load on the 'events manager'. Now that you have given your assured go-ahead with a **beautiful tip of a generic method** itself, I am confident now that I need not have any concerns as aforesaid. **Thanks a TON, as always**.
@@ -6727,42 +6022,37 @@ I think my question was misleading. I would like to ask how I could then interac
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
+> // and were discussed more than once in this thread's history //
+>  ... .. .
+>  Well, coming to the Bind-Call (e.g. **"--accept-lang=en-US,en,fr"** wherein I have included 'fr' also to be considered for spellchecking), I wish to know the following:
 >
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
-// and were discussed more than once in this thread's history //
- ... .. .
- Well, coming to the Bind-Call (e.g. **"--accept-lang=en-US,en,fr"** wherein I have included 'fr' also to be considered for spellchecking), I wish to know the following:
-
- 1. For the spellchecker/word-suggestions to function (for any included language), does MS always send the words typed to its servers, to get the required results? Or, is it always done locally after downloading the required language dictionaries once (perhaps updated occasionally too) to user's system? **How "exactly" is this spell-checker/word-suggestions functionality effected by MS in WebView2**? Will be helpful to share this info with users if such info is "concretely" known.
-
- 2. Is it possible to access the word suggestions programmatically and show it in my own separate list?. For instance, when I typed "SpellChecker", the spellchecker engine identifies it as misspelt and when I right click on it, the resultant context menu is as in the picture below. **Is it possible for me to programmatically access these three word suggestions** (Spellchecker, Spellcheckers, Spell-checker) and show them alone in my own list on right-clicking (OR any other way, so that the default right-click menu gets displayed as usual)?
-
- *[img: Name:  SpellChecker.png
-Views: 2957
-Size:  4.2 KB]*
-
- 3. I noticed that if I use more than one reference (say WV and WV2) to cWebView2 in my program, then while binding, I needed to "exactly" give the same "--accept-lang" argument in both Bindings. i.e. it had to be as follows:
- --
- If WV.BindTo(picWV.hWnd, TIME_TO_WAIT_m, , , "--accept-lang=en-US,en,fr") = 0
- If WV2.BindTo(picWV2.hWnd, TIME_TO_WAIT_m, , , "--accept-lang=en-US,en,fr") = 0
- --
- Otherwise, the 2nd binding won't happen. I have no problems keeping the same argument in both bind calls, but I feel that perhaps I am doing a mistake and **there possibly is a way by which I can pass different "--accept-lang" argument in each of the WV bind calls**. May be the correct argument is different from "--accept-lang" itself for SpellChecker?
- ... .. .
-
- Kind Regards.
+>  1. For the spellchecker/word-suggestions to function (for any included language), does MS always send the words typed to its servers, to get the required results? Or, is it always done locally after downloading the required language dictionaries once (perhaps updated occasionally too) to user's system? **How "exactly" is this spell-checker/word-suggestions functionality effected by MS in WebView2**? Will be helpful to share this info with users if such info is "concretely" known.
+>
+>  2. Is it possible to access the word suggestions programmatically and show it in my own separate list?. For instance, when I typed "SpellChecker", the spellchecker engine identifies it as misspelt and when I right click on it, the resultant context menu is as in the picture below. **Is it possible for me to programmatically access these three word suggestions** (Spellchecker, Spellcheckers, Spell-checker) and show them alone in my own list on right-clicking (OR any other way, so that the default right-click menu gets displayed as usual)?
+>
+>  ![](data:image/png;base64,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)
+>  ![SpellChecker.png](https://www.vbforums.com/attachment.php?attachmentid=187181&d=1679054121)
+>
+>  3. I noticed that if I use more than one reference (say WV and WV2) to cWebView2 in my program, then while binding, I needed to "exactly" give the same "--accept-lang" argument in both Bindings. i.e. it had to be as follows:
+>  --
+>  If WV.BindTo(picWV.hWnd, TIME_TO_WAIT_m, , , "--accept-lang=en-US,en,fr") = 0
+>  If WV2.BindTo(picWV2.hWnd, TIME_TO_WAIT_m, , , "--accept-lang=en-US,en,fr") = 0
+>  --
+>  Otherwise, the 2nd binding won't happen. I have no problems keeping the same argument in both bind calls, but I feel that perhaps I am doing a mistake and **there possibly is a way by which I can pass different "--accept-lang" argument in each of the WV bind calls**. May be the correct argument is different from "--accept-lang" itself for SpellChecker?
+>  ... .. .
+>
+>  Kind Regards.
 
 With respect to my above post, Since Olaf may not be finding time always, can somebody else (dear JpBro, dear Wwolf, ..., .., .), if at all their time and situation permits, **kindly help me out providing answers to my above 3 questions.**
 
  There is also a sub-question in my 3rd question above. Let me pose it as a separate question hereunder so that it is easier for anyone to answer.
  --
- I have used **"--accept-lang=en-US,en,fr"** in the 'BindTo' call to enable and make use of the SpellChecker/WordSuggestions facility of Edge-WebView2 for languages other than the default English. **Is that enough?** **Is that exactly the right way?** If so, has anybody found time to use it extensively? And, if so, is the Spellchecking/WordSuggestions facility working well under all situations?
+ I have used **"--accept-lang=en-US,en,fr" **in the 'BindTo' call to enable and make use of the SpellChecker/WordSuggestions facility of Edge-WebView2 for languages other than the default English.** Is that enough?** **Is that exactly the right way?** If so, has anybody found time to use it extensively? And, if so, is the Spellchecking/WordSuggestions facility working well under all situations?
  --
 
- Sorry that I have not found time yet to explore the Spellchecking/WordSuggestions facility extensively, myself. Also, first I need to get confirmed from Olaf or others that **"--accept-lang=en-US,en,fr" **is enough and its the right way to enable and make use of the Spellchecking/WordSuggestions facility.
+ Sorry that I have not found time yet to explore the Spellchecking/WordSuggestions facility extensively, myself. Also, first I need to get confirmed from Olaf or others that **"--accept-lang=en-US,en,fr"** is enough and its the right way to enable and make use of the Spellchecking/WordSuggestions facility.
 
  **Thanks in advance.**
 
@@ -6772,13 +6062,9 @@ With respect to my above post, Since Olaf may not be finding time always, can so
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
->
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
-...kindly help me out providing answers to my above 3 questions.
+> ...kindly help me out providing answers to my above 3 questions.
 
 ...as for 1)
  MS-WebView2 is still "just a relatively thin wrapper" around the chromium -opensource-project (mainly managed by google) - and therefore all the main-functionalities (as e.g. spellchecking and its context-menus) are in all likelihood "chromium-implementations".
@@ -6817,14 +6103,10 @@ With respect to my above post, Since Olaf may not be finding time always, can so
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-I would like to ask how I could then interact with the hotspots that I assigned.
- Does your framework perhaps offer a built-in method to iterate over them?
+> I would like to ask how I could then interact with the hotspots that I assigned.
+>  Does your framework perhaps offer a built-in method to iterate over them?
 
 Why not iterate over them from the inside of a little js-function?
  You can pass String-Parameters into such functions just fine from the VB-Side...
@@ -6839,44 +6121,40 @@ Why not iterate over them from the inside of a little js-function?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> ...as for 1)
+>  MS-WebView2 is still "just a relatively thin wrapper" around the chromium -opensource-project (mainly managed by google) - and therefore all the main-functionalities (as e.g. spellchecking and its context-menus) are in all likelihood "chromium-implementations".
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-...as for 1)
- MS-WebView2 is still "just a relatively thin wrapper" around the chromium -opensource-project (mainly managed by google) - and therefore all the main-functionalities (as e.g. spellchecking and its context-menus) are in all likelihood "chromium-implementations".
-
- There might be an exception here, regarding the necessary dictionaries (compared to chromium-CEF-binaries on e.g. Linux).
- I'm not sure whether MS is redirecting to the "local OS-dictionaries, which come with the Win-language-packs" -
- this might be the case, to keep the "Edge-Evergreen-package" relatively small... though I'm not sure about that...
-
- "Constant online-access" (to do word-lookups) does not seem to happen in my tests...
- (have temporarily disabled any Inet-connections here - and get proper spell-suggestions for "de" and "en" nevertheless.
-
- ...as for 2)
- There's currently no "context-menu-parsing" exposed in the RC6.cWebView2-class -
- (although interfaces for that exist in the MS-typelib).
-
- There's also no way, to retrieve the contextmenu-contents at "js-level".
-
- What is supported currently is, to entirely suppress any context-menu-popups (AreContextmenusEnabled) -
- and then show your own, by using the appropriate ContextMenu-EventHandler (according to the transported x/y-pos).
-
- ...as for 3)
- Was astonished by that myself (that the commandline-args have to remain constant for a Process-session) -
- but have not tried to find a reason or a workaround, because I can live with the behaviour...
- Perhaps changing the "UserDataFolder" in the Bind-call for the second instance could help, but haven't tested that either.
-
- Generally, the browser-internal spellchecking functionality is not well-exposed
- (only very few things can be influenced via javascript),
- and that's the reason why there's such an amount of js-libs which address this
- (usually in conjunction with some <textarea>bindings).
-
- It's up to you to use some of these libs (or the "big-guns" like CKEditor or TinyMCE, which come with their own spellcheckers as well).
-
- Olaf
+>  There might be an exception here, regarding the necessary dictionaries (compared to chromium-CEF-binaries on e.g. Linux).
+>  I'm not sure whether MS is redirecting to the "local OS-dictionaries, which come with the Win-language-packs" -
+>  this might be the case, to keep the "Edge-Evergreen-package" relatively small... though I'm not sure about that...
+>
+>  "Constant online-access" (to do word-lookups) does not seem to happen in my tests...
+>  (have temporarily disabled any Inet-connections here - and get proper spell-suggestions for "de" and "en" nevertheless.
+>
+>  ...as for 2)
+>  There's currently no "context-menu-parsing" exposed in the RC6.cWebView2-class -
+>  (although interfaces for that exist in the MS-typelib).
+>
+>  There's also no way, to retrieve the contextmenu-contents at "js-level".
+>
+>  What is supported currently is, to entirely suppress any context-menu-popups (AreContextmenusEnabled) -
+>  and then show your own, by using the appropriate ContextMenu-EventHandler (according to the transported x/y-pos).
+>
+>  ...as for 3)
+>  Was astonished by that myself (that the commandline-args have to remain constant for a Process-session) -
+>  but have not tried to find a reason or a workaround, because I can live with the behaviour...
+>  Perhaps changing the "UserDataFolder" in the Bind-call for the second instance could help, but haven't tested that either.
+>
+>  Generally, the browser-internal spellchecking functionality is not well-exposed
+>  (only very few things can be influenced via javascript),
+>  and that's the reason why there's such an amount of js-libs which address this
+>  (usually in conjunction with some <textarea>bindings).
+>
+>  It's up to you to use some of these libs (or the "big-guns" like CKEditor or TinyMCE, which come with their own spellcheckers as well).
+>
+>  Olaf
 
 **Thanks a TON**, as always, dear Olaf.
 
@@ -6917,9 +6195,7 @@ Why not iterate over them from the inside of a little js-function?
  Kindest Regards.
 
  Screenshot (for point no.2 above):
- *[img: Name:  SpellChecker-2.png
-Views: 2637
-Size:  7.9 KB]*
+ ![SpellChecker-2.png](https://www.vbforums.com/attachment.php?attachmentid=187220&d=1679483966)
 
 ## #298 tmighty2 — Mar 22nd, 2023, 07:25 AM
 
@@ -6946,19 +6222,19 @@ I make a software for handicapped people.
 
 Note: This is a follow-up message to my post No. 297 ("11-point observations" message).
 
- First thing first, Olaf. SPWS **works for** **all the languages** with "--accept-lang" argument. *[img: Smilie]*
+ First thing first, Olaf. SPWS **works for** **all the languages** with "--accept-lang" argument. :)
 
  What happened was that after a while after sending my "11-point observations" message to you, it occurred in my mind that I was all the while concentrating on adding languages to MS Edge rather than checking the Language packs installed in my system. At that point of time, **your wise statement** (I'm not sure whether MS is redirecting to the "local OS-dictionaries, which come with the Win-language-packs") also came to my mind simultaneously.
 
  So, I checked the language packs installed and found out that language packs for only a few languages (out of the many languages I was checking out) were installed in my Win10 system. So, I started installing the missing language packs but for whatever reasons, none of the language packs got installed, however many times I tried. That is when it occurred to me that I can easily check out the compiled exe in one of my other Win10 systems which I use only now and then (but keep its OS upto-date with the latest OS updates whenever I use it).
 
- So, I switched on my other system and checked out the compiled exe. And, all languages worked straightaway! *[img: Smilie]*. I checked the language packs installed in my other system and all the required language packs had been installed in it. So, as of now, SPWS works for all the languages with "--accept-lang" argument. The thing is that, as guessed by you very correctly (as it is so usually *[img: Smilie]*), the language packs for all the languages for which SPWS is needed should be installed priorly in the system. Thanks a TON ton ton, my dear Olaf.
+ So, I switched on my other system and checked out the compiled exe. And, all languages worked straightaway! :). I checked the language packs installed in my other system and all the required language packs had been installed in it. So, as of now, SPWS works for all the languages with "--accept-lang" argument. The thing is that, as guessed by you very correctly (as it is so usually :)), the language packs for all the languages for which SPWS is needed should be installed priorly in the system. Thanks a TON ton ton, my dear Olaf.
 
  Well, in the complied exe I had "--accept-lang=ta,hi,sa,te,kn,ml,mr,kok,gu,bn,pa,or,as,ar,es,en-US,en,fr-FR,de" and all of them (**19 languages**) showed up in the "Check spelling" context menu.
 
- One more thing. In my eagerness to check out the working of SPWS in my other system, I forgot the fact that I was checking out the compiled exe in one other system (in which RC6 is not installed/registered) for the very first time. So, when the starting screen of the compiled exe appeared, only after a second I realised that the compiled exe started "registration-free". Hats off to you, Olaf. This is the first time I am running a "compiled exe with DLL dependencies" and yet seeing it opening without me having to register the DLLs myself. Your DirectCOM.dll does it automatically. I did use your **"modRCRegFree.bas" drop-in **in my application, just exactly as you had suggested. *[img: Smilie]*. Thanks once again.
+ One more thing. In my eagerness to check out the working of SPWS in my other system, I forgot the fact that I was checking out the compiled exe in one other system (in which RC6 is not installed/registered) for the very first time. So, when the starting screen of the compiled exe appeared, only after a second I realised that the compiled exe started "registration-free". Hats off to you, Olaf. This is the first time I am running a "compiled exe with DLL dependencies" and yet seeing it opening without me having to register the DLLs myself. Your DirectCOM.dll does it automatically. I did use your **"modRCRegFree.bas" drop-in** in my application, just exactly as you had suggested. :). Thanks once again.
 
- All said and done, as requested in my earlier post (11-point message), when possible, **kindly give your confirmation** that I can very well go ahead using the "--accept-lang" approach in my applications to enable and make use of SPWS and no issues are foreseen in this approach/method. Thanks in advance. Any helpful/useful/important tips that you wish to give me when I go forward using this "--accept-lang" approach for SPWS, kindly let me know please. Looking forward to the same too. God Bless you, olaf. **God Bless ALL**.
+ All said and done, as requested in my earlier post (11-point message), when possible, **kindly give your confirmation **that I can very well go ahead using the "--accept-lang" approach in my applications to enable and make use of SPWS and no issues are foreseen in this approach/method. Thanks in advance. Any helpful/useful/important tips that you wish to give me when I go forward using this "--accept-lang" approach for SPWS, kindly let me know please. Looking forward to the same too. God Bless you, olaf.** God Bless ALL**.
 
  Kind Regards.
 
@@ -6968,7 +6244,7 @@ Note: This is a follow-up message to my post No. 297 ("11-point observations" me
 
 By the way, Olaf, thanks (as usual) A TONNNN for your most wonderful tip on **VSCODE editor** (in post no. 277).
 
- What a gem this little cute editor is! I was thinking that VSCODE would be yet another bulky IDE (like Visual Studio) where I would be taking several days to learn (and also remember) the IDE's various menus/options/features itself. But it was not at all so! It was such a pleasant surprise and joy to see VSCODE being so light-weight (yet features-packed!). I never knew that such a tailor-made cute little app can exist for html5/css/js coding. It has all the features (and more *[img: Smilie]*) one would expect in an html/css/js editor. Simply Fantastic. Happy that I got to see this helpful tip of yours early. **Your superb tip** has saved me so many hours thereafter and increased my productivity a lot. You are so special for our VBForums. Thanks once again. *[img: Smilie]*.
+ What a gem this little cute editor is! I was thinking that VSCODE would be yet another bulky IDE (like Visual Studio) where I would be taking several days to learn (and also remember) the IDE's various menus/options/features itself. But it was not at all so! It was such a pleasant surprise and joy to see VSCODE being so light-weight (yet features-packed!). I never knew that such a tailor-made cute little app can exist for html5/css/js coding. It has all the features (and more :)) one would expect in an html/css/js editor. Simply Fantastic. Happy that I got to see this helpful tip of yours early. **Your superb tip** has saved me so many hours thereafter and increased my productivity a lot. You are so special for our VBForums. Thanks once again. :).
 
  Kindest Regards.
 
@@ -7001,14 +6277,10 @@ With reference to your above one line of code in post no. 277, I have the follow
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
->
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
-...When trying to add a .js file (say 'simple.js') in the above manner,
- I found that it was working only if there are no jQuery calls in my 'simple.js' file.
+> ...When trying to add a .js file (say 'simple.js') in the above manner,
+>  I found that it was working only if there are no jQuery calls in my 'simple.js' file.
 
 With the now available browser-built-in selector-functions, there's rarely a need for jQuery anymore...
 
@@ -7062,7 +6334,7 @@ If all works well, the first and the last of the 3 <p>-Tags should be colored ma
 
  In the interim, you can enclose all such added scripts with your **own js-event-listener**:
  (example is based on the working one above, but now not even the "jQuery-hotfixes" are needed anymore,
- when the script-adding is **delayed **until the document "is sitting properly in the DOM")
+ when the script-adding is **delayed** until the document "is sitting properly in the DOM")
 
 Code:
 
@@ -7099,20 +6371,16 @@ Olaf
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Why not iterate over them from the inside of a little js-function?
+>  You can pass String-Parameters into such functions just fine from the VB-Side...
+>  (like e.g. QuerySelector-StringPatterns, or just "plain IDs", along with e.g. Color-Strings).
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Why not iterate over them from the inside of a little js-function?
- You can pass String-Parameters into such functions just fine from the VB-Side...
- (like e.g. QuerySelector-StringPatterns, or just "plain IDs", along with e.g. Color-Strings).
-
- In short, complex DOM-operations remain "in generic, clever parametrized js-helpers" -
- and then these "nice trigger-parameters" could (should) be passed from the VB-side.
-
- Olaf
+>  In short, complex DOM-operations remain "in generic, clever parametrized js-helpers" -
+>  and then these "nice trigger-parameters" could (should) be passed from the VB-side.
+>
+>  Olaf
 
 Sorry to ask again, but can you please show me an example?
 
@@ -7128,31 +6396,27 @@ Sorry to ask again, but can you please show me an example?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> With the now available browser-built-in selector-functions, there's rarely a need for jQuery anymore...
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-With the now available browser-built-in selector-functions, there's rarely a need for jQuery anymore...
-
- ... .. .
-
- Edit: Seems, that the WebView2-method: AddScriptToExecuteOnDocumentCreated -
- does not live up to its "second symbolname-part" anymore...
- (hope, they are fixing this soon)...
-
- In the interim, you can enclose all such added scripts with your **own js-event-listener**:
- (example is based on the working one above, but now not even the "jQuery-hotfixes" are needed anymore,
- when the script-adding is **delayed **until the document "is sitting properly in the DOM")
-
-Code:
-
-```
-... .. .
-```
-
-Olaf
+>  ... .. .
+>
+>  Edit: Seems, that the WebView2-method: AddScriptToExecuteOnDocumentCreated -
+>  does not live up to its "second symbolname-part" anymore...
+>  (hope, they are fixing this soon)...
+>
+>  In the interim, you can enclose all such added scripts with your **own js-event-listener**:
+>  (example is based on the working one above, but now not even the "jQuery-hotfixes" are needed anymore,
+>  when the script-adding is **delayed** until the document "is sitting properly in the DOM")
+>
+> Code:
+>
+> ```
+> ... .. .
+> ```
+>
+> Olaf
 
 Dear Olaf,
 
@@ -7174,7 +6438,7 @@ Then, everything worked "perfectly" with absolutely no hitch. That made me come 
 
  I came back here to share my conclusion and asking you whether my understanding is correct. That is when I saw your Edit wherein you have remarked that the 2nd part of "AddScriptToExecuteOnDocumentCreated" is a sort of bug itself. Thanks Olaf.
 
- And, it was very nice to see the following 'yet another' cute compact one-liner *[img: Smilie]* from you to overcome the seeming bug in "AddScriptToExecuteOnDocumentCreated".
+ And, it was very nice to see the following 'yet another' cute compact one-liner :) from you to overcome the seeming bug in "AddScriptToExecuteOnDocumentCreated".
 
 Code:
 
@@ -7192,15 +6456,11 @@ So, what I did (as a very quick test) was to check out your above one-liner stra
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
->
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
-...it looked like that the above resulted in the existing function
- [Document.addEventListener('DOMContentLoaded', function ()] in my ".js" file
- to not to take effect. ...
+> ...it looked like that the above resulted in the existing function
+>  [Document.addEventListener('DOMContentLoaded', function ()] in my ".js" file
+>  to not to take effect. ...
 
 If it is enclosed by "my" outer "onload"-callback-snippet, then "your" (inner) event-listener-installation comes "too late" ...
  since you prepare your listening, when the document-load-event has already happened (was already catched by me) -
@@ -7215,21 +6475,17 @@ If it is enclosed by "my" outer "onload"-callback-snippet, then "your" (inner) e
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> Sorry to ask again, but can you please show me an example?
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Sorry to ask again, but can you please show me an example?
-
- My problem is that I don't know how to access the hotspots that the function returns.
- I have tried this:
-
- Dim hotspots
- hotspots = WV.jsRun("window._grid_ensureHotSpotIds")
-
- Debug.Print UBound(hotspots) 'here it errors out saying "Type mismatch" (obviously it's not an array. It's empty)
+>  My problem is that I don't know how to access the hotspots that the function returns.
+>  I have tried this:
+>
+>  Dim hotspots
+>  hotspots = WV.jsRun("window._grid_ensureHotSpotIds")
+>
+>  Debug.Print UBound(hotspots) 'here it errors out saying "Type mismatch" (obviously it's not an array. It's empty)
 
 You will have to check in your js-source, whether the window._grid_ensureHotSpotIds function,
  returns something at all...
@@ -7250,16 +6506,12 @@ You will have to check in your js-source, whether the window._grid_ensureHotSpot
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-... .. .
- Easy solution would be, to remove your own listener-installation from your js-source-file
- (also in preparation for a potentially upcoming bugfix by MS for the AddScriptToExecuteOnDocumentCreated-call).
- Olaf
+> ... .. .
+>  Easy solution would be, to remove your own listener-installation from your js-source-file
+>  (also in preparation for a potentially upcoming bugfix by MS for the AddScriptToExecuteOnDocumentCreated-call).
+>  Olaf
 
 What care and concern from you in your support!!! I am quite enjoying it, working with RC6 and also receiving your wonderful loving support. Have missed a LOT of both, I am sure, by not getting time to start using 'RC' very many years back itself, though I always knew inside my heart that 'RC' was such a treasure of a contribution!
 
@@ -7445,13 +6697,9 @@ I have tried to disable the context command, but I think there are no commandlin
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-To be more specific: Can VB6-WebView2 handle async tasks like shown in the C# code?
+> To be more specific: Can VB6-WebView2 handle async tasks like shown in the C# code?
 
 I'd ask the developer who has programmed the C# interaction (with CEF),
  to write a similar js-function for you...
@@ -7530,18 +6778,14 @@ End Sub
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> I have tried to disable the context command, but I think there are no commandline switches available for these settings:
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-I have tried to disable the context command, but I think there are no commandline switches available for these settings:
-
- webView.CoreWebView2.Settings.**AreBrowserAcceleratorKeysEnabled **= false;
- webView.CoreWebView2.Settings.**AreDefaultContextMenusEnabled **= false;
-
- How could I do this with VB6-WebView2?
+>  webView.CoreWebView2.Settings.**AreBrowserAcceleratorKeysEnabled** = false;
+>  webView.CoreWebView2.Settings.**AreDefaultContextMenusEnabled** = false;
+>
+>  How could I do this with VB6-WebView2?
 
 The blue marked boolean Properties are exposed on cWebView2
  (as the <F2>reachable VBIDE-ObjectBrowser would show you, or alternatively intellisense, when you type a . behind WV).
@@ -7567,25 +6811,17 @@ The JS operations are really lengthy.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Would it somehow be possible to make them async ...
+> Would it somehow be possible to make them async ...
 
 Sure... (you're still not familiar with the WV-interface, which you can study in the ObjectExplorer)
 
  MyToken = WV.jsRunAsync("MyJsFunctionName", MyInputParams, ...)
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
- ...and yet return values?
+>  ...and yet return values?
 
 Private Sub WV_JSAsyncResult(Result As Variant, ByVal Token As Currency, ByVal ErrString As String)
  ' If Token = MyToken Then ...
@@ -7607,13 +6843,9 @@ Hello Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Bob17**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bob17** *[img: View Post]*
-
-WebView2 has Stop method, is there a reason why your cWebView2 doesn't have it? Can you add it to the interface?
+> WebView2 has Stop method, is there a reason why your cWebView2 doesn't have it? Can you add it to the interface?
 
 WV.jsRun "stop" 'should work
 
@@ -7708,9 +6940,7 @@ This XML file does not appear to have any style information associated with it. 
 </mime_message>
 ```
 
-*[img: Name:  umlaute.png
-Views: 2339
-Size:  2.8 KB]*
+![umlaute.png](https://www.vbforums.com/attachment.php?attachmentid=187395&d=1681242492)
 
 ## #321 Schmidt — Apr 11th, 2023, 04:53 PM
 
@@ -7835,29 +7065,23 @@ And if I try this...
 
  VB6 tells me error 447: "Object does not support the current language setting"
 
- *[img: Name:  länd2.jpg
-Views: 2284
-Size:  24.1 KB]*
+ ![länd2.jpg](https://www.vbforums.com/attachment.php?attachmentid=187435&d=1681982655)
 
 ## #324 Schmidt — Apr 20th, 2023, 05:19 AM
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> How could I deserialize "Result"?
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-How could I deserialize "Result"?
-
- This does not compile and throws an Argument Byref Invalid error:
-
-Code:
-
-```
-Set Elements = New_c.JSONDecodeToCollection(Result)
-```
+>  This does not compile and throws an Argument Byref Invalid error:
+>
+> Code:
+>
+> ```
+> Set Elements = New_c.JSONDecodeToCollection(Result)
+> ```
 
 Please try explicit conversion of the Variant Result to a String:
  Set Elements = New_c.JSONDecodeToCollection(**CStr(**Result**)**)
@@ -8083,13 +7307,9 @@ async function mediatoBase64(msgid) {
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Using my old browser, I defined a callback object (a COM dll) and a sub which would be called by the JS.
+> Using my old browser, I defined a callback object (a COM dll) and a sub which would be called by the JS.
 
 WV.AddObject is your friend...
 
@@ -8208,23 +7428,19 @@ End Sub
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> I have tried this, but it threw an "Object not defined" error:
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-I have tried this, but it threw an "Object not defined" error:
-
-Code:
-
-```
-WV.CallByName Array(sChatName, True, False), "exportChatAsXMLHelper", VbSet
-
-Public Sub OnWhatsAppXMLReceived(ByVal xml As String, ByVal index As Long, ByVal max As Long)
-
-End Sub
-```
+> Code:
+>
+> ```
+> WV.CallByName Array(sChatName, True, False), "exportChatAsXMLHelper", VbSet
+>
+> Public Sub OnWhatsAppXMLReceived(ByVal xml As String, ByVal index As Long, ByVal max As Long)
+>
+> End Sub
+> ```
 
 Not sure, why you're using WV.CallByName, when it was already established,
  that js-functions shall be called via either:
@@ -8309,20 +7525,16 @@ The error that I'm getting is not really related to the browser, I guess, but I 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> The error that I'm getting is not really related to the browser, I guess, but I wanted to ask anyway.
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-The error that I'm getting is not really related to the browser, I guess, but I wanted to ask anyway.
-
- <https://drive.google.com/file/d/1WwW9MFwS6_qYu3oTIjgaYdR1G1nl-CZt/view?usp=sharing> https://drive.google.com/file/d/1WwW...ew?usp=sharing
-
- ...
- However, when I try to use my WhatsApp function, I get an error saying
-
- VM11:2 Module Conn was not found with e=>e.Conn&&e.ConnImpl
+>  <https://drive.google.com/file/d/1WwW9MFwS6_qYu3oTIjgaYdR1G1nl-CZt/view?usp=sharing> https://drive.google.com/file/d/1WwW...ew?usp=sharing
+>
+>  ...
+>  However, when I try to use my WhatsApp function, I get an error saying
+>
+>  VM11:2 Module Conn was not found with e=>e.Conn&&e.ConnImpl
 
 Looks like:
  - another js-dependency (or js-module) is still missing (not pre-loaded)...
@@ -8355,18 +7567,14 @@ If I have added code using "AddScriptToExecuteOnDocumentCreated", how would I cl
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> If I have added code using "AddScriptToExecuteOnDocumentCreated", how would I clear that again?
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-If I have added code using "AddScriptToExecuteOnDocumentCreated", how would I clear that again?
-
- I have not checked, but I am afraid that some parts of the JS may be double as I add several JS files.
- And some websites do not need all of these scripts.
-
- That is why I wonder if I should do housekeeping and keep everything clean.
+>  I have not checked, but I am afraid that some parts of the JS may be double as I add several JS files.
+>  And some websites do not need all of these scripts.
+>
+>  That is why I wonder if I should do housekeeping and keep everything clean.
 
 As already mentioned in my last post - an alternative way to add script-modules,
  is to do it in the DocumentComplete-Event... via WV.ExecuteScript your-module-source-code.
@@ -8396,13 +7604,9 @@ Olaf, are you aware of that RemoteMessenger.postSyncRequestMessage error popping
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Olaf, are you aware of that RemoteMessenger.postSyncRequestMessage error popping up in the DevToolsWindow each time?
+> Olaf, are you aware of that RemoteMessenger.postSyncRequestMessage error popping up in the DevToolsWindow each time?
 
 Yes, it will be fixed in the next release.
 
@@ -8418,14 +7622,10 @@ Yes, it will be fixed in the next release.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-can't open url:
- <https://www.365365091.com/#/IP/B13> https://www.365365091.com/#/IP/B13
+> can't open url:
+>  <https://www.365365091.com/#/IP/B13> https://www.365365091.com/#/IP/B13
 
 Please explain yourself properly (instead of posting dubious links to some "betting-websites").
 
@@ -8450,18 +7650,14 @@ It is best to create two processes, otherwise if two web pages run in one thread
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-It is best to create two processes, otherwise if two web pages run in one thread, the speed will become slower
+> It is best to create two processes, otherwise if two web pages run in one thread, the speed will become slower
 
 The chromium-engine (which MS-Edge-WebView2 is using under the covers) -
  is already working "multi-process-based" underneath - a short view into the Taskmanager would show you that...
 
- So, the **hWnd **a Client-Process (the VB6-App) will bind a WV-instance to,
+ So, the **hWnd** a Client-Process (the VB6-App) will bind a WV-instance to,
  is only the "tip of the iceberg" (a ViewPort-rectangle) - these multiple chromium-processes finally "Blit-to" -
  (and in the opposite direction, will only receive KeyBoard- and Mouse-Messages from)...
 
@@ -8478,20 +7674,16 @@ The chromium-engine (which MS-Edge-WebView2 is using under the covers) -
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+>  Currently you come across as a "spamming lunatic", resembling a "badly implemented chat-bot".
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
- Currently you come across as a "spamming lunatic", resembling a "badly implemented chat-bot".
-
- Olaf
+>  Olaf
 
 that is perfectly correct!
  you had to dare to say it! Thanks Olaf for making it !
 
- *[img: big yellow]*
+ :D
 
 ## #344 Bob17 — May 8th, 2023, 05:00 AM
 
@@ -8504,14 +7696,10 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Bob17**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bob17** *[img: View Post]*
-
-Hi Olaf,
- you have the method "OpenDevToolsWindow", could you please also add "CloseDevToolsWindow" to the API?
+> Hi Olaf,
+>  you have the method "OpenDevToolsWindow", could you please also add "CloseDevToolsWindow" to the API?
 
 AFAIK, there's currently no built-in method in the official typelib for that...
 
@@ -8534,13 +7722,9 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **paliadoyo**
 >
-
->
-
- *[img: Quote]* Originally Posted by **paliadoyo** *[img: View Post]*
-
-How to use the "SetFuncObj" method?
+> How to use the "SetFuncObj" method?
 
 It's a method, meant for "RC6-internal-use" (to establish easier communication with the js_side of the WV2 in the initialization-phase) -
  and I had to make it a Public-Method instead of Friend, for OLE-marshaling to work...)
@@ -8560,19 +7744,15 @@ Is there any way to block this error from occuring until the new version has bee
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> It's a method, meant for "RC6-internal-use" (to establish easier communication with the js_side of the WV2 in the initialization-phase) -
+>  and I had to make it a Public-Method instead of Friend, for OLE-marshaling to work...)
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-It's a method, meant for "RC6-internal-use" (to establish easier communication with the js_side of the WV2 in the initialization-phase) -
- and I had to make it a Public-Method instead of Friend, for OLE-marshaling to work...)
-
- Once a WV is initialized, the "official UserApi" to place COM-instances in the js-context (e.g for callback-purposes), is:
- WV.AddObject ..., ...
-
- Olaf
+>  Once a WV is initialized, the "official UserApi" to place COM-instances in the js-context (e.g for callback-purposes), is:
+>  WV.AddObject ..., ...
+>
+>  Olaf
 
 Perfect. Thanks!
 
@@ -8685,15 +7865,11 @@ This morning I woke up wondering if Olaf Schmidt has a Wikipedia entry.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **carl039**
 >
-
+> **Found cause to following issue, no reply needed.**
 >
-
- *[img: Quote]* Originally Posted by **carl039** *[img: View Post]*
-
-**Found cause to following issue, no reply needed.**
-
- ...I am running into issue with Windows Server 2016 which can't even run the WebView2Demo which results in the following error on launch:
+>  ...I am running into issue with Windows Server 2016 which can't even run the WebView2Demo which results in the following error on launch:
 
 Just out of interest, was it a missing "registration" of the RC6.dll on that server-machine?
  (or something else)?
@@ -8704,31 +7880,27 @@ Just out of interest, was it a missing "registration" of the RC6.dll on that ser
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **carl039**
 >
-
+> **Found cause to following issue, no reply needed.**
 >
-
- *[img: Quote]* Originally Posted by **carl039** *[img: View Post]*
-
-**Found cause to following issue, no reply needed.**
-
- Hi
-
- I am running into issue with Windows Server 2016 which can't even run the WebView2Demo which results in the following error on launch:
-
- Run-time error '430':
-
- Class does not support Automation or does not support expected interface.
-
- The same version of RC6 controls/dll's on my Windows 10/11 workstations work fine but not on 2016.
-
- Have reinstalled MS Webview2 components and also installed MS Edge Browser to but that didn't help.
-
- Any ideas on what I am missing?
-
- Thanks
-
- Carl
+>  Hi
+>
+>  I am running into issue with Windows Server 2016 which can't even run the WebView2Demo which results in the following error on launch:
+>
+>  Run-time error '430':
+>
+>  Class does not support Automation or does not support expected interface.
+>
+>  The same version of RC6 controls/dll's on my Windows 10/11 workstations work fine but not on 2016.
+>
+>  Have reinstalled MS Webview2 components and also installed MS Edge Browser to but that didn't help.
+>
+>  Any ideas on what I am missing?
+>
+>  Thanks
+>
+>  Carl
 
 Official: Microsoft Edge WebView2 profile - Microsoft Edge Development | Microsoft Learn
  <https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/> https://learn.microsoft.com/zh-cn/mi...edge/webview2/
@@ -8825,13 +7997,9 @@ Url without http added will Navigate and crash Webview1.Navigate "baidu.com
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-webview2 loading objects is slow, can you do an asynchronous version
+> webview2 loading objects is slow, can you do an asynchronous version
 
 Async mode is already built-in, via the SecondsToWaitForCompletion-parameter.
  (in the Constructor/Bind and also in the Navigate-Methods).
@@ -8862,13 +8030,9 @@ Private Sub WV_InitComplete()
 End Sub
 ```
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-Url without http added will Navigate and crash Webview1.Navigate "baidu.com
+> Url without http added will Navigate and crash Webview1.Navigate "baidu.com
 
 It does not "crash" - instead what it does, is raising an Error 5 (wrong argument).
 
@@ -8899,14 +8063,10 @@ It would be better if 64-bit rc6.dll can be developed. Only some functions can b
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-To test, I wrote a multi-tab browser, which begins to work well.
- François
+> To test, I wrote a multi-tab browser, which begins to work well.
+>  François
 
 Have you ever developed a custom control to wrap webview2?
  So you can use it like webbrowser. I have encountered many puzzling problems, such as the size has not changed and I can't display the web page.Is there any way to operate in an Excel vba,vbs file? It will automatically open an edge browser window or a simple form display page. You don't need to bind to a handle. And if you click on a web page, it will pop up a new tab or page. Can you also read its contents with code?
@@ -8915,15 +8075,11 @@ Have you ever developed a custom control to wrap webview2?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> If I have added code using "AddScriptToExecuteOnDocumentCreated", how would I clear that again?
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-If I have added code using "AddScriptToExecuteOnDocumentCreated", how would I clear that again?
-
- ... .. .
+>  ... .. .
 
 Dear Olaf,
 
@@ -8939,15 +8095,11 @@ Dear Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
+> In addition, my current project is almost finished. In a few months, I will start to develop a scripting language and IDE similar to VB6 (of course, the development time is also calculated in years). If you could provide some good seeds (prototypes or suggestions), maybe I can develop a decent scripting language and IDE, and this IDE may be applied to your VB6-compatible compiler.
 >
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-In addition, my current project is almost finished. In a few months, I will start to develop a scripting language and IDE similar to VB6 (of course, the development time is also calculated in years). If you could provide some good seeds (prototypes or suggestions), maybe I can develop a decent scripting language and IDE, and this IDE may be applied to your VB6-compatible compiler.
-
- (From dm)
+>  (From dm)
 
 I don't know how it goes now. Where can I download the preview version?
 
@@ -9080,13 +8232,9 @@ web.visiable=true
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-Want to turn rc6.dll Cwebview2 objects into a portable browser...
+> Want to turn rc6.dll Cwebview2 objects into a portable browser...
 
 Why use "rundll.exe", when you can compile a small executable with VB6 - and make it load the New_c in a regfree manner -
  via the already outlined methods, as e.g. here: <https://www.vbforums.com/showthread.php?897817-Registry-Free-Object-Instantiation-using-DirectCOM-amp-RC6> https://www.vbforums.com/showthread....ectCOM-amp-RC6
@@ -9104,14 +8252,10 @@ The problem is that we are missing the WebResourceRequested event.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-The problem is that we are missing the WebResourceRequested event.
- Event WebResourceResponseReceived(...) ...is already too late, I think.
+> The problem is that we are missing the WebResourceRequested event.
+>  Event WebResourceResponseReceived(...) ...is already too late, I think.
 
 WebResourceResponseReceived is triggered from e.g.:
  WV.NavigateWithWebResourceRequest
@@ -9177,13 +8321,13 @@ Dear Olaf,
 
  When I open A.exe, some "Microsoft Edge WebView2" processes are shown running in the Processes list. If I close A at once, all the aforesaid "Microsoft Edge WebView2" processes disappear from the Processes list.
 
- Instead of the above scenario, after opening 'A', if I click a link in 'X' (which link has **target="_blank"** and it is for a web page 'Y' ) so that 'Y' web page opens in a new window (say **'N'**). Now, when I close 'A', 'N' window showing 'Y' web page still remains on the screen. Upon checking the Processes list, there remains in it a primary "Microsoft Edge WebView2" process with some child processes inside it. Is this the normal behaviour? If so, what exactly is happening? I presume 'N' showing 'Y' is running now as a separate process in a separate "Microsoft Edge WebView2" runtime process (say **'M'**). Am I right?
+ Instead of the above scenario, after opening 'A', if I click a link in 'X' (which link has **target="_blank" **and it is for a web page 'Y' ) so that 'Y' web page opens in a new window (say** 'N'**). Now, when I close 'A', 'N' window showing 'Y' web page still remains on the screen. Upon checking the Processes list, there remains in it a primary "Microsoft Edge WebView2" process with some child processes inside it. Is this the normal behaviour? If so, what exactly is happening? I presume 'N' showing 'Y' is running now as a separate process in a separate "Microsoft Edge WebView2" runtime process (say **'M'**). Am I right?
 
  Well, in any case, based on the abovementioned still-running 'N' window, I have the following sub-questions:
 
  1. What is the best way to automatically **close such 'N' windows** (one or many) when I close my main application 'A'? Is there a possibility to have a property in WV by which I say that whenever I close 'A', all 'N' windows opened by 'A' shall be closed automatically? Or, is there already present a simple method in WV by which during Unload of 'A', I can close all 'N's easily?
 
- 2. What if I **don't close such 'N' windows** and open my application 'A' again? I presume there will be no relationship between the already-opened 'N' windows and 'A'. Am I right in this presumption? If so, if I allow users to open many such 'N' windows in many different sessions of 'A', then each one of those 'N' windows will be running under the abovementioned **'M'** process (of "Microsoft Edge WebView2") and user can opt to close each of those 'N' windows himself, whenever he wishes to, later. Right? In other words, there will not be any problems at all in 'A' being opened/closed several times when many already opened 'N' windows are existing. Right? **Kindly let me know**.
+ 2. What if I **don't close such 'N' windows **and open my application 'A' again? I presume there will be no relationship between the already-opened 'N' windows and 'A'. Am I right in this presumption? If so, if I allow users to open many such 'N' windows in many different sessions of 'A', then each one of those 'N' windows will be running under the abovementioned** 'M' **process (of "Microsoft Edge WebView2") and user can opt to close each of those 'N' windows himself, whenever he wishes to, later. Right? In other words, there will not be any problems at all in 'A' being opened/closed several times when many already opened 'N' windows are existing. Right?** Kindly let me know**.
  ----------
 
  I take this opportunity to **thank you once again**, heartily, from the bottom of my heart, for all that you do to help us out.
@@ -9205,19 +8349,15 @@ I INSTALL this,MS-DownloadLink
  I specify the old version and it works：
  OK = Web1.BindTo(Web1pic.hWnd, , App.Path & "\SystemFile\web110.0.1587.63.x86")
 
+>   Originally Posted by **Schmidt**
 >
-
+> There seems to be a problem with the installation of the WebView-Runtime...
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-There seems to be a problem with the installation of the WebView-Runtime...
-
- The BindTo-call is looking for the WebView-Runtime-BaseFolder via the following Path-Expression:
- (for your Immediate-Window):
- ?New_c.FSO.GetSpecialFolder(CSIDL_PROGRAM_FILESX86) & "\Microsoft\EdgeWebView\Application"
-
- Olaf
+>  The BindTo-call is looking for the WebView-Runtime-BaseFolder via the following Path-Expression:
+>  (for your Immediate-Window):
+>  ?New_c.FSO.GetSpecialFolder(CSIDL_PROGRAM_FILESX86) & "\Microsoft\EdgeWebView\Application"
+>
+>  Olaf
 
 i search in hrer:C:\Users\***\AppData\Local\Microsoft\EdgeWebView
  not C:\Program Files (x86)\
@@ -9293,23 +8433,19 @@ End Function
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> In my understanding, Selenium was written as a generic Test-Tool which can "work against multiple Browser-engines".
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-In my understanding, Selenium was written as a generic Test-Tool which can "work against multiple Browser-engines".
-
- The WebView2 is just an encapsulation of a single Browser-engine (chromium) -
- minus the additional "generic Automation- and Test-interfaces".
-
- So, if you currently use Selenium for your own testing-purposes with success,
- why change it to something "less capable" and "less generic".
-
- Just my $0.02...
-
- Olaf
+>  The WebView2 is just an encapsulation of a single Browser-engine (chromium) -
+>  minus the additional "generic Automation- and Test-interfaces".
+>
+>  So, if you currently use Selenium for your own testing-purposes with success,
+>  why change it to something "less capable" and "less generic".
+>
+>  Just my $0.02...
+>
+>  Olaf
 
 I used to do this with IE, and there was a program that would automatically start IE and add some command line arguments.
  So I used VB6 to write a program, replace IE path, and then use the WEBBROWSER to load the web page, the command line needs to open the URL.
@@ -9367,7 +8503,7 @@ Dear Olaf,
 
  **The issue is**:
  --
- When I use WV.Navigate to navigate to some external^^ site (not all, but some), the **WV.DocumentTitle** and **WV.DocumentURL** are not getting set.
+ When I use WV.Navigate to navigate to some external^^ site (not all, but some), the **WV.DocumentTitle **and** WV.DocumentURL** are not getting set.
 
  Example sites:
  <https://sureshramaswamy.org> https://sureshramaswamy.org
@@ -9394,18 +8530,14 @@ Dear Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
+>  **A possible issue in the latest release** (29th May 2023) of RC6.dll
 >
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
- **A possible issue in the latest release** (29th May 2023) of RC6.dll
-
- .
- As of now, in my app (checked with your own WebView2 Demo project also), I have started using the previous RC6.dll itself and absolutely no issues with WV.DocumentTitle and WV.DocumentURL except for the solitary site "https://google.com"
-
- In case, the issues I have reported above are because of some mistake...
+>  .
+>  As of now, in my app (checked with your own WebView2 Demo project also), I have started using the previous RC6.dll itself and absolutely no issues with WV.DocumentTitle and WV.DocumentURL except for the solitary site "https://google.com"
+>
+>  In case, the issues I have reported above are because of some mistake...
 
 No, can reproduce this here with your site-links.
 
@@ -9423,18 +8555,14 @@ No, can reproduce this here with your site-links.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> ... .. . In an attempt to circumvent the "suppression of added COM-Objects" (which "google.com" achieves, when it is loading) -
+>  I've changed the handling of the COM-Host-storage in 6.0.13 ...
+>  though without success as it seems...
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-... .. . In an attempt to circumvent the "suppression of added COM-Objects" (which "google.com" achieves, when it is loading) -
- I've changed the handling of the COM-Host-storage in 6.0.13 ...
- though without success as it seems...
-
- Have now restored the former vb_Host-behaviour in new version 6.0.14 (to what it was in 6.0.12). ... .. .
- Olaf
+>  Have now restored the former vb_Host-behaviour in new version 6.0.14 (to what it was in 6.0.12). ... .. .
+>  Olaf
 
 Thanks a ton, Olaf, for your mighty quick response. Yes, all back to normal now.
 
@@ -9449,13 +8577,9 @@ Thanks a ton, Olaf, for your mighty quick response. Yes, all back to normal now.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
->
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
-Using the latest RC6 (6.0.14), **WV.Navigate "https://google.com"** does trigger the 'WV_DocumentComplete' event but WV.DocumentURL and WV.DocumentTitle do not get populated. They are blank/empty.
+> Using the latest RC6 (6.0.14), **WV.Navigate "https://google.com"** does trigger the 'WV_DocumentComplete' event but WV.DocumentURL and WV.DocumentTitle do not get populated. They are blank/empty.
 
 Yes, whilst "google.de" works, "google.in" works, etc. -
  the scripts Google loads (and runs), when loading from "google.com",
@@ -9522,23 +8646,19 @@ End Function
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
+> i have a full test：WebView2Demo.vbp，
+>  **i install **MicrosoftEdgeWebview2Setup.exe** for only user1**, not for all user.
 >
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-i have a full test：WebView2Demo.vbp，
- **i install **MicrosoftEdgeWebview2Setup.exe** for only user1**, not for all user.
-
- **change to windows user2**(local user):
-
- ... no WebView2-instancing possible via RC6...
+>  **change to windows user2**(local user):
+>
+>  ... no WebView2-instancing possible via RC6...
 
 What's your question exactly?
 
  And why do you expect user2 to be able to create a WebView2-instance,
- when you did **not **ensure an installation of the WebView2-runtime for that specific user2?
+ when you did **not** ensure an installation of the WebView2-runtime for that specific user2?
  (or alternatively for **all users** of the machine)
 
  Olaf
@@ -9592,26 +8712,18 @@ The default double-click installation is non-administrator permissions, the path
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-Use the code to crack the permissions, or let the user click on the authorization to access the directory...
+> Use the code to crack the permissions, or let the user click on the authorization to access the directory...
 
 I'd suggest to other readers here, to not "crack any permissions"...
 
  The only things that needs to be done is, to run the WebView2-evergreen-installer properly "**as Admin**".
  (after downloading it from the MS-WebSite).
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-If each user needs to install the SDK separately, it will occupy 600-800MB of hard disk space...
+> If each user needs to install the SDK separately, it will occupy 600-800MB of hard disk space...
 
 And that large size is the reason, why it makes so much sense, to choose the "**for all Users**" option -
  on the given machine (once the installer was started "in Admin-mode").
@@ -9750,13 +8862,9 @@ Webview1.Navigate "https://www.baidu.com?id=2",0
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-Loading two WebVIEWs is slow, why?
+> Loading two WebVIEWs is slow, why?
 
 Because you never read (or understand), <https://www.vbforums.com/showthread.php?889202-VB6-WebView2-Binding-(Edge-Chromium)&p=5606140&viewfull=1#post5606140> what was already explained to you in #362.
 
@@ -9841,15 +8949,11 @@ dim str as string
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-The fourth question:
- (4) I need to place multiple WebViews on my Form or WidgetForm. I bind a WebView to a cwWidget through "WV.BindTo(W.Root.hWnd, 10)".
- The question is, when this cwWidget is removed, how to remove the bound WebView at the same time?
+> The fourth question:
+>  (4) I need to place multiple WebViews on my Form or WidgetForm. I bind a WebView to a cwWidget through "WV.BindTo(W.Root.hWnd, 10)".
+>  The question is, when this cwWidget is removed, how to remove the bound WebView at the same time?
 
 in vc++
  webviewController->get_CoreWebView2(&webviewWindow) it's com object
@@ -9987,13 +9091,9 @@ End Function
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-ps: I don't want to use LoadLibrary as this does not check if the dll is registered correctly.
+> ps: I don't want to use LoadLibrary as this does not check if the dll is registered correctly.
 
 For the record, the correct "Library-Prefix" in a ProgID
  (which usually follows the scheme: "Lib.Class")
@@ -10026,15 +9126,11 @@ Hopefully, this is something simple. Trying to simply set the Background Color o
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
+> Hopefully, this is something simple. Trying to simply set the Background Color of the webview2 page. There is a property for it, but I can't seem to find where it is in the cWebView2 class.
 >
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Hopefully, this is something simple. Trying to simply set the Background Color of the webview2 page. There is a property for it, but I can't seem to find where it is in the cWebView2 class.
-
- Thanks!
+>  Thanks!
 
 it's use by css or js
 
@@ -10065,14 +9161,10 @@ Supports WebDriver, so it also supports various scenarios such as crawlers and a
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Hopefully, this is something simple. Trying to simply set the Background Color of the webview2 page.
- There is a property for it, but I can't seem to find where it is in the cWebView2 class.
+> Hopefully, this is something simple. Trying to simply set the Background Color of the webview2 page.
+>  There is a property for it, but I can't seem to find where it is in the cWebView2 class.
 
 There is not specific property for it on the WV2 ...
 
@@ -10163,25 +9255,21 @@ When I did the above and started B, then B also would start simultaneously even 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **softv**
 >
-
+> 1. If I start application A, the main interface opens normally, rendering the specified web page normally, and everything is working all right.
 >
-
- *[img: Quote]* Originally Posted by **softv** *[img: View Post]*
-
-1. If I start application A, the main interface opens normally, rendering the specified web page normally, and everything is working all right.
-
- 2. But, **even as A is running, if I start B, then 'B' would not start**. In other words, the WebView2 rendering engine would not start for 'B'.
+>  2. But, **even as A is running, if I start B, then 'B' would not start**. In other words, the WebView2 rendering engine would not start for 'B'.
 
 Yep, can affirm that...
  ...wasn't aware, how the concrete mechanism behind it works - but studied it a bit - and here's what I found:
 
  You have to provide a unique UserData-Directory for:
- - executables, which "**bytewise **differ" (that's probably tested by calculating HashSums in the startup-phase)
+ - executables, which "**bytewise** differ" (that's probably tested by calculating HashSums in the startup-phase)
 
  Meaning, when you compile executable A.exe - and then:
  - just make a file-copy of the same A.exe - just changing the FileName to e.g. "Copy of A.exe"
- - this will **not **cause a conflict, when you start "A.exe" and "Copy of A.exe" in parallel
+ - this will **not** cause a conflict, when you start "A.exe" and "Copy of A.exe" in parallel
  (when the HashSum of two binaries is the same, they are allowed to **share** the same UserData-path - with the same "browser-settings").
 
  The "protection" kicks in, when you start executables which differ in their binary Hash-Sum (but point to the same "UserData"-Path).
@@ -10208,22 +9296,18 @@ Yep, can affirm that...
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Yep, can affirm that...
+>  ... .. .
+>  ... .. . But I could (in the next release) change that, to e.g.: New_c.FSO.GetLocalAppDataPath & "" & App.EXEName
+>  ... .. .
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Yep, can affirm that...
- ... .. .
- ... .. . But I could (in the next release) change that, to e.g.: New_c.FSO.GetLocalAppDataPath & "" & App.EXEName
- ... .. .
-
- Olaf
+>  Olaf
 
 Thanks, as always, for your detailed and prompt reply, Olaf.
 
- That's (New_c.FSO.GetLocalAppDataPath & "" & App.EXEName) really unobtrusive too, while being unique. I myself saw the 'EBWebView' folder in my LocalAppData directory today only, after reading your message! *[img: Smilie]*. It was occupying 618MB! Don't know why it is designed to be growing though (by MS)!
+ That's (New_c.FSO.GetLocalAppDataPath & "" & App.EXEName) really unobtrusive too, while being unique. I myself saw the 'EBWebView' folder in my LocalAppData directory today only, after reading your message! :). It was occupying 618MB! Don't know why it is designed to be growing though (by MS)!
 
  Kind Regards.
 
@@ -10237,13 +9321,9 @@ Hello, what are the dependencies you have, one is CR6.dll but what else?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **LeandroA**
 >
-
->
-
- *[img: Quote]* Originally Posted by **LeandroA** *[img: View Post]*
-
-Hello, what are the dependencies you have, one is CR6.dll but what else?
+> Hello, what are the dependencies you have, one is CR6.dll but what else?
 
 Please always ship the whole content of RC6BaseDlls.zip (3.7MB zipped, currently).
 
@@ -10311,13 +9391,9 @@ No spam here. 99% of the questions I ask or reply to are useful or have the corr
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-No spam here. 99% of the questions I ask or reply to are useful or have the correct answer.
+> No spam here. 99% of the questions I ask or reply to are useful or have the correct answer.
 
 Nope, the opposite is the case... 99% of your postings:
  - are entirely out of context
@@ -10340,13 +9416,9 @@ Hello, I want to provide some information or perhaps this has already been discu
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **LeandroA**
 >
-
->
-
- *[img: Quote]* Originally Posted by **LeandroA** *[img: View Post]*
-
-Hello, I want to provide some information or perhaps this has already been discussed, if you want to work with dpiAware = true, you can experience that the control does not initialize WV.BindTo() , it is important to take into account that if another application is instantiated using webview from RC6 with dpiAware = true and another application in dpiAware = false the last one will fail and vice versa, note if the IDE is executed, the manifested exe will fail until stopping the ide.
+> Hello, I want to provide some information or perhaps this has already been discussed, if you want to work with dpiAware = true, you can experience that the control does not initialize WV.BindTo() , it is important to take into account that if another application is instantiated using webview from RC6 with dpiAware = true and another application in dpiAware = false the last one will fail and vice versa, note if the IDE is executed, the manifested exe will fail until stopping the ide.
 
 That's similar to what softv brought up in #402 ...
  and should be fixed now in RC6 verion 6.0.15 - but I've not yet uploaded this new version...
@@ -10387,37 +9459,33 @@ why?
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
+> how to get selected item html?
 >
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-how to get selected item html?
-
-Code:
-
-```
-var selection = window.getSelection();
-var range = selection.getRangeAt(0);
-var clonedRange = range.cloneRange();
-var fragment = clonedRange.cloneContents();
-var div = document.createElement('div');
-div.appendChild(fragment);
-var htmlString = div.innerHTML;
-console.log(htmlString);
-```
-
-Code:
-
-```
-var htmlString = window.getSelection().getRangeAt(0).cloneContents().querySelector('body').innerHTML;
-
-VM317:1 Uncaught TypeError: Cannot read properties of null (reading 'innerHTML')
-    at <anonymous>:1:91
-```
-
-why?
+> Code:
+>
+> ```
+> var selection = window.getSelection();
+> var range = selection.getRangeAt(0);
+> var clonedRange = range.cloneRange();
+> var fragment = clonedRange.cloneContents();
+> var div = document.createElement('div');
+> div.appendChild(fragment);
+> var htmlString = div.innerHTML;
+> console.log(htmlString);
+> ```
+>
+> Code:
+>
+> ```
+> var htmlString = window.getSelection().getRangeAt(0).cloneContents().querySelector('body').innerHTML;
+>
+> VM317:1 Uncaught TypeError: Cannot read properties of null (reading 'innerHTML')
+>     at <anonymous>:1:91
+> ```
+>
+> why?
 
 This is primarily a VB-Forum - and your question is related to "pure Javascript" -
  please ask it elsewhere and stop spamming this thread.
@@ -10446,13 +9514,9 @@ The browser control gets the selected text, HTM, or image, which is like a text 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-Perhaps it is possible to develop another RC6js.dll specifically to enhance JS capabilities...
+> Perhaps it is possible to develop another RC6js.dll specifically to enhance JS capabilities...
 
 Why would anyone want to do that - when you can load such a "myUseful_JS_helper_functions.js" file
  into the WebView2-Context in just one line of code?
@@ -10477,15 +9541,11 @@ Has anybody found a smart / easy way to use Olafs webview2 wrapper in Winform .N
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> Has anybody found a smart / easy way to use Olafs webview2 wrapper in Winform .NET?
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Has anybody found a smart / easy way to use Olafs webview2 wrapper in Winform .NET?
-
- I wonder if I have to go interop, but I think so.
+>  I wonder if I have to go interop, but I think so.
 
 I wonder why would you'd go .NET-Winforms (...is there a certain Control, not covered by Krools Suite)?
 
@@ -10497,16 +9557,12 @@ I wonder why would you'd go .NET-Winforms (...is there a certain Control, not co
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> That's similar to what softv brought up in #402 ...
+>  and should be fixed now in RC6 verion 6.0.15 - but I've not yet uploaded this new version...
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-That's similar to what softv brought up in #402 ...
- and should be fixed now in RC6 verion 6.0.15 - but I've not yet uploaded this new version...
-
- Olaf
+>  Olaf
 
 Hi Olaf,
  do you plan to release the 6.0.15 with the fix for the DPI aware and DPI scaling issues?
@@ -10542,25 +9598,21 @@ End Sub
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
+> I would like to block the loading of images.
 >
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-I would like to block the loading of images.
-
- I am using this after initialization:
-
- WV.AddWebResourceRequestedFilter "*", Filter_IMAGE
-
- However, this event is never called:
-
-Code:
-
-```
-Private Sub WV_PermissionRequested(ByVal IsUserInitiated As Boolean, State As RC6.eWebView2PermissionState, ByVal URI As String, ByVal PermissionKind As
-```
+>  I am using this after initialization:
+>
+>  WV.AddWebResourceRequestedFilter "*", Filter_IMAGE
+>
+>  However, this event is never called:
+>
+> Code:
+>
+> ```
+> Private Sub WV_PermissionRequested(ByVal IsUserInitiated As Boolean, State As RC6.eWebView2PermissionState, ByVal URI As String, ByVal PermissionKind As
+> ```
 
 As explained in #373, the matching event is: WV_WebResourceRequested ...
  (and not WV_PermissionRequested, which is more for hardware-things like "GPS-sensor-access-permission, Microphon- or Camera-access-permissions")
@@ -10571,14 +9623,10 @@ As explained in #373, the matching event is: WV_WebResourceRequested ...
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Bob17**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Bob17** *[img: View Post]*
-
-Hi Olaf,
- do you plan to release the 6.0.15 with the fix for the DPI aware and DPI scaling issues?
+> Hi Olaf,
+>  do you plan to release the 6.0.15 with the fix for the DPI aware and DPI scaling issues?
 
 Not sure, whether the DPI-aware stuff is really related to the now "separated UserData-Folders per App-Exename" -
  but version 6.0.15 is now online.
@@ -10623,55 +9671,43 @@ the same code if i chang RC6.dl 6.0.0.9 to 6.0.15 ，MsgBox "Couldn't load regfr
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xxdoc123**
 >
-
+> i downlaod new current version: 6.0.15, last updated: 2023-07-23
 >
-
- *[img: Quote]* Originally Posted by **xxdoc123** *[img: View Post]*
-
-i downlaod new current version: 6.0.15, last updated: 2023-07-23
-
- but i found can not run WV.jsProp. i change to 6.0.0.9 work ok.
+>  but i found can not run WV.jsProp. i change to 6.0.0.9 work ok.
 
 Please give an example...
 
+>   Originally Posted by **xxdoc123**
 >
-
+> the other question
 >
-
- *[img: Quote]* Originally Posted by **xxdoc123** *[img: View Post]*
-
-the other question
-
-Code:
-
-```
-If Right$(App.Path, 1) <> "\" Then AppPath = AppPath & "\"
-
-    If App.LogMode Then '
-        On Error Resume Next
-        LoadLibraryW StrPtr(AppPath & DirectComDllRelPath)
-        Set New_c = GetInstanceEx(StrPtr(AppPath & RCDllRelPath), StrPtr("cConstructor"))
-        'Set New_c = GetInstanceEx(StrPtr(AppPath & "Bin\RC6.dll"), StrPtr("cConstructor"), True) '
-        If New_c Is Nothing Then MsgBox "Couldn't load regfree, will try with a registered version next..."
-        On Error GoTo 0
-
-    Else '
-        Set New_c = New cConstructor
-    End If
-```
-
-the same code if i chang RC6.dl 6.0.0.9 to 6.0.15 ，MsgBox "Couldn't load regfree, will try with a registered version next..."
+> Code:
+>
+> ```
+> If Right$(App.Path, 1) <> "\" Then AppPath = AppPath & "\"
+>
+>     If App.LogMode Then '
+>         On Error Resume Next
+>         LoadLibraryW StrPtr(AppPath & DirectComDllRelPath)
+>         Set New_c = GetInstanceEx(StrPtr(AppPath & RCDllRelPath), StrPtr("cConstructor"))
+>         'Set New_c = GetInstanceEx(StrPtr(AppPath & "Bin\RC6.dll"), StrPtr("cConstructor"), True) '
+>         If New_c Is Nothing Then MsgBox "Couldn't load regfree, will try with a registered version next..."
+>         On Error GoTo 0
+>
+>     Else '
+>         Set New_c = New cConstructor
+>     End If
+> ```
+>
+> the same code if i chang RC6.dl 6.0.0.9 to 6.0.15 ，MsgBox "Couldn't load regfree, will try with a registered version next..."
 
 The Dll-binaries within your Bin-Folder have to match with the (registered) RC6-version you last compiled your executable with...
 
+>   Originally Posted by **xxdoc123**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xxdoc123** *[img: View Post]*
-
-Another issue is that playing online videos often results in buffering.
+> Another issue is that playing online videos often results in buffering.
 
 That's not really a problem of the wrapper... (the Browser-engine is from Google and MS) -
  ...just guessing here, ...
@@ -10701,25 +9737,21 @@ i found not change red.but old vision work fine
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xxdoc123**
 >
-
+> i test your demo WebView2Demo.zip
 >
-
- *[img: Quote]* Originally Posted by **xxdoc123** *[img: View Post]*
-
-i test your demo WebView2Demo.zip
-
-Code:
-
-```
-and this shows, that the WV.jsProp("...") also works in Property-Let-Mode (at the left-hand-side)
-  btn1Caption = "Click Me..." 'change the Caption-String
-  WV.jsProp("document.getElementById('btn1').innerHTML") = btn1Caption 'and assign it to the Browser-Element as the new Caption via WV.jsProp() = ...
-  'just for fun, we can change the style of the btn1-Element to color='red' as well this way
-  WV.jsProp("document.getElementById('btn1').style.color") = "red"
-```
-
-i found not change red.but old vision work fine
+> Code:
+>
+> ```
+> and this shows, that the WV.jsProp("...") also works in Property-Let-Mode (at the left-hand-side)
+>   btn1Caption = "Click Me..." 'change the Caption-String
+>   WV.jsProp("document.getElementById('btn1').innerHTML") = btn1Caption 'and assign it to the Browser-Element as the new Caption via WV.jsProp() = ...
+>   'just for fun, we can change the style of the btn1-Element to color='red' as well this way
+>   WV.jsProp("document.getElementById('btn1').style.color") = "red"
+> ```
+>
+> i found not change red.but old vision work fine
 
 This problem came up already a few times here (first time, I think - in #185):
  <https://www.vbforums.com/showthread.php?889202-VB6-WebView2-Binding-(Edge-Chromium)&p=5580698&viewfull=1#post5580698> https://www.vbforums.com/showthread....=1#post5580698
@@ -10745,13 +9777,9 @@ This was 3 steps back, the problem with the dpi has been solved, but jsProp no l
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **LeandroA**
 >
-
->
-
- *[img: Quote]* Originally Posted by **LeandroA** *[img: View Post]*
-
-jsProp no longer works as before, everything changed,...
+> jsProp no longer works as before, everything changed,...
 
 Not "everything" - only jsProp shows a slightly different behaviour...
 
@@ -10767,13 +9795,9 @@ Not "everything" - only jsProp shows a slightly different behaviour...
 
  WV.jsProp("map.getCenter().lat()") '...whilst this doesn't anymore, because it contains ()-identifyable, intermingled function-calls
 
+>   Originally Posted by **LeandroA**
 >
-
->
-
- *[img: Quote]* Originally Posted by **LeandroA** *[img: View Post]*
-
- I still don't know how to fix it.
+>  I still don't know how to fix it.
 
 It's not that difficult, to write your own little helper-functions for communication with VB6,
  as e.g. (after WV.Init was successful)...
@@ -10833,13 +9857,9 @@ jsProp，This function has a lot of problems and bugs,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xiaoyao**
 >
-
->
-
- *[img: Quote]* Originally Posted by **xiaoyao** *[img: View Post]*
-
-jsProp，This function has a lot of problems and bugs,
+> jsProp，This function has a lot of problems and bugs,
 
 Your reply doesn't mean anything other than misleading others, and it's not what this forum needs.
 
@@ -10873,20 +9893,16 @@ execute WV.ExecuteScript "document.querySelector('#app > div > section > aside >
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **xxdoc123**
 >
-
+> execute WV.ExecuteScript "document.querySelector('#app > div > section > aside > span').click();" sometimes the webpage is not executed successfully. So I will modify it to
+>  WV.ExecuteScript "document.querySelector('#app > div > section > aside > span').click();"
+>  sleep 1000
+>  WV.ExecuteScript "document.querySelector('#app > div > section > aside > span').click();"
+>  sleep 1000
+>  WV.ExecuteScript "document.querySelector('#app > div > section > aside > span').click();"
 >
-
- *[img: Quote]* Originally Posted by **xxdoc123** *[img: View Post]*
-
-execute WV.ExecuteScript "document.querySelector('#app > div > section > aside > span').click();" sometimes the webpage is not executed successfully. So I will modify it to
- WV.ExecuteScript "document.querySelector('#app > div > section > aside > span').click();"
- sleep 1000
- WV.ExecuteScript "document.querySelector('#app > div > section > aside > span').click();"
- sleep 1000
- WV.ExecuteScript "document.querySelector('#app > div > section > aside > span').click();"
-
- wo can tell me why？
+>  wo can tell me why？
 
 WV.ExecuteScript is working asynchronously.
  And it should of course only be executed, when the Document was fully loaded
@@ -10945,14 +9961,10 @@ Hello, I'm struggling to find the way to download a JSon file from an URL as str
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Eduardo-**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Eduardo-** *[img: View Post]*
-
-Hello, I'm struggling to find the way to download a JSon file from an URL as string.
- I need to download it using the WebView2 because I'm already using it to log-in to the site and to download some pages, and I need to send the session Cookie to be able to download the JSon, ...
+> Hello, I'm struggling to find the way to download a JSon file from an URL as string.
+>  I need to download it using the WebView2 because I'm already using it to log-in to the site and to download some pages, and I need to send the session Cookie to be able to download the JSon, ...
 
 "in-Page" (in-document) - http-requests (aka "Ajax-Requests") are traditionally done via the XMLHttpRequest object:
  (which is quite similar in its usage, as the MS-WinHttp-COM-Object).
@@ -10961,13 +9973,9 @@ Hello, I'm struggling to find the way to download a JSon file from an URL as str
  In other words - don't use the Webviews "Navigate"-methods to retrieve JSON from a certain WebAPI -
  use the XHR-Object instead "from the inside" of a loaded document (e.g. encapsulated in a little pre-added js-function).
 
+>   Originally Posted by **Eduardo-**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Eduardo-** *[img: View Post]*
-
- ...so since I was not able to <https://www.vbforums.com/showthread.php?889202-VB6-WebView2-Binding-(Edge-Chromium)&p=5498591&viewfull=1#post5498591> get the Cookie with the method suggested here
+>  ...so since I was not able to <https://www.vbforums.com/showthread.php?889202-VB6-WebView2-Binding-(Edge-Chromium)&p=5498591&viewfull=1#post5498591> get the Cookie with the method suggested here
 
 Just tested this here - and it seems to work as described:
 
@@ -11016,17 +10024,13 @@ Hello Olaf. It is not Google, it is a private site.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Eduardo-**
 >
-
+> Hello Olaf. It is not Google, it is a private site.
 >
-
- *[img: Quote]* Originally Posted by **Eduardo-** *[img: View Post]*
-
-Hello Olaf. It is not Google, it is a private site.
-
- Debug.Print WV.jsProp("document.cookie") returns an empty string.
-
- Maybe that it is because it is an http site (not https)?
+>  Debug.Print WV.jsProp("document.cookie") returns an empty string.
+>
+>  Maybe that it is because it is an http site (not https)?
 
 No, the reason in that case is, that document.cookie only returns "regular, **non**-HttpOnly-cookies"
  (http-only-cookies are hidden and non-accessible via javascript)...
@@ -11116,9 +10120,7 @@ Reference:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
-*[img: Name:  audio1.png
-Views: 2752
-Size:  26.5 KB]*
+![audio1.png](https://www.vbforums.com/attachment.php?attachmentid=189031&d=1698095320)
 
  On a customer's computer I see this message when he / I click the microphone button in web.whatsapp.com.
  However, when he / I click on it, the result is not saved.
@@ -11166,16 +10168,12 @@ Outside this forum and a few other die-hard hobbyists it's pretty hard to still 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Private Sub WV_PermissionRequested
- is not fired.
- ...
- The problem does not occur on my or (so far) any other customer computer.
+> Private Sub WV_PermissionRequested
+>  is not fired.
+>  ...
+>  The problem does not occur on my or (so far) any other customer computer.
 
 The problem also does not occur on my machine.
 
@@ -11204,13 +10202,9 @@ The problem also does not occur on my machine.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **VanGoghGaming**
 >
-
->
-
- *[img: Quote]* Originally Posted by **VanGoghGaming** *[img: View Post]*
-
-I am wondering whether Olaf implemented WebView2 in VB6 or maybe it's all C++ in the RC6 DLL?
+> I am wondering whether Olaf implemented WebView2 in VB6 or maybe it's all C++ in the RC6 DLL?
 
 All wrapper-classes the RC6.dll exposes, are VB6-implemented, since it's a normal VB6-AX-Dll-Project.
  (and that includes cWebView2).
@@ -11244,18 +10238,14 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
+> ...can you release the source code of your components so that we can find a way to go on in case something happens to you?
 
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-...can you release the source code of your components so that we can find a way to go on in case something happens to you?
-
-I'd say - let's talk about that, after "something happened to me"... *[img: Wink]*
+I'd say - let's talk about that, after "something happened to me"... ;)
 
  Besides, there's closed-source COMponents in (heavy) daily use in this community,
- which date nearly **20 **years back with their "last compile-date" as e.g. the unmaintained:
+ which date nearly **20** years back with their "last compile-date" as e.g. the unmaintained:
  - MS-Winsock.ocx
  - MS-FlexGrid, -HFlexGrid
  - MS-CommonControls
@@ -11296,26 +10286,18 @@ Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
+> I am not releasing any .NET applications to the public because it means giving away your source code.
 
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-I am not releasing any .NET applications to the public because it means giving away your source code.
-
-I hope, you notice the irony here...? *[img: Wink]*
+I hope, you notice the irony here...? ;)
 
  Besides, you can wrap up (only) the .NET WebView2-functionality in a VB6+COM consumable .NET-assembly
  quite easily... no need to rewrite "your whole App in .NET" (please read about .NET<->COM-interop).
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-If you really mean it (regarding "after I am gone"), then can you implement a system that would make the source code accessible to me (and possibly others whose business depend on it)?
+> If you really mean it (regarding "after I am gone"), then can you implement a system that would make the source code accessible to me (and possibly others whose business depend on it)?
 
 There are already "measures in place" (which I tried to convey with my little "joke", which would otherwise be somewhat rude).
 
@@ -11366,13 +10348,9 @@ A friend of mine in China has a long life span in his family, and many people sp
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **tmighty2**
 >
-
->
-
- *[img: Quote]* Originally Posted by **tmighty2** *[img: View Post]*
-
-Olaf, could you offer a service that assures us "companies" to get support and a maintained product or the source code so that we could continue support it ourselves in case something happens to you?
+> Olaf, could you offer a service that assures us "companies" to get support and a maintained product or the source code so that we could continue support it ourselves in case something happens to you?
 
 To provide additional services, it must be a VIP who needs to pay extra. You can provide some give some source code or none.
 
@@ -11399,14 +10377,10 @@ Hello Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
- Apparently, WebView2 can now handle extensions.
- ...
+>  Apparently, WebView2 can now handle extensions.
+>  ...
 
 Ah well, ...finally.
 
@@ -11434,15 +10408,11 @@ Thank you for your response, Olaf.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
+>  I must admit that I am not familiar with the AddObject functionality!
 >
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
- I must admit that I am not familiar with the AddObject functionality!
-
- Unless you have a small example?
+>  Unless you have a small example?
 
 It allows to put arbitrary Helper-COM-Objects (no matter, whether Private Classes or Public ones from an AX-Dll) -
  into the js-context... (under a certain name-string, which is then case-sensitive in js).
@@ -11450,7 +10420,7 @@ It allows to put arbitrary Helper-COM-Objects (no matter, whether Private Classe
  Over such an added Object you can then - at any time:
  - "call into VB6-Code" (and thus, into "system-stuff, normally not reachable by a browser")
 
- example-class, named **cAuth **(in a normal VB-Form-Project):
+ example-class, named **cAuth** (in a normal VB-Form-Project):
 
 Code:
 
@@ -11504,14 +10474,10 @@ HTH
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-"Thank you Olaf for this example.
- However, I don’t see how to switch a WebView2 property inside cWebView2, like AreBrowserExtensionsEnabled to True, through this method.
+> "Thank you Olaf for this example.
+>  However, I don’t see how to switch a WebView2 property inside cWebView2, like AreBrowserExtensionsEnabled to True, through this method.
 
 As said, I'll try to enable this (not yet implemented) Property (and its "sidekicks") over the holidays in a new RC6-version, which enhances cWebView2.
 
@@ -11577,15 +10543,11 @@ I am running a script as follows:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **julian1104**
 >
-
+>  WV.ExecuteScript script
 >
-
- *[img: Quote]* Originally Posted by **julian1104** *[img: View Post]*
-
- WV.ExecuteScript script
-
- In the console it shows me the data I need, the question is how can I pass that data to a variable or save that data in a text file, could someone help me?
+>  In the console it shows me the data I need, the question is how can I pass that data to a variable or save that data in a text file, could someone help me?
 
 WV.ExecuteScript is not the right method to tackle such problems...
 
@@ -11811,17 +10773,13 @@ Hello Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-In the **BindTo **function, entering a command in **additionalBrowserArguments**
- (for example, "--lang=de") prevents the initialization of WebView2 with version 6.0.15 of RC6.
+> In the **BindTo **function, entering a command in **additionalBrowserArguments**
+>  (for example, "--lang=de") prevents the initialization of WebView2 with version 6.0.15 of RC6.
 
 Just tested this here (on Win11) - and it works as it should...
- (on the **sole **instance of the WV-Ctl I've created)...
+ (on the **sole** instance of the WV-Ctl I've created)...
 
  IIRC, there was a problem sometime ago, where it was shown -
  that *every* "follow-up" WV2-instance in a given Process -
@@ -11835,20 +10793,16 @@ Just tested this here (on Win11) - and it works as it should...
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> ...
+>  IIRC, there was a problem sometime ago, where it was shown -
+>  that *every* "follow-up" WV2-instance in a given Process -
+>  needs to be started with the same commandline-params as the first created one...
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-...
- IIRC, there was a problem sometime ago, where it was shown -
- that *every* "follow-up" WV2-instance in a given Process -
- needs to be started with the same commandline-params as the first created one...
-
- I consider that a problem MS has to fix (if it's still there).
-
- Olaf
+>  I consider that a problem MS has to fix (if it's still there).
+>
+>  Olaf
 
 Thank you Olaf,
 
@@ -11865,13 +10819,9 @@ Thank you Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
-
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-It seems that all WV2s in a Windows session need to be initialized with the same parameters.
+> It seems that all WV2s in a Windows session need to be initialized with the same parameters.
 
 Ah, yes - that was the behaviour (which was discussed a few dozen entries back, here in this thread)...
  and a solution for this was (IIRC), that the behaviour can be avoided, as long as a different UserFolder was given
@@ -11883,17 +10833,13 @@ Ah, yes - that was the behaviour (which was discussed a few dozen entries back, 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Ah, yes - that was the behaviour (which was discussed a few dozen entries back, here in this thread)...
+>  and a solution for this was (IIRC), that the behaviour can be avoided, as long as a different UserFolder was given
+>  (e.g. one Userfolder for french-users - and one for e.g. "--lang=de"-users on the same machine...).
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Ah, yes - that was the behaviour (which was discussed a few dozen entries back, here in this thread)...
- and a solution for this was (IIRC), that the behaviour can be avoided, as long as a different UserFolder was given
- (e.g. one Userfolder for french-users - and one for e.g. "--lang=de"-users on the same machine...).
-
- Olaf
+>  Olaf
 
 Thanks Olaf, I'll try that right away
 
@@ -11908,17 +10854,13 @@ Hello Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Ah well, ...finally.
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Ah well, ...finally.
-
- Will see what I can do in this regard over the holidays...
-
- Olaf
+>  Will see what I can do in this regard over the holidays...
+>
+>  Olaf
 
  Hello Olaf,
  Have you made progress on the new version of RC6, particularly improving the integration of WebView2 (Extension management...) ?
@@ -11935,7 +10877,7 @@ Hello Olaf.
  I am using this excellent option of using webview2 with vb6, I have managed to make functions to interact with the elements of some websites, but I found a problem that I have been struggling with for days, this is when simulating the click() event in an Input of type File, it simply does not open the file chooser dialog, when opening devtools the following alert can be displayed **"File chooser dialog can only be shown with a user activation"**, I understand that this is a security block, but I want to know if There is the option to bypass that restriction.
 
  Here I show the return message in the DevTools
- <https://www.vbforums.com/attachment.php?s=9b84d96bf559669a1dc45b4f80d160b8&attachmentid=191017> Attachment 191017
+ <https://www.vbforums.com/attachment.php?s=590ef57ea31a7b12593e267acfc3f2a6&attachmentid=191017> Attachment 191017
 
  Best regards.
 
@@ -11943,17 +10885,13 @@ Hello Olaf.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **JoseLiza**
 >
-
+>  I have managed to make functions to interact with the elements of some websites, but I found a problem that I have been struggling with for days, this is when simulating the click() event in an Input of type File, it simply does not open the file chooser dialog, when opening devtools the following alert can be displayed **"File chooser dialog can only be shown with a user activation"**
 >
+>  I understand that this is a security block...
 
- *[img: Quote]* Originally Posted by **JoseLiza** *[img: View Post]*
-
- I have managed to make functions to interact with the elements of some websites, but I found a problem that I have been struggling with for days, this is when simulating the click() event in an Input of type File, it simply does not open the file chooser dialog, when opening devtools the following alert can be displayed **"File chooser dialog can only be shown with a user activation"**
-
- I understand that this is a security block...
-
-Then don't fight it (within the Browser-Control)... *[img: Wink]*
+Then don't fight it (within the Browser-Control)... ;)
 
  The nice thing about these "Dual-Apps" is, that you can always choose the side more suited for the task -
  so why not show a modal FileOpen-Dialog via VB6-code?
@@ -11964,18 +10902,14 @@ Then don't fight it (within the Browser-Control)... *[img: Wink]*
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Schmidt**
 >
-
+> Then don't fight it (within the Browser-Control)... ;)
 >
-
- *[img: Quote]* Originally Posted by **Schmidt** *[img: View Post]*
-
-Then don't fight it (within the Browser-Control)... *[img: Wink]*
-
- The nice thing about these "Dual-Apps" is, that you can always choose the side more suited for the task -
- so why not show a modal FileOpen-Dialog via VB6-code?
-
- Olaf
+>  The nice thing about these "Dual-Apps" is, that you can always choose the side more suited for the task -
+>  so why not show a modal FileOpen-Dialog via VB6-code?
+>
+>  Olaf
 
 Using the vb6 FileOpen-Dialog would not allow assigning the path of the selected file in the file type input, since I am trying to upload a file to a website.
  If I'm wrong, I would appreciate if you could guide me on it.
@@ -12073,14 +11007,10 @@ End Function
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-(From dm)
- .....but the problem is that if a commercial software can only run in a Windows environment, its market demand and market share will be very low. Such softwares cannot form a solid software ecological chain, nor can they provide you with more resources.
+> (From dm)
+>  .....but the problem is that if a commercial software can only run in a Windows environment, its market demand and market share will be very low. Such softwares cannot form a solid software ecological chain, nor can they provide you with more resources.
 
 Not quite true. Even in 2024 - some 4 years after this post - MS Windows still dominates the desktop, especially in productivity applications. And yes, there is still a smaller-than-in-the-past but re-growing market for desktop apps on Windows. Windows has always had - and likely always will - far more available software for most any conceivable desktop purpose then MAC OS and Linux combined. And I don't even want to go down the Linux mess rabbit hole - WAY too many "Distros", WAY to much incompatibility among them etc. so Linux is best left where it shines most - the server side.
 
@@ -12092,23 +11022,19 @@ Not quite true. Even in 2024 - some 4 years after this post - MS Windows still d
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **SearchingDataOnly**
 >
-
->
-
- *[img: Quote]* Originally Posted by **SearchingDataOnly** *[img: View Post]*
-
-(From dm)
- .....but the problem is that if a commercial software can only run in a Windows environment, its market demand and market share will be very low. Such softwares cannot form a solid software ecological chain, nor can they provide you with more resources......
- \
+> (From dm)
+>  .....but the problem is that if a commercial software can only run in a Windows environment, its market demand and market share will be very low. Such softwares cannot form a solid software ecological chain, nor can they provide you with more resources......
+>  \
 
 Not quite true. Even in 2024 - some 3.5 years after this post, MS Windows still dominates the desktop, especially for productivity apps. There is still a smaller-than-before but re-growing market for commercial desktop applications. Windows has always had and likely always will have a much, much wider selection of available software than MAC OS & Linux combined. And the Linux desktop mess only makes it worse i.e. WAY to many "Distros", WAY too many incompatibilities between them, endless searches for needed dependencies, etc.
 
  One can still create, use and sell good quality commercial software with VB6. I've done it not so long ago and I plan to again. Some on this forum have also and still are.The core VB6 runtime will be supported until at least 2031 and likely beyond.
 
- My users/customers/groupies *[img: Wink]* can't tell/don't know/don't care what programming language their tools are written in. They just fire 'em up and away they go.
+ My users/customers/groupies ;) can't tell/don't know/don't care what programming language their tools are written in. They just fire 'em up and away they go.
 
- And with twinBasic on the playing field, its just gonna get even better *[img: Smilie]*.
+ And with twinBasic on the playing field, its just gonna get even better :).
 
 ## #487 mark5544 — Apr 26th, 2024, 09:37 AM
 
@@ -12258,25 +11184,17 @@ Hi Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **misar**
 >
-
->
-
- *[img: Quote]* Originally Posted by **misar** *[img: View Post]*
-
-... I had to rem out two of your event handlers which both generate the same error:
- Procedure declaration does not match description of event or procedure having the same name
+> ... I had to rem out two of your event handlers which both generate the same error:
+>  Procedure declaration does not match description of event or procedure having the same name
 
 Have redefined the Interface since writing the demo... (e.g. in the two events - some of the Long-Param-Flags are now Booleans) -
  just re-select (after commenting out) these EventHandlers from the DropDown-Combobox again for correct Param-population...
 
+>   Originally Posted by **misar**
 >
-
->
-
- *[img: Quote]* Originally Posted by **misar** *[img: View Post]*
-
-Do you know what is wrong here and also does your comment ['*** the rest of the EventHandlers below, are raised by the WebView-instance itself] mean that they are not needed anyway?
+> Do you know what is wrong here and also does your comment ['*** the rest of the EventHandlers below, are raised by the WebView-instance itself] mean that they are not needed anyway?
 
 As with most Events - some of them are needed, some of them are left untouched...
  Which sub-set of them ends up being used, depends on the concrete scenario at hand...
@@ -12373,7 +11291,7 @@ Many thanks in advance.
 
 Olaf,
 
- Thanks again for the WebView2 control. This has really given new life to an old VB6 app (and developer *[img: Smilie]*
+ Thanks again for the WebView2 control. This has really given new life to an old VB6 app (and developer :)
 
  I have a use for InPrivate mode or Incognito mode. I was wondering if there is an easy way to turn this on? My app logs into the same site multiple times with different credentials, and I have found that I have to make it logout/login for it to switch between them. I want to split this into 2 WVs and separately login to each.
 
@@ -12408,7 +11326,7 @@ misar,
 
  HTH!
 
- *[img: Smilie]*
+ :)
 
 ## #499 misar — Nov 23rd, 2024, 01:32 PM
 
@@ -12428,13 +11346,9 @@ I am working with a website (<https://bus.data.tfl.gov.uk/> https://bus.data.tfl
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **misar**
 >
-
->
-
- *[img: Quote]* Originally Posted by **misar** *[img: View Post]*
-
-I am working with a website (<https://bus.data.tfl.gov.uk/> https://bus.data.tfl.gov.uk/) which generates a file list from the contents of a large Amazon S3 data bucket. There is a substantial delay between the navigation completing and completion of the document that I want to capture. I thought that using Sub WV_DocumentComplete in Olaf's demo would deal with this but it fires immediately after Sub WV_NavigationCompleted. Is there a way to detect the true document completion? At present I work around this with a loop which checks the document size until it remains constant.
+> I am working with a website (<https://bus.data.tfl.gov.uk/> https://bus.data.tfl.gov.uk/) which generates a file list from the contents of a large Amazon S3 data bucket. There is a substantial delay between the navigation completing and completion of the document that I want to capture. I thought that using Sub WV_DocumentComplete in Olaf's demo would deal with this but it fires immediately after Sub WV_NavigationCompleted. Is there a way to detect the true document completion? At present I work around this with a loop which checks the document size until it remains constant.
 
 I tested and the event that keeps firing is WV_WebResourceResponseReceived.
  Maybe you could check when that event stops firing.
@@ -12443,14 +11357,10 @@ I tested and the event that keeps firing is WV_WebResourceResponseReceived.
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Eduardo-**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Eduardo-** *[img: View Post]*
-
-I tested and the event that keeps firing is WV_WebResourceResponseReceived.
- Maybe you could check when that event stops firing.
+> I tested and the event that keeps firing is WV_WebResourceResponseReceived.
+>  Maybe you could check when that event stops firing.
 
 What are the correct parameters?
 
@@ -12473,14 +11383,10 @@ It must start with "Private Sub".
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Eduardo-**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Eduardo-** *[img: View Post]*
-
-It must start with "Private Sub".
- The control adds the correct code automatically (I have no idea what you did).
+> It must start with "Private Sub".
+>  The control adds the correct code automatically (I have no idea what you did).
 
 I started it with "Private Sub". The compiler throws an incorrect parameter error. I assumed this routine posted earlier in the thread had the correct parameters:
 
@@ -12513,13 +11419,9 @@ I'm using RC6 version 6.00.0014
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Eduardo-**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Eduardo-** *[img: View Post]*
-
-I'm using RC6 version 6.00.0014
+> I'm using RC6 version 6.00.0014
 
 I'm using RC6 version 6.0.0.15 with the code from Olaf's demo. Apart from WV_WebResourceResponseReceived everything is compiling correctly.
 
@@ -12539,36 +11441,28 @@ This example works for me:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **Eduardo-**
 >
-
->
-
- *[img: Quote]* Originally Posted by **Eduardo-** *[img: View Post]*
-
-This example works for me:
+> This example works for me:
 
 Your example also works for me. The difference was the line Static c As Long
  - I added that to the routine and now my code also compiles and runs correctly.
- Many thanks for your help. *[img: Smilie]*
+ Many thanks for your help. :)
 
  Edit
  After looking at this more carefully I realised that the line "Static c As Long" is irrelevant to my code so I deleted it
  - and of course the routine still worked OK.
- I cannot understand what changed as previously I made several attempts to get apparently identical code to work. *[img: Confused]*
+ I cannot understand what changed as previously I made several attempts to get apparently identical code to work. :confused:
 
 ## #509 Eduardo- — Dec 3rd, 2024, 03:41 PM
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **misar**
 >
+> I cannot understand what changed as previously I made several attempts to get apparently identical code to work. :confused:
 
->
-
- *[img: Quote]* Originally Posted by **misar** *[img: View Post]*
-
-I cannot understand what changed as previously I made several attempts to get apparently identical code to work. *[img: Confused]*
-
-Sometimes there are mysteries... *[img: Alien Frog]*
+Sometimes there are mysteries... :alienfrog:
 
  The event handler declaration that you pasted here was exactly the same.
 
@@ -12576,17 +11470,13 @@ Sometimes there are mysteries... *[img: Alien Frog]*
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
+> Olaf,
 >
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Olaf,
-
- Thanks again for the WebView2 control. This has really given new life to an old VB6 app (and developer *[img: Smilie]*
-
- I have a use for InPrivate mode or Incognito mode. I was wondering if there is an easy way to turn this on? My app logs into the same site multiple times with different credentials, and I have found that I have to make it logout/login for it to switch between them. I want to split this into 2 WVs and separately login to each.
+>  Thanks again for the WebView2 control. This has really given new life to an old VB6 app (and developer :)
+>
+>  I have a use for InPrivate mode or Incognito mode. I was wondering if there is an easy way to turn this on? My app logs into the same site multiple times with different credentials, and I have found that I have to make it logout/login for it to switch between them. I want to split this into 2 WVs and separately login to each.
 
 Just bumping this... hopefully someone else has a need for this also. Before i posted before, and again just now, I tried passing different options for the parameter additionalBrowserArguments. I tried:
 
@@ -12604,23 +11494,19 @@ Just bumping this... hopefully someone else has a need for this also. Before i p
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
+> Just bumping this... hopefully someone else has a need for this also. Before i posted before, and again just now, I tried passing different options for the parameter additionalBrowserArguments. I tried:
 >
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Just bumping this... hopefully someone else has a need for this also. Before i posted before, and again just now, I tried passing different options for the parameter additionalBrowserArguments. I tried:
-
- "--enable-features=incognito"
- "--disable-features=msSmartScreenProtection"
- "--enable-features=incognito --disable-features=msSmartScreenProtection"
-
- None of which appear to do the job, even though no complaints from the New_c.WebView2 call.
-
- Any pointers would be great.
-
- Thanks!
+>  "--enable-features=incognito"
+>  "--disable-features=msSmartScreenProtection"
+>  "--enable-features=incognito --disable-features=msSmartScreenProtection"
+>
+>  None of which appear to do the job, even though no complaints from the New_c.WebView2 call.
+>
+>  Any pointers would be great.
+>
+>  Thanks!
 
 Have you tried using a different user data folder for each instance? You can then delete the "incognito" user folder on shutdown yourself. This approach is mentioned at the following links, but I haven't tried it myself:
 
@@ -12633,15 +11519,11 @@ Have you tried using a different user data folder for each instance? You can the
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
+> Have you tried using a different user data folder for each instance? You can then delete the "incognito" user folder on shutdown yourself. This approach is mentioned at the following links, but I haven't tried it myself:
 >
-
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-Have you tried using a different user data folder for each instance? You can then delete the "incognito" user folder on shutdown yourself. This approach is mentioned at the following links, but I haven't tried it myself:
-
- <https://stackoverflow.com/questions/75322492/how-webview2-runs-in-privacy-mode> https://stackoverflow.com/questions/...n-privacy-mode
+>  <https://stackoverflow.com/questions/75322492/how-webview2-runs-in-privacy-mode> https://stackoverflow.com/questions/...n-privacy-mode
 
 this is how i work to create a private browsing mode !
 
@@ -12759,15 +11641,11 @@ Dear Olaf,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **saturnian**
 >
+> this is how i work to create a private browsing mode !
 
->
-
- *[img: Quote]* Originally Posted by **saturnian** *[img: View Post]*
-
-this is how i work to create a private browsing mode !
-
-*[img: Smilie]*
+:)
 
  Appreciate you guys putting me on the right path! It appears that using a different User Data Folder on each call *does* do the trick, so that the WV's run in separate folders. The unfortunate "side effect" is that it doesn't remember some of the user's default or previous selections, but the ability to run multiple separate instances far outweighs the inconvenience.
 
@@ -12779,13 +11657,9 @@ this is how i work to create a private browsing mode !
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Appreciate you guys putting me on the right path! It appears that using a different User Data Folder on each call *does* do the trick, so that the WV's run in separate folders.
+> Appreciate you guys putting me on the right path! It appears that using a different User Data Folder on each call *does* do the trick, so that the WV's run in separate folders.
 
 I was just looking at the WebView2 browser flags/params for another purpose and notice that there is a "--incognito" flag (maybe it is new?):
 
@@ -12801,13 +11675,9 @@ Might be worth trying that to see if it keeps all of the user's existing setting
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BooksRUs**
 >
-
->
-
- *[img: Quote]* Originally Posted by **BooksRUs** *[img: View Post]*
-
-Now, if I could just figure out how to keep/fix the ZoomFactor, I would be golden... if I hold control and roll the mouse to zoom in/out on a website, then go to a different place on the same site, the zoom resets.
+> Now, if I could just figure out how to keep/fix the ZoomFactor, I would be golden... if I hold control and roll the mouse to zoom in/out on a website, then go to a different place on the same site, the zoom resets.
 
 Regarding the zoom factor, it looks like others have reported the same problem:
 
@@ -12821,21 +11691,17 @@ Regarding the zoom factor, it looks like others have reported the same problem:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
+> I was just looking at the WebView2 browser flags/params for another purpose and notice that there is a "--incognito" flag (maybe it is new?):
 >
-
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-I was just looking at the WebView2 browser flags/params for another purpose and notice that there is a "--incognito" flag (maybe it is new?):
-
-Code:
-
-```
-incognito 	Forces Incognito mode even if user data directory is specified by using the --user-data-dir flag.
-```
-
-Might be worth trying that to see if it keeps all of the user's existing settings but doesn't save/overwrite anything during/after the session.
+> Code:
+>
+> ```
+> incognito 	Forces Incognito mode even if user data directory is specified by using the --user-data-dir flag.
+> ```
+>
+> Might be worth trying that to see if it keeps all of the user's existing settings but doesn't save/overwrite anything during/after the session.
 
 I think I had found the same documentation previously... I have tried passing each one of these as the additionalBrowserArguments parameter:
 
@@ -12851,21 +11717,17 @@ I think I had found the same documentation previously... I have tried passing ea
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
+> Regarding the zoom factor, it looks like others have reported the same problem:
 >
+>  <https://github.com/MicrosoftEdge/WebView2Feedback/issues/3459> https://github.com/MicrosoftEdge/Web...ck/issues/3459
+>
+>  I haven't had a chance to investigate, but that thread mentioned that there may be a solution in this thread:
+>
+>  <https://github.com/MicrosoftEdge/WebView2Feedback/issues/2451> https://github.com/MicrosoftEdge/Web...ck/issues/2451
 
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-Regarding the zoom factor, it looks like others have reported the same problem:
-
- <https://github.com/MicrosoftEdge/WebView2Feedback/issues/3459> https://github.com/MicrosoftEdge/Web...ck/issues/3459
-
- I haven't had a chance to investigate, but that thread mentioned that there may be a solution in this thread:
-
- <https://github.com/MicrosoftEdge/WebView2Feedback/issues/2451> https://github.com/MicrosoftEdge/Web...ck/issues/2451
-
-*[img: Alien Frog]*
+:alienfrog:
 
  Eureka!
 
@@ -12888,7 +11750,7 @@ WV.ZoomFactor = ZoomFactor
 
 I tried something similar before, but I think it needs a value that is *different* than what it currently is, in order to actually do anything. So bumping it by a little, navigating, and bumping it back by a little actually makes the WV respond.
 
- *[img: Smilie]*
+ :)
 
 ## #520 BilalAhmed — Feb 13th, 2025, 10:06 AM
 
@@ -12933,19 +11795,15 @@ Code:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
+> Did you try passing the switch to the additionalBrowserArguments parameter on the BindTo method?
 >
-
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-Did you try passing the switch to the additionalBrowserArguments parameter on the BindTo method?
-
- e.g.:
-
- [/code]
-
- ?
+>  e.g.:
+>
+>  [/code]
+>
+>  ?
 
 thank you
 
@@ -12990,7 +11848,7 @@ private async void CoreWebView2_WebResourceRequested(object sender, Microsoft.We
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
-<https://www.vbforums.com/attachment.php?s=9b84d96bf559669a1dc45b4f80d160b8&attachmentid=194487> Attachment 194487How do I trigger the ?start learning??“????”? button in VB6.0 version webview2?
+<https://www.vbforums.com/attachment.php?s=590ef57ea31a7b12593e267acfc3f2a6&attachmentid=194487> Attachment 194487How do I trigger the ?start learning??“????”? button in VB6.0 version webview2?
 
 ## #525 xxdoc123 — Jul 18th, 2025, 09:37 AM
 
@@ -13025,13 +11883,9 @@ Perhaps the "data" loads asynchronously after the main document has finished loa
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
->
-
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-Perhaps the "data" loads asynchronously after the main document has finished loading? You might need to add a small helper script to look for a specific element that is injected into the DOM asynchronously and then call LoadNextVideo when it is found.
+> Perhaps the "data" loads asynchronously after the main document has finished loading? You might need to add a small helper script to look for a specific element that is injected into the DOM asynchronously and then call LoadNextVideo when it is found.
 
 I'm not very proficient in js and don't know how to wait for data asynchronously
 
@@ -13126,24 +11980,20 @@ Code:
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BilalAhmed**
 >
-
+> I
+>  However, some modern websites (cannot share link) are using different ways to set secure cookies. Hence, they're not accessible the way Olaf recommended in #440. So I tried by directly accessing browser's cookies using following code:
 >
-
- *[img: Quote]* Originally Posted by **BilalAhmed** *[img: View Post]*
-
-I
- However, some modern websites (cannot share link) are using different ways to set secure cookies. Hence, they're not accessible the way Olaf recommended in #440. So I tried by directly accessing browser's cookies using following code:
-
-Code:
-
-```
-WV.CallDevToolsProtocolMethod "Network.getAllCookies", "{}"
-```
-
-Problem is that CallDevToolsProtocolMethod does not return anything. So just cannot receive response which I need. So, is there a workaround I could receive response from CallDevToolsProtocolMethod method or an alternate but solid way to pull all the cookies (including http-only ones).
-
- Thankyou so much!
+> Code:
+>
+> ```
+> WV.CallDevToolsProtocolMethod "Network.getAllCookies", "{}"
+> ```
+>
+> Problem is that CallDevToolsProtocolMethod does not return anything. So just cannot receive response which I need. So, is there a workaround I could receive response from CallDevToolsProtocolMethod method or an alternate but solid way to pull all the cookies (including http-only ones).
+>
+>  Thankyou so much!
 
 If you add the following code to your project:
 
@@ -13256,29 +12106,25 @@ Private Sub DumpWVStrings()
 End Sub
 ```
 
-But this failed too. All it returned (especially "DumpWVStrings") just garbage *[img: Frown]*
+But this failed too. All it returned (especially "DumpWVStrings") just garbage :(
 
  So probably Olaf may be able to help?
 
  Thankyou so much!
 
+>   Originally Posted by **fafalone**
 >
-
+> The method RC6 is wrapping here is ICoreWebView2 -> Sub CallDevToolsProtocolMethod(ByVal methodName As LongPtr, ByVal parametersAsJson As LongPtr, ByVal handler As ICoreWebView2CallDevToolsProtocolMethodCompletedHandler)
 >
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-The method RC6 is wrapping here is ICoreWebView2 -> Sub CallDevToolsProtocolMethod(ByVal methodName As LongPtr, ByVal parametersAsJson As LongPtr, ByVal handler As ICoreWebView2CallDevToolsProtocolMethodCompletedHandler)
-
- The results are returned to your implementation of ICoreWebView2CallDevToolsProtocolMethodCompletedHandler. RC6 does not look to have a wrapper for that, though I haven't looked too thoroughly-- see if a name like that exists in the events.
-
- Failing that, see if RC6 allows you to get a pointer to its internal ICoreWebView2 interface; if you can get such a pointer, you can use oleexp.tlb for the interfaces to invoke the command manually to your own implementation of the completion handler.
+>  The results are returned to your implementation of ICoreWebView2CallDevToolsProtocolMethodCompletedHandler. RC6 does not look to have a wrapper for that, though I haven't looked too thoroughly-- see if a name like that exists in the events.
+>
+>  Failing that, see if RC6 allows you to get a pointer to its internal ICoreWebView2 interface; if you can get such a pointer, you can use oleexp.tlb for the interfaces to invoke the command manually to your own implementation of the completion handler.
 
 ## #536 jpbro — Aug 4th, 2025, 09:59 PM
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
-If you're looking for an alternative, there's always twinBasic. It comes with an open source(-ish?) WebView2 implementation on top of a closed-source language/compiler that's mostly VB6 compatible. It's getting more compatible by the day and it only costs $35 USD/month, forever. Sure, it’s also a one-man show, but the "one man" is still really active compared to the other "one man", and this time it's different...If either you or he runs out of money, the whole thing just stops working completely *[img: Wink]*
+If you're looking for an alternative, there's always twinBasic. It comes with an open source(-ish?) WebView2 implementation on top of a closed-source language/compiler that's mostly VB6 compatible. It's getting more compatible by the day and it only costs $35 USD/month, forever. Sure, it’s also a one-man show, but the "one man" is still really active compared to the other "one man", and this time it's different...If either you or he runs out of money, the whole thing just stops working completely ;)
 
 ## #537 fafalone — Aug 4th, 2025, 11:26 PM
 
@@ -13288,10 +12134,7 @@ Yeah it doesn't seem a method was included to get the pointer that you need, lea
 
  ---
 
->
-
->
- If you're looking for an alternative, there's always twinBasic. It comes with an open source(-ish?) WebView2 implementation on top of a closed-source language/compiler that's mostly VB6 compatible. It's getting more compatible by the day and it only costs $35 USD/month, forever. Sure, it’s also a one-man show, but the "one man" is still really active compared to the other "one man", and this time it's different...If either you or he runs out of money, the whole thing just stops working completely
+>  If you're looking for an alternative, there's always twinBasic. It comes with an open source(-ish?) WebView2 implementation on top of a closed-source language/compiler that's mostly VB6 compatible. It's getting more compatible by the day and it only costs $35 USD/month, forever. Sure, it’s also a one-man show, but the "one man" is still really active compared to the other "one man", and this time it's different...If either you or he runs out of money, the whole thing just stops working completely
 
 Maybe I missed the sarcasm but the idea either your code or the tB IDE/compiler just 'stops working completely' because either side runs out of money is absurdly false. There's a free community edition where the only limitation is a splash screen on x64 binaries, and no LLVM optimization (barely any of it implemented yet). As the "free" suggests, this costs $0 per month, not $35 per month. If you do get a premium subscription then stop paying, it just reverts to the community edition. Nothing stops working. And your binaries stay as is, there's no license checks in your code; an exe built with an active subscription will remain splashscreen free forever. If Wayne runs out of money, worst case is tB stays as it is now, already far ahead of VB6 in features and complete enough you can work around bugs and unimplemented parts. And that's if it happens soon before tB leaves Beta. Once it hits v1.0 the source goes into escrow to be released if abandoned.
 
@@ -13299,17 +12142,13 @@ Maybe I missed the sarcasm but the idea either your code or the tB IDE/compiler 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **fafalone**
 >
-
+> Yeah it doesn't seem a method was included to get the pointer that you need, leaving only options not worth the trouble. Might want to use the twinBASIC WebView2 control; if you're not ready to switch to tB I've <https://github.com/fafalone/ucWebView2> wrapped it in an ActiveX control that works in VB6/VBA/etc. It comes with an event to receive the results of the call you're looking for by default with no need for modification. Switching to that will be easier than trying to dig out the pointer.
 >
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-Yeah it doesn't seem a method was included to get the pointer that you need, leaving only options not worth the trouble. Might want to use the twinBASIC WebView2 control; if you're not ready to switch to tB I've <https://github.com/fafalone/ucWebView2> wrapped it in an ActiveX control that works in VB6/VBA/etc. It comes with an event to receive the results of the call you're looking for by default with no need for modification. Switching to that will be easier than trying to dig out the pointer.
-
- ---
-
- Maybe I missed the sarcasm but the idea either your code or the tB IDE/compiler just 'stops working completely' because either side runs out of money is absurdly false. There's a free community edition where the only limitation is a splash screen on x64 binaries, and no LLVM optimization (barely any of it implemented yet). As the "free" suggests, this costs $0 per month, not $35 per month. If you do get a premium subscription then stop paying, it just reverts to the community edition. Nothing stops working. And your binaries stay as is, there's no license checks in your code; an exe built with an active subscription will remain splashscreen free forever. If Wayne runs out of money, worst case is tB stays as it is now, already far ahead of VB6 in features and complete enough you can work around bugs and unimplemented parts. And that's if it happens soon before tB leaves Beta. Once it hits v1.0 the source goes into escrow to be released if abandoned.
+>  ---
+>
+>  Maybe I missed the sarcasm but the idea either your code or the tB IDE/compiler just 'stops working completely' because either side runs out of money is absurdly false. There's a free community edition where the only limitation is a splash screen on x64 binaries, and no LLVM optimization (barely any of it implemented yet). As the "free" suggests, this costs $0 per month, not $35 per month. If you do get a premium subscription then stop paying, it just reverts to the community edition. Nothing stops working. And your binaries stay as is, there's no license checks in your code; an exe built with an active subscription will remain splashscreen free forever. If Wayne runs out of money, worst case is tB stays as it is now, already far ahead of VB6 in features and complete enough you can work around bugs and unimplemented parts. And that's if it happens soon before tB leaves Beta. Once it hits v1.0 the source goes into escrow to be released if abandoned.
 
 Ahhh...
 
@@ -13331,27 +12170,19 @@ The control I posted is built in tB but for VB6. It compiles an ocx control you'
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **fafalone**
 >
+> Maybe I missed the sarcasm but the idea either your code or the tB IDE/compiler just 'stops working completely' because either side runs out of money is absurdly false. There's a free community edition where the only limitation is a splash screen on x64 binaries, and no LLVM optimization (barely any of it implemented yet). As the "free" suggests, this costs $0 per month, not $35 per month. If you do get a premium subscription then stop paying, it just reverts to the community edition. Nothing stops working. And your binaries stay as is, there's no license checks in your code; an exe built with an active subscription will remain splashscreen free forever. If Wayne runs out of money, worst case is tB stays as it is now, already far ahead of VB6 in features and complete enough you can work around bugs and unimplemented parts. And that's if it happens soon before tB leaves Beta. Once it hits v1.0 the source goes into escrow to be released if abandoned.
 
->
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-Maybe I missed the sarcasm but the idea either your code or the tB IDE/compiler just 'stops working completely' because either side runs out of money is absurdly false. There's a free community edition where the only limitation is a splash screen on x64 binaries, and no LLVM optimization (barely any of it implemented yet). As the "free" suggests, this costs $0 per month, not $35 per month. If you do get a premium subscription then stop paying, it just reverts to the community edition. Nothing stops working. And your binaries stay as is, there's no license checks in your code; an exe built with an active subscription will remain splashscreen free forever. If Wayne runs out of money, worst case is tB stays as it is now, already far ahead of VB6 in features and complete enough you can work around bugs and unimplemented parts. And that's if it happens soon before tB leaves Beta. Once it hits v1.0 the source goes into escrow to be released if abandoned.
-
-You did miss some sarcasm *[img: Wink]*
+You did miss some sarcasm ;)
 
  That said, unless I've misunderstood something, you can't build new stuff, fix old stuff, or release updates unless you keep paying the monthly fee indefinitely. A splash screen might be fine for hobby projects, but not much else.
 
  If Wayne runs out of money tomorrow, does the tB IDE keep running at your current license level forever, or are you out of luck?
 
+>   Originally Posted by **fafalone**
 >
-
->
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-Once it hits v1.0 the source goes into escrow to be released if abandoned.
+> Once it hits v1.0 the source goes into escrow to be released if abandoned.
 
 That's the promise, but there's no way to know if it will actually be kept, nor if it will be able to be independently verified should it ever come into play (again, unless I've missed something).
 
@@ -13371,23 +12202,19 @@ Okay, can you compile the ocx for me and upload somewhere to download? I dont mi
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **jpbro**
 >
-
+> You did miss some sarcasm ;)
 >
-
- *[img: Quote]* Originally Posted by **jpbro** *[img: View Post]*
-
-You did miss some sarcasm *[img: Wink]*
-
- That said, unless I've misunderstood something, you can't build new stuff, fix old stuff, or release updates unless you keep paying the monthly fee indefinitely. A splash screen might be fine for hobby projects, but not much else.
-
- If Wayne runs out of money tomorrow, does the tB IDE keep running at your current license level forever, or are you out of luck?
-
- That's the promise, but there's no way to know if it will actually be kept, nor if it will be able to be independently verified should it ever come into play (again, unless I've missed something).
-
- For the record, I've had a yearly pro subscription to tB since the first or second month it was offered, and I've "bought Wayne a coffee" every month since that option was added too. I've been a financial supporter of tB from early on, and I genuinely believe it's the best shot we've ever had at true VB6 successor.
-
- But I also think it's a risky proposition for non-hobbyist development at this stage. And if we're being intellectually honest, the same arguments that have been/are being used against RC6 can and should be applied to tB as well.
+>  That said, unless I've misunderstood something, you can't build new stuff, fix old stuff, or release updates unless you keep paying the monthly fee indefinitely. A splash screen might be fine for hobby projects, but not much else.
+>
+>  If Wayne runs out of money tomorrow, does the tB IDE keep running at your current license level forever, or are you out of luck?
+>
+>  That's the promise, but there's no way to know if it will actually be kept, nor if it will be able to be independently verified should it ever come into play (again, unless I've missed something).
+>
+>  For the record, I've had a yearly pro subscription to tB since the first or second month it was offered, and I've "bought Wayne a coffee" every month since that option was added too. I've been a financial supporter of tB from early on, and I genuinely believe it's the best shot we've ever had at true VB6 successor.
+>
+>  But I also think it's a risky proposition for non-hobbyist development at this stage. And if we're being intellectually honest, the same arguments that have been/are being used against RC6 can and should be applied to tB as well.
 
 You could ask about what happens to licenses if there's no more server... I'm not sure that it's even an issue right now; I'm sure there's some reasonable solution. But this isn't an issue unique to tB or to single developers... I'd argue that big corps are *more* likely to rug pull existing products and license servers in a way that forces customers off old products. There's certainly room to argue over details of escrow terms which haven't been discussed yet, but I'd be very surprised if that wasn't done at all, since it would be both an AH move and bad for tB's success, neither of which sound like something Wayne would do.
 
@@ -13397,15 +12224,11 @@ You could ask about what happens to licenses if there's no more server... I'm no
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **BilalAhmed**
 >
-
+> Okay, can you compile the ocx for me and upload somewhere to download? I dont mind paying $35 through credit card (probly one month subscription fee for TB).
 >
-
- *[img: Quote]* Originally Posted by **BilalAhmed** *[img: View Post]*
-
-Okay, can you compile the ocx for me and upload somewhere to download? I dont mind paying $35 through credit card (probly one month subscription fee for TB).
-
- Thankyou so much!
+>  Thankyou so much!
 
 <https://github.com/fafalone/ucWebView2> https://github.com/fafalone/ucWebView2
 
@@ -13415,15 +12238,11 @@ Okay, can you compile the ocx for me and upload somewhere to download? I dont mi
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **fafalone**
 >
-
+> <https://github.com/fafalone/ucWebView2> https://github.com/fafalone/ucWebView2
 >
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-<https://github.com/fafalone/ucWebView2> https://github.com/fafalone/ucWebView2
-
- Open the ucWebView2 project in the .zip with <https://github.com/twinbasic/twinbasic/releases> twinBASIC (run as admin so it registers in HKLM where vb6 can see it) and click File->Build.
+>  Open the ucWebView2 project in the .zip with <https://github.com/twinbasic/twinbasic/releases> twinBASIC (run as admin so it registers in HKLM where vb6 can see it) and click File->Build.
 
 fafalone, seems a good product (ucWebview). But I need a vb6 based sample project to understand it and learn good use of events/methods and properties. Can you please have me the link to it?
 
@@ -13451,15 +12270,11 @@ Honestly, I could not even make it open google.com. If I do .navigate method on 
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **fafalone**
 >
-
+> <https://github.com/fafalone/ucWebView2> https://github.com/fafalone/ucWebView2
 >
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-<https://github.com/fafalone/ucWebView2> https://github.com/fafalone/ucWebView2
-
- Open the ucWebView2 project in the .zip with <https://github.com/twinbasic/twinbasic/releases> twinBASIC (run as admin so it registers in HKLM where vb6 can see it) and click File->Build.
+>  Open the ucWebView2 project in the .zip with <https://github.com/twinbasic/twinbasic/releases> twinBASIC (run as admin so it registers in HKLM where vb6 can see it) and click File->Build.
 
 BUG: you cannot implement consume "webresourcerequested, navigationstarting" because it says "User defined type not defined"
  Similarly, JSAsyncResult, DownloadItemInterrupted, DownloadCompleted cannot be implemented in VB6 because it is restricted here.
@@ -13472,53 +12287,33 @@ BUG: you cannot implement consume "webresourcerequested, navigationstarting" bec
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **fafalone**
 >
-
->
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-You could ask about what happens to licenses if there's no more server... I'm not sure that it's even an issue right now;
+> You could ask about what happens to licenses if there's no more server... I'm not sure that it's even an issue right now;
 
 I could, but I'd rather Wayne focus on the core than me bothering him about licensing server stuff...Again, I'm not trying to throw shade, but licensing *anything* from a one man show is a risk, even more so I think when it is a programming language compared to an add-on library. There will be nowhere to go with your codebase if tB goes belly up. That is a distinct difference compared to VB6+RC6 (or any other 3rd part closed source library) that will basically just keep working forever (albeit with whatever bugs are already baked into it, and limitations of the host language). Neither VB6 nor RC6 have any kind of active licensing system as a dependency, they just work (and will continue to just work essentially forever now with virtualization/emulation layers).
 
+>   Originally Posted by **fafalone**
 >
-
->
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-I'm sure there's some reasonable solution.
+> I'm sure there's some reasonable solution.
 
 I'm not so sure...if money runs out, will Wayne care to maintain the licensing server or release a patch to disable license checks? Maybe, maybe not.
 
+>   Originally Posted by **fafalone**
 >
-
->
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-But this isn't an issue unique to tB or to single developers... I'd argue that big corps are *more* likely to rug pull existing products and license servers in a way that forces customers off old products.
+> But this isn't an issue unique to tB or to single developers... I'd argue that big corps are *more* likely to rug pull existing products and license servers in a way that forces customers off old products.
 
 Sure, but I'm talking about one man shows. Microsoft rug pulled as best they could, but many of us are still here using VB6 despite their attempts.
 
+>   Originally Posted by **fafalone**
 >
-
->
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-There's certainly room to argue over details of escrow terms which haven't been discussed yet, but I'd be very surprised if that wasn't done at all, since it would be both an AH move and bad for tB's success, neither of which sound like something Wayne would do.
+> There's certainly room to argue over details of escrow terms which haven't been discussed yet, but I'd be very surprised if that wasn't done at all, since it would be both an AH move and bad for tB's success, neither of which sound like something Wayne would do.
 
 I agree that it would be a bad move, but at this stage it's just words. Not much different than Olaf's words about his own VB6 successor over the years.
 
+>   Originally Posted by **fafalone**
 >
-
->
-
- *[img: Quote]* Originally Posted by **fafalone** *[img: View Post]*
-
-Some of the same arguments apply but it's not intellectually honest to pretend there's not both material differences as well as an entirely different degree of how inconvenient alternatives are. RC6 is easy to not use. With tB, your only option that's not "throw out everything and start from scratch" is continuing with vb6, which is itself a risky proposition, given Microsoft already starting to end VBScript support. This topic we're on illustrates the other part: world of difference working around a missing feature in something like rc6 vs something as flexible as a programming language.
+> Some of the same arguments apply but it's not intellectually honest to pretend there's not both material differences as well as an entirely different degree of how inconvenient alternatives are. RC6 is easy to not use. With tB, your only option that's not "throw out everything and start from scratch" is continuing with vb6, which is itself a risky proposition, given Microsoft already starting to end VBScript support. This topic we're on illustrates the other part: world of difference working around a missing feature in something like rc6 vs something as flexible as a programming language.
 
 RC6 and tB are totally different things IMO - RC6 is a library/add-on to VB6 that extends it in useful ways. tB is a new language/compiler that is a superset of VB6 that extends it in (probably more) useful ways. Difference is, that the more you adopt tB's "extensions", the more you get tied to tB forever, much in the same way that the more I used VB6, the more I got tied to VB6 forever. The difference is that VB6 is here and will be here for ever (at least in the manner I'm using it). tB is still at a very high risk stage, and IMO there's a significant chance that any work done to migrate code from VB6 to tB will be wasted. I'm not saying people shouldn't take that risk after evaluating all the options, but I do think it would be foolish to believe there isn't a significant risk.
 
@@ -13621,27 +12416,19 @@ Dear Schmidt,
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **talatoncu**
 >
-
+> I got the following error when I try to reach the URL
 >
-
- *[img: Quote]* Originally Posted by **talatoncu** *[img: View Post]*
-
-I got the following error when I try to reach the URL
-
- <http://www.muzayedeapp.com/muzayede-evleri-icin> http://www.muzayedeapp.com/muzayede-evleri-icin
-
- "This browser doesn't support the API's required to use the Firebase SDK"
+>  <http://www.muzayedeapp.com/muzayede-evleri-icin> http://www.muzayedeapp.com/muzayede-evleri-icin
+>
+>  "This browser doesn't support the API's required to use the Firebase SDK"
 
 Firebase is only supported on HTTPS websites. See: <https://stackoverflow.com/a/70750307> https://stackoverflow.com/a/70750307
 
+>   Originally Posted by **talatoncu**
 >
-
->
-
- *[img: Quote]* Originally Posted by **talatoncu** *[img: View Post]*
-
-Is there a way to bypass this error?
+> Is there a way to bypass this error?
 
 Change your URL from HTTP to HTTPS: <httpS://www.muzayedeapp.com/muzayede-evleri-icin> httpS://www.muzayedeapp.com/muzayede-evleri-icin and it should work.
 
@@ -13674,7 +12461,7 @@ Private Sub m_oWebView_JSMessage(ByVal sMsg As String, ByVal sMsgContent As Stri
 End Sub
 ```
 
-This should be possible to be exposed as a sorely missing separate event on **cWebView2** directly using **ICoreWebView2::add_DocumentTitleChanged** callback but until then using JS to setup MutationObserver on **title** element after DOMContentLoaded event is fired seems to be good enough workaround.
+This should be possible to be exposed as a sorely missing separate event on **cWebView2 **directly using** ICoreWebView2::add_DocumentTitleChanged **callback but until then using JS to setup MutationObserver on** title** element after DOMContentLoaded event is fired seems to be good enough workaround.
 
  cheers,
  </wqw>
@@ -13683,35 +12470,31 @@ This should be possible to be exposed as a sorely missing separate event on **cW
 
 **Re: VB6 WebView2-Binding (Edge-Chromium)**
 
+>   Originally Posted by **wqweto**
 >
-
+> Here is how to reimplement missing **TitleChange** event as raised by the venerable built-in WebBrowser control.
 >
-
- *[img: Quote]* Originally Posted by **wqweto** *[img: View Post]*
-
-Here is how to reimplement missing **TitleChange** event as raised by the venerable built-in WebBrowser control.
-
-Code:
-
-```
-Private WithEvents m_oWebView   As RC6.cWebView2
-
-Private Sub m_oWebView_InitComplete()
-    m_oWebView.AddScriptToExecuteOnDocumentCreated "var observer = new MutationObserver(function() { vbH().RaiseMessageEvent('title_change', document.title); });" & vbCrLf & _
-        "document.addEventListener('DOMContentLoaded', function() { observer.observe(document.querySelector('title'), { childList: true }); vbH().RaiseMessageEvent('title_change', document.title); }); "
-End Sub
-
-Private Sub m_oWebView_JSMessage(ByVal sMsg As String, ByVal sMsgContent As String, oJSONContent As RC6.cCollection)
-    If sMsg = "title_change" Then
-        DebugPrint "New title is " & sMsgContent
-    End If
-End Sub
-```
-
-This should be possible to be exposed as a sorely missing separate event on **cWebView2** directly using **ICoreWebView2::add_DocumentTitleChanged** callback but until then using JS to setup MutationObserver on **title** element after DOMContentLoaded event is fired seems to be good enough workaround.
-
- cheers,
- </wqw>
+> Code:
+>
+> ```
+> Private WithEvents m_oWebView   As RC6.cWebView2
+>
+> Private Sub m_oWebView_InitComplete()
+>     m_oWebView.AddScriptToExecuteOnDocumentCreated "var observer = new MutationObserver(function() { vbH().RaiseMessageEvent('title_change', document.title); });" & vbCrLf & _
+>         "document.addEventListener('DOMContentLoaded', function() { observer.observe(document.querySelector('title'), { childList: true }); vbH().RaiseMessageEvent('title_change', document.title); }); "
+> End Sub
+>
+> Private Sub m_oWebView_JSMessage(ByVal sMsg As String, ByVal sMsgContent As String, oJSONContent As RC6.cCollection)
+>     If sMsg = "title_change" Then
+>         DebugPrint "New title is " & sMsgContent
+>     End If
+> End Sub
+> ```
+>
+> This should be possible to be exposed as a sorely missing separate event on **cWebView2 **directly using** ICoreWebView2::add_DocumentTitleChanged **callback but until then using JS to setup MutationObserver on** title** element after DOMContentLoaded event is fired seems to be good enough workaround.
+>
+>  cheers,
+>  </wqw>
 
 Thanks Wqweto for this tip!
  Happy holidays!
